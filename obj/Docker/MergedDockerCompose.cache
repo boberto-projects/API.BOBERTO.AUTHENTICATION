@@ -1,0 +1,40 @@
+name: dockercompose10917595224043270729
+services:
+  api-authentication-boberto:
+    build:
+      context: C:\Users\gedeo\source\repos\api-authentication-boberto
+      dockerfile: Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+    image: apiauthenticationboberto
+    networks:
+      default: null
+    ports:
+    - mode: ingress
+      target: 80
+      published: "5555"
+      protocol: tcp
+  database_service:
+    environment:
+      POSTGRES_DB: teste
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+    hostname: postgree_hostname
+    image: postgres
+    networks:
+      default: null
+    ports:
+    - mode: ingress
+      target: 5432
+      published: "5432"
+      protocol: tcp
+    restart: always
+    volumes:
+    - type: bind
+      source: C:\Users\gedeo\source\repos\api-authentication-boberto\init.sql
+      target: /docker-entrypoint-initdb.d/init.sql
+      bind:
+        create_host_path: true
+networks:
+  default:
+    name: dockercompose10917595224043270729_default
