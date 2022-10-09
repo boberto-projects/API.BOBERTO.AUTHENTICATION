@@ -4,6 +4,7 @@ using api_authentication_boberto.Models;
 using api_authentication_boberto.Models.Config;
 using api_authentication_boberto.Models.Integrations;
 using api_authentication_boberto.Models.Request;
+using api_authentication_boberto.Models.Response;
 using ConfigurationSubstitution;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -156,10 +157,14 @@ app.MapPost("/generateOtp", [Authorize] async ([FromServices] IConfiguration con
             Content = code
         });
     }
-  
-    return Results.Ok(code);
 
-});
+    return Results.Ok(new GenerateOtpResponse()
+    {
+        Code = code
+    });
+
+}).WithTags("Autenticação");
+
 
 //USANDO Time-based OTPs
 
