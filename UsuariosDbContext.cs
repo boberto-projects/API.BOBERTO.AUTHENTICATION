@@ -22,8 +22,8 @@ namespace api_authentication_boberto
 
                 entity.HasKey(e => e.UsuarioId).HasName("usuarios_pkey");
                 entity.Property(e => e.UsuarioId).HasColumnName("usuarioid");
-                entity.Property(e => e.UsuarioId).UseIdentityAlwaysColumn();
-               
+                entity.Property(e => e.UsuarioId).UseIdentityByDefaultColumn();
+
                 entity.Property(e => e.Nome).HasColumnName("nome");
 
                 entity.HasKey(e => e.Email).HasName("usuarios_email_key");
