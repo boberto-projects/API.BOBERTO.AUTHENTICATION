@@ -18,7 +18,7 @@ var config = new ConfigurationBuilder()
             .EnableSubstitutions("%", "%")
             .Build();
 
-builder.Services.AddDbContext<UsuariosDbContext>(o => o.UseNpgsql(builder.Configuration.GetConnectionString("Postgree")));
+builder.Services.AddEntityFrameworkNpgsql().AddDbContext<DatabaseContext>(o => o.UseNpgsql(builder.Configuration.GetConnectionString("Postgree")));
 
 
 var app = builder.Build();
@@ -30,6 +30,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.MapGet("/healthcheck", ([FromServices] DatabaseContext dbContext) =>
+{
+    return dbContext.Usuarios.ToList();
+})
+.WithTags("Autenticação");
 
 app.MapPost("/autenticar", () =>
 {
@@ -37,17 +42,15 @@ app.MapPost("/autenticar", () =>
 })
 .WithTags("Autenticação");
 
-app.MapPost("/registrar", ([FromBody] RegistrarRequest request, [FromServices] UsuariosDbContext usuarioContext) =>
+app.MapPost("/registrar", async ([FromBody] RegistrarRequest request, [FromServices] DatabaseContext dbContext) =>
 {
-    var usuario = new UsuarioModel()
+    dbContext.Usuarios.Add(new()
     {
-        Email = "teste@example.com",
-        Name = "Teste Sobrenome",
-        Senha = "minhasenhacrypto"
-    };
-    usuarioContext.Add(usuario);
-
-
+        Email = request.Email,
+        Nome =  request.Nome,
+        Senha = request.Senha
+    });
+    await dbContext.SaveChangesAsync();
 })
 .WithTags("Autenticação");
 
