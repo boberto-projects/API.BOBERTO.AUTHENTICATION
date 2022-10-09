@@ -1,4 +1,4 @@
-﻿namespace api_authentication_boberto.Models
+﻿namespace api_authentication_boberto.Models.Request
 {
     public class LoginRequest
     {

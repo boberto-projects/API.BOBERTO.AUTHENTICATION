@@ -1,14 +1,14 @@
 using api_authentication_boberto;
 using api_authentication_boberto.Models;
+using api_authentication_boberto.Models.Config;
+using api_authentication_boberto.Models.Request;
 using ConfigurationSubstitution;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using NuGet.Configuration;
+using OtpNet;
 using System.Text;
 using BC = BCrypt.Net.BCrypt;
 
@@ -66,7 +66,7 @@ if (app.Environment.IsDevelopment())
 
 app.MapGet("/healthcheck", ([FromServices] DatabaseContext dbContext) =>
 {
-    return dbContext.Usuarios.ToList();
+    return Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 })
 .WithTags("Autenticação");
 
@@ -103,15 +103,49 @@ app.MapPost("/registrar", [AllowAnonymous] async ([FromBody] RegistrarRequest re
     {
         Email = request.Email,
         Nome =  request.Nome,
-        Senha = hashed
+        Senha = hashed,
+        NumeroCelular = request.NumeroCelular
+
     });
     await dbContext.SaveChangesAsync();
 })
 .WithTags("Autenticação");
 
-app.MapGet("/teste", [Authorize] async ( [FromServices] DatabaseContext dbContext) =>
+app.MapGet("/teste", [Authorize] async ([FromServices] DatabaseContext dbContext) =>
 {
     return Results.Ok();
+})
+.WithTags("Autenticação");
+
+
+app.MapGet("/generateOtp", [AllowAnonymous] async ([FromServices] IConfiguration config) =>
+{
+    var twoFactorConfig = config.GetSection("TwoFactorConfig").Get<TwoFactorConfig>();
+
+    var key = Encoding.ASCII.GetBytes(twoFactorConfig.Key);
+    var size = twoFactorConfig.Size;
+
+    var totp = new Totp(key, totpSize: size);
+
+    var code = totp.ComputeTotp();
+
+    return Results.Ok(code);
+
+});
+
+app.MapPost("/validOtp", [AllowAnonymous] async ([FromBody] TwoFactorVerifyRequest request, [FromServices] IConfiguration config) =>
+{
+    var twoFactorConfig = config.GetSection("TwoFactorConfig").Get<TwoFactorConfig>();
+
+    var key = Encoding.ASCII.GetBytes(twoFactorConfig.Key);
+    var size = twoFactorConfig.Size;
+
+    var totp = new Totp(key, totpSize: size);
+
+    var valid = totp.VerifyTotp(request.Code, out long timeStepMatched);
+
+    return Results.Ok(valid);
+
 })
 .WithTags("Autenticação");
 

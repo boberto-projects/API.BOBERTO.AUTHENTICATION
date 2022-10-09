@@ -31,6 +31,9 @@ namespace api_authentication_boberto
 
                 entity.Property(e => e.Senha).HasColumnName("senha");
 
+                entity.Property(e => e.NumeroCelular).HasColumnName("numerocelular");
+
+
             });
 
         }
