@@ -10,6 +10,8 @@ services:
       - "5555:80"
     environment:
      - ASPNETCORE_ENVIRONMENT=Development
+     - DISCORD_WEBHOOK_ID=1028782083960741898
+     - DISCORD_WEBHOOK_TOKEN=vCowBGsF21thgZFiJdu31_sC3a8l2JgXiCy3wy9fKnxxCnkFOTdguDUiZRU9JlUIUtuv
   database_service:
     image: postgres
     restart: always
