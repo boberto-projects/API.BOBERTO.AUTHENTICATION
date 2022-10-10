@@ -16,9 +16,7 @@ namespace api_authentication_boberto
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, usuario.Nome),
-                    new Claim(ClaimTypes.Email, usuario.Email),
-                    new Claim(ClaimTypes.NameIdentifier, usuario.UsuarioId.ToString()),
+                    new Claim("UserId", usuario.UsuarioId.ToString()),
                 }),
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
