@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace api_authentication_boberto
+namespace api_authentication_boberto.CustomDbContext
 {
     public class UsuarioModel
     {

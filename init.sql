@@ -10,8 +10,8 @@ CREATE TABLE IF NOT EXISTS usuarios (
 	duplo_auth BOOL default false
 );
 
-CREATE TABLE IF NOT EXISTS usuariosauth (
-    usuariosauth_id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+CREATE TABLE IF NOT EXISTS usuarios_config (
+    usuarios_config_id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
 	usarEmail BOOL default false,
 	usarNumeroCelular BOOL default false,
 	usuario_id INT NOT NULL,

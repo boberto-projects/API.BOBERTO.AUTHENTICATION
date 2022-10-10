@@ -1,4 +1,5 @@
-﻿using api_authentication_boberto.Integrations;
+﻿using api_authentication_boberto.CustomDbContext;
+using api_authentication_boberto.Integrations;
 using api_authentication_boberto.Interfaces;
 using api_authentication_boberto.Models.Config;
 using api_authentication_boberto.Models.Integrations;
@@ -21,7 +22,6 @@ namespace api_authentication_boberto.Routes
             app.MapPost("/gerarotp", [Authorize] async ([FromServices] DatabaseContext dbContext,[FromServices] IOptions<DiscordAPIConfig> discordApiConfig,
                 IOptions<TwoFactorConfig> twoFactorConfig, [FromServices] IUsuarioService usuarioLogado) =>
             {
-
                 var key = Encoding.ASCII.GetBytes(twoFactorConfig.Value.Key);
                 var size = twoFactorConfig.Value.Size;
 
@@ -49,7 +49,6 @@ namespace api_authentication_boberto.Routes
             }).WithTags("Autenticação");
 
             //USANDO Time-based OTPs
-
             app.MapPost("/validarotp", [AllowAnonymous] async ([FromBody] TwoFactorVerifyRequest request, [FromServices] IOptions<TwoFactorConfig> twoFactorConfig) =>
             {
                 var key = Encoding.ASCII.GetBytes(twoFactorConfig.Value.Key);
@@ -61,6 +60,31 @@ namespace api_authentication_boberto.Routes
 
                 return Results.Ok(valid);
 
+            }).WithTags("Autenticação");
+
+            app.MapPost("/ativarDuplaAutenticacao", [Authorize] async ([FromBody] AtivarDuplaAutenticacaoRequest request,
+                [FromServices] IOptions<TwoFactorConfig> twoFactorConfig, 
+                [FromServices] DatabaseContext dbContext, [FromServices] IUsuarioService usuarioLogado) =>
+            {
+                var idUsuario = usuarioLogado.ObterUsuarioLogado().Id;
+                var usuarioConfig = dbContext.UsuariosConfig.FirstOrDefault(e => e.UsuarioId.Equals(idUsuario));
+               
+                if (usuarioConfig != null)
+                {
+                    usuarioConfig.UsarEmail = request.UsarEmail;
+                    usuarioConfig.UsarNumeroCelular = request.UsarNumeroCelular;
+                    dbContext.SaveChanges();
+                }
+
+                dbContext.UsuariosConfig.Add(new()
+                {
+                    UsarEmail = request.UsarEmail,
+                    UsarNumeroCelular = request.UsarNumeroCelular,
+                    UsuarioId = idUsuario
+                });
+                dbContext.SaveChanges();
+
+                return Results.Ok();
             }).WithTags("Autenticação");
         }
     }
