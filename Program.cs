@@ -39,20 +39,16 @@ app.UseSwaggerUI();
 app.AdicionarLoginRoute();
 app.AdicionarOtpRoute();
 
-app.MapGet("/healthcheck", ([FromServices] DatabaseContext dbContext) =>
+app.MapGet("/", ([FromServices] ApiCicloDeVida apiCicloDeVida) =>
 {
-return Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-})
-.WithTags("Autenticação");
+    var ultimoDeploy = "Último deploy " + apiCicloDeVida.iniciouEm.ToString("dd/MM/yyyy HH:mm:ss");
+    var upTime = DateTime.Now.Subtract(apiCicloDeVida.iniciouEm);
+    var ambiente = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
-app.MapGet("/teste", [Authorize] async ([FromServices] DatabaseContext dbContext, ClaimsPrincipal user) =>
-{
-var usuarioId = user.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier)
-.Select(c => c.Value).SingleOrDefault();
-return Results.Ok(usuarioId);
-   
-})
-.WithTags("Autenticação");
+    return ultimoDeploy + Environment.NewLine + "Ambiente:" + ambiente + Environment.NewLine + upTime;
+}).WithTags("Health Check");
+
+
 
 app.Run();
 

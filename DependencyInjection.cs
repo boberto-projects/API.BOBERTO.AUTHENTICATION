@@ -24,6 +24,7 @@ namespace api_authentication_boberto
 
             builder.Services.AddSingleton<IRedisService, RedisService>();
             builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+            builder.Services.AddSingleton<ApiCicloDeVida>();
         }
 
         public static void InjetarConfiguracoes(this WebApplicationBuilder builder, IConfigurationRoot config)
