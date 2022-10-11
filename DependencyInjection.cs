@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MinecraftServer.Api.Services;
+using Npgsql;
 using System.Text;
 
 namespace api_authentication_boberto
@@ -34,8 +35,21 @@ namespace api_authentication_boberto
         public static void InjetarServicosDeArmazenamento(this WebApplicationBuilder builder, IConfigurationRoot config)
         {
             ///postgree
-            builder.Services.AddEntityFrameworkNpgsql().AddDbContext<DatabaseContext>(o => o.UseNpgsql(builder.Configuration.GetConnectionString("Postgree")));
+            var contextUrl = builder.Configuration.GetConnectionString("Postgree");
+            var postGreeConnectionBuilder = new NpgsqlConnectionStringBuilder();
+            Uri url;
+            bool isUrl = Uri.TryCreate(contextUrl, UriKind.Absolute, out url);
+            if (isUrl)
+            {
+                postGreeConnectionBuilder.Host = url.Host;
+                postGreeConnectionBuilder.Port = url.Port;
+                postGreeConnectionBuilder.Database = url.LocalPath.Substring(1);
+                postGreeConnectionBuilder.Username = url.UserInfo.Split(':')[0];
+                postGreeConnectionBuilder.Password = url.UserInfo.Split(':')[1];
+                builder.Services.AddEntityFrameworkNpgsql().AddDbContext<DatabaseContext>(o => o.UseNpgsql(postGreeConnectionBuilder.ToString()));
+            }
 
+            builder.Services.AddEntityFrameworkNpgsql().AddDbContext<DatabaseContext>(o => o.UseNpgsql(contextUrl));
             ///redis
             builder.Services.AddStackExchangeRedisCache(options =>
             {
