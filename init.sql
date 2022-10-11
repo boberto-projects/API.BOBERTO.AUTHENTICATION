@@ -16,9 +16,11 @@ CREATE TABLE IF NOT EXISTS usuarios (
 
 
 ALTER TABLE usuarios
-        ADD FOREIGN KEY (id) REFERENCES usuarios_config (id)
-               DEFERRABLE INITIALLY DEFERRED on delete cascade on update cascade;
+ADD FOREIGN KEY (id) REFERENCES usuarios_config (id)
+on delete cascade on update cascade
+DEFERRABLE INITIALLY DEFERRED;
  
 ALTER TABLE usuarios_config 
-        ADD FOREIGN KEY (id) REFERENCES usuarios (id)
-                DEFERRABLE INITIALLY DEFERRED;
+ADD FOREIGN KEY (id) REFERENCES usuarios (id)
+on delete cascade on update cascade
+DEFERRABLE INITIALLY DEFERRED;
