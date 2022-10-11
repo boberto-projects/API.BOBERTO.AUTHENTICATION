@@ -58,7 +58,7 @@ namespace api_authentication_boberto.Routes
                 void IncrementarTentativa()
                 {
                     var ultimaTentativa = ObterTentativasLogin();
-                    redisService.Set(CHAVE_CACHE, ultimaTentativa + 1, 300);
+                    redisService.Set(CHAVE_CACHE, ultimaTentativa + 1, 60);
                 }
 
                 bool AtingiuMaximoLimiteDeTentativas()

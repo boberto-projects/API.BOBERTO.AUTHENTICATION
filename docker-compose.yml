@@ -8,8 +8,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - "5555:80"
-    env_file: 
-     - '.env'
+    env_file: .env
   database_service:
     image: postgres
     restart: always
