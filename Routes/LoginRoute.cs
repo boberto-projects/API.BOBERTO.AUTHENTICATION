@@ -3,9 +3,8 @@ using api_authentication_boberto.Models.Request;
 using api_authentication_boberto.Models.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MinecraftServer.Api.Services;
-using System;
-using System.Data.Entity;
 using BC = BCrypt.Net.BCrypt;
 
 namespace api_authentication_boberto.Routes
@@ -16,8 +15,21 @@ namespace api_authentication_boberto.Routes
         {
             app.MapPost("/autenticar", [AllowAnonymous] ([FromBody] LoginRequest request, [FromServices] IRedisService redisService ,[FromServices] DatabaseContext dbContext, [FromServices] IConfiguration config) =>
             {
-                var contaCadastrada = dbContext.Usuarios.FirstOrDefault(e => e.Email.Equals(request.Email));
                 var CHAVE_CACHE = "TRY_LOGIN_" + request.Email;
+
+                var contaCadastrada = dbContext.Usuarios.Include(c => c.UsuarioConfig).FirstOrDefault(e => e.Email.Equals(request.Email));
+
+                if (AtingiuMaximoLimiteDeTentativas() && contaCadastrada.UsuarioConfig.UsarNumeroCelular == false || AtingiuMaximoLimiteDeTentativas() && contaCadastrada.UsuarioConfig.UsarEmail == false)
+                {
+                    return Results.BadRequest("Você errou a senha muitas vezes. Aguarde um pouco.");
+                }
+
+                if (AtingiuMaximoLimiteDeTentativas()){
+                    return Results.BadRequest(new LoginResponse()
+                    {
+                        DuplaAutenticacaoObrigatoria = true
+                    });
+                }
 
                 var contaExiste = contaCadastrada != null;
 
@@ -30,17 +42,13 @@ namespace api_authentication_boberto.Routes
 
                 if (senhaCorreta == false)
                 {
-                    IncrementarTentativa();
+                    if (AtingiuMaximoLimiteDeTentativas() == false)
+                    {
+                        IncrementarTentativa();
+                    }
                     return Results.Unauthorized();
                 }
-
-                if (AtingiuMaximoLimiteDeTentativas() && contaCadastrada.UsuarioConfig.UsarNumeroCelular == false || contaCadastrada.UsuarioConfig.UsarEmail == false)
-                {
-                    return Results.BadRequest("Você errou a senha muitas vezes.");
-                }
-
-                redisService.Clear(CHAVE_CACHE);
-
+            
                 return Results.Ok(new LoginResponse()
                 {
                     DuplaAutenticacaoObrigatoria = AtingiuMaximoLimiteDeTentativas(),
@@ -52,6 +60,7 @@ namespace api_authentication_boberto.Routes
                     var ultimaTentativa = ObterTentativasLogin();
                     redisService.Set(CHAVE_CACHE, ultimaTentativa + 1, 300);
                 }
+
                 bool AtingiuMaximoLimiteDeTentativas()
                 {
                     var tentativasDeLogin = ObterTentativasLogin();
@@ -62,6 +71,7 @@ namespace api_authentication_boberto.Routes
                     }
                     return false;
                 }
+
                 int ObterTentativasLogin()
                 {
                     return redisService.Get<int>(CHAVE_CACHE);
