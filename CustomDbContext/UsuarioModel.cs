@@ -5,7 +5,7 @@ namespace api_authentication_boberto.CustomDbContext
 {
     public class UsuarioModel
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int UsuarioId { get; set; }
         public string Nome { get; set; }
         public string Email { get; set; }

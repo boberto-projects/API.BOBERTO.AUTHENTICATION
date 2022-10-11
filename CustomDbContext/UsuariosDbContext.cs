@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.Extensions.Options;
 using System.Diagnostics;
 using DbContext = Microsoft.EntityFrameworkCore.DbContext;
 
@@ -13,13 +14,12 @@ namespace api_authentication_boberto.CustomDbContext
 
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
         {
-
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+     
 
-  
             modelBuilder.Entity<UsuarioModel>(entity =>
             {
                 entity.ToTable("usuarios");
@@ -40,7 +40,9 @@ namespace api_authentication_boberto.CustomDbContext
 
                 entity.HasOne(e => e.UsuarioConfig)
                 .WithOne()
-                .HasForeignKey<UsuarioConfigModel>(e => e.UsuarioConfigId);
+                .HasForeignKey<UsuarioConfigModel>(e => e.UsuarioConfigId)
+                .OnDelete(DeleteBehavior.Cascade);
+                
             });
 
             modelBuilder.Entity<UsuarioConfigModel>(entity =>
@@ -55,8 +57,10 @@ namespace api_authentication_boberto.CustomDbContext
                 entity.Property(e => e.UsarEmail).HasColumnName("usaremail");
                 entity.Property(e => e.UsarNumeroCelular).HasColumnName("usarnumerocelular");
 
+                entity.HasOne(e => e.Usuario)
+                 .WithOne()
+                 .HasForeignKey<UsuarioConfigModel>(e => e.UsuarioConfigId);
 
-      
             });
         }
 

@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using OtpNet;
 using RestEase;
-using System.Security.Claims;
 using System.Text;
 
 namespace api_authentication_boberto.Routes

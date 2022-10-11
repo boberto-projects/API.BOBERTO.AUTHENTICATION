@@ -19,9 +19,9 @@ namespace api_authentication_boberto.Implements
         }
         public UsuarioLogado ObterUsuarioLogado()
         {
-            var usuarioid = int.TryParse(_httpContextAccessor.HttpContext.User.FindFirstValue("UserId"), out int usuarioId);
+            int.TryParse(_httpContextAccessor.HttpContext.User.FindFirstValue("UserId"), out int usuarioId);
 
-            var usuario = _dbContext.Usuarios.FirstOrDefaultAsync(e => e.UsuarioId.Equals(usuarioId)).Result;
+            var usuario = _dbContext.Usuarios.Include(c => c.UsuarioConfig).FirstOrDefault(e => e.UsuarioId.Equals(usuarioId));
 
             return new UsuarioLogado
             {

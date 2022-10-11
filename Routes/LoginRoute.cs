@@ -4,6 +4,8 @@ using api_authentication_boberto.Models.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MinecraftServer.Api.Services;
+using System;
+using System.Data.Entity;
 using BC = BCrypt.Net.BCrypt;
 
 namespace api_authentication_boberto.Routes
@@ -15,6 +17,7 @@ namespace api_authentication_boberto.Routes
             app.MapPost("/autenticar", [AllowAnonymous] ([FromBody] LoginRequest request, [FromServices] IRedisService redisService ,[FromServices] DatabaseContext dbContext, [FromServices] IConfiguration config) =>
             {
                 var contaCadastrada = dbContext.Usuarios.FirstOrDefault(e => e.Email.Equals(request.Email));
+                var CHAVE_CACHE = "TRY_LOGIN_" + request.Email;
 
                 var contaExiste = contaCadastrada != null;
 
@@ -31,36 +34,51 @@ namespace api_authentication_boberto.Routes
                     return Results.Unauthorized();
                 }
 
+                if (AtingiuMaximoLimiteDeTentativas() && contaCadastrada.UsuarioConfig.UsarNumeroCelular == false || contaCadastrada.UsuarioConfig.UsarEmail == false)
+                {
+                    return Results.BadRequest("Você errou a senha muitas vezes.");
+                }
+
+                redisService.Clear(CHAVE_CACHE);
+
                 return Results.Ok(new LoginResponse()
                 {
-                    DuplaAutenticacaoObrigatoria = AutenticacaoDuploFatorObrigatoria(),
+                    DuplaAutenticacaoObrigatoria = AtingiuMaximoLimiteDeTentativas(),
                     Token = contaCadastrada.GerarTokenJWT(config)
                 });
-
+                
                 void IncrementarTentativa()
                 {
-                    var chave = "TRY_LOGIN_" + request.Email;
-                    var ultimaTentativa = redisService.Get<int>(chave);
-                    redisService.Set(chave, ultimaTentativa + 1, 300);
+                    var ultimaTentativa = ObterTentativasLogin();
+                    redisService.Set(CHAVE_CACHE, ultimaTentativa + 1, 300);
                 }
-                bool AutenticacaoDuploFatorObrigatoria()
+                bool AtingiuMaximoLimiteDeTentativas()
                 {
-                    var chave = "TRY_LOGIN_" + request.Email;
-                    var tentativasDeLogin = redisService.Get<int>(chave);
+                    var tentativasDeLogin = ObterTentativasLogin();
+                    ///colocar em appsettings depois
                     if(tentativasDeLogin >= 3)
                     {
                         return true;
                     }
                     return false;
                 }
+                int ObterTentativasLogin()
+                {
+                    return redisService.Get<int>(CHAVE_CACHE);
+                }
 
             }).WithTags("Autenticação");
 
           
 
-            app.MapPost("/registrar", [AllowAnonymous] async ([FromBody] RegistrarRequest request, [FromServices] DatabaseContext dbContext) =>
+            app.MapPost("/registrar", [AllowAnonymous] ([FromBody] RegistrarRequest request, [FromServices] DatabaseContext dbContext) =>
             {
                 string hashed = BC.HashPassword(request.Senha);
+
+                var usuarioConfig = new UsuarioConfigModel();
+
+                dbContext.UsuariosConfig.Add(usuarioConfig);
+                dbContext.SaveChanges();
 
                 dbContext.Usuarios.Add(new()
                 {
@@ -68,14 +86,10 @@ namespace api_authentication_boberto.Routes
                     Nome = request.Nome,
                     Senha = hashed,
                     NumeroCelular = request.NumeroCelular,
-                    //UsuarioConfig = new UsuarioConfigModel()
-                    //{
-                    //    UsuarioConfigId = 55,
-                    //    UsarEmail = false,
-                    //    UsarNumeroCelular = false
-                    //}
+                    UsuarioConfigId = usuarioConfig.UsuarioConfigId
                 });
-                await dbContext.SaveChangesAsync();
+
+                dbContext.SaveChanges();
 
             }).WithTags("Autenticação");
         }
