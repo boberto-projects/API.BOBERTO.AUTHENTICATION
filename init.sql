@@ -20,7 +20,7 @@ ADD FOREIGN KEY (id) REFERENCES usuarios_config (id)
 on delete cascade on update cascade
 DEFERRABLE INITIALLY DEFERRED;
  
-ALTER TABLE usuarios_config 
+ALTER TABLE usuarios_config
 ADD FOREIGN KEY (id) REFERENCES usuarios (id)
 on delete cascade on update cascade
 DEFERRABLE INITIALLY DEFERRED;
