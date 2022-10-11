@@ -36,7 +36,7 @@ namespace api_authentication_boberto
         public static void InjetarServicosDeArmazenamento(this WebApplicationBuilder builder, IConfigurationRoot config)
         {
             ///postgree
-            var contextUrl = builder.Configuration.GetConnectionString("Postgree");
+            var contextUrl = config.GetConnectionString("Postgree");
             var postGreeConnectionBuilder = new NpgsqlConnectionStringBuilder();
             Uri url;
             bool isUrl = Uri.TryCreate(contextUrl, UriKind.Absolute, out url);
