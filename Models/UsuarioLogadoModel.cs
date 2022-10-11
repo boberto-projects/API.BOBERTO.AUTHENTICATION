@@ -6,12 +6,10 @@
         public string Email { get; set; }
         public string NumeroCelular { get; set; }
         public string Nome { get; set; }
-        public IEnumerable<AutenticacaoDupla> Autenticacoes { get; set; }
+
+        public bool UsarEmail { get; set; }
+        public bool UsarNumeroCelular { get; set; }
     }
 
-    public enum AutenticacaoDupla
-    {
-        Email,
-        NumeroCelular
-    }
+   
 }

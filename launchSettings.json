@@ -1,0 +1,15 @@
+{
+  "profiles": {
+    "Docker Compose": {
+      "commandName": "DockerCompose",
+      "commandVersion": "1.0",
+      "composeLaunchAction": "None",
+      "composeLaunchServiceName": "api-authentication-boberto",
+      "serviceActions": {
+        "api-authentication-boberto": "StartDebugging",
+        "database_service": "StartWithoutDebugging",
+        "redis_service": "StartWithoutDebugging"
+      }
+    }
+  }
+}

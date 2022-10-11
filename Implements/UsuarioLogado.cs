@@ -26,7 +26,8 @@ namespace api_authentication_boberto.Implements
             return new UsuarioLogado
             {
                 Id = usuarioId,
-                Autenticacoes = new List<AutenticacaoDupla>(),
+                UsarEmail = usuario.UsuarioConfig.UsarEmail,
+                UsarNumeroCelular = usuario.UsuarioConfig.UsarNumeroCelular,
                 Email = usuario.Email,
                 Nome = usuario.Nome,
                 NumeroCelular = usuario.NumeroCelular

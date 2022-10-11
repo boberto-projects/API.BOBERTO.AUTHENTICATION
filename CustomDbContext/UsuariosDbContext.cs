@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System.Diagnostics;
 using DbContext = Microsoft.EntityFrameworkCore.DbContext;
 
 namespace api_authentication_boberto.CustomDbContext
@@ -18,22 +19,28 @@ namespace api_authentication_boberto.CustomDbContext
         {
             base.OnModelCreating(modelBuilder);
 
+  
             modelBuilder.Entity<UsuarioModel>(entity =>
             {
                 entity.ToTable("usuarios");
 
                 entity.HasKey(e => e.UsuarioId).HasName("usuarios_pkey");
-                entity.Property(e => e.UsuarioId).HasColumnName("usuarioid");
-                entity.Property(e => e.UsuarioId).UseIdentityByDefaultColumn();
+                entity.Property(e => e.UsuarioId).HasColumnName("id");
+                entity.Property(e => e.UsuarioId).UseIdentityAlwaysColumn();
 
                 entity.Property(e => e.Nome).HasColumnName("nome");
 
-                entity.HasKey(e => e.Email).HasName("usuarios_email_key");
                 entity.Property(e => e.Email).HasColumnName("email");
 
                 entity.Property(e => e.Senha).HasColumnName("senha");
 
-                entity.Property(e => e.NumeroCelular).HasColumnName("numerocelular");
+                entity.Property(e => e.NumeroCelular).HasColumnName("numero_celular");
+
+                entity.Property(e => e.UsuarioConfigId).HasColumnName("usuario_config_id");
+
+                entity.HasOne(e => e.UsuarioConfig)
+                .WithOne()
+                .HasForeignKey<UsuarioConfigModel>(e => e.UsuarioConfigId);
             });
 
             modelBuilder.Entity<UsuarioConfigModel>(entity =>
@@ -42,14 +49,15 @@ namespace api_authentication_boberto.CustomDbContext
                 entity.ToTable("usuarios_config");
 
                 entity.HasKey(e => e.UsuarioConfigId).HasName("usuarios_config_pkey");
-                entity.Property(e => e.UsuarioConfigId).HasColumnName("usuarios_config_id");
+                entity.Property(e => e.UsuarioConfigId).HasColumnName("id");
+                entity.Property(e => e.UsuarioConfigId).UseIdentityAlwaysColumn();
 
                 entity.Property(e => e.UsarEmail).HasColumnName("usaremail");
-                entity.Property(e => e.UsarNumeroCelular).HasColumnName("UsarNumerocelular");
-                entity.HasOne(e => e.Usuario)
-                .WithOne().HasForeignKey("fk_usuarios");
-            });
+                entity.Property(e => e.UsarNumeroCelular).HasColumnName("usarnumerocelular");
 
+
+      
+            });
         }
 
 

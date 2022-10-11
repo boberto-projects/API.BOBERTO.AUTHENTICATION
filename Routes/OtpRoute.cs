@@ -67,23 +67,12 @@ namespace api_authentication_boberto.Routes
                 [FromServices] DatabaseContext dbContext, [FromServices] IUsuarioService usuarioLogado) =>
             {
                 var idUsuario = usuarioLogado.ObterUsuarioLogado().Id;
-                var usuarioConfig = dbContext.UsuariosConfig.FirstOrDefault(e => e.UsuarioId.Equals(idUsuario));
-               
-                if (usuarioConfig != null)
-                {
-                    usuarioConfig.UsarEmail = request.UsarEmail;
-                    usuarioConfig.UsarNumeroCelular = request.UsarNumeroCelular;
-                    dbContext.SaveChanges();
-                }
-
-                dbContext.UsuariosConfig.Add(new()
-                {
-                    UsarEmail = request.UsarEmail,
-                    UsarNumeroCelular = request.UsarNumeroCelular,
-                    UsuarioId = idUsuario
-                });
+                var usuario = dbContext.Usuarios.FirstOrDefault(x => x.UsuarioId.Equals(idUsuario));
+          
+                usuario.UsuarioConfig.UsarEmail = request.UsarEmail;
+                usuario.UsuarioConfig.UsarNumeroCelular = request.UsarNumeroCelular;
                 dbContext.SaveChanges();
-
+                
                 return Results.Ok();
             }).WithTags("Autenticação");
         }

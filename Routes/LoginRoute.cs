@@ -68,8 +68,12 @@ namespace api_authentication_boberto.Routes
                     Nome = request.Nome,
                     Senha = hashed,
                     NumeroCelular = request.NumeroCelular,
-                    
-
+                    //UsuarioConfig = new UsuarioConfigModel()
+                    //{
+                    //    UsuarioConfigId = 55,
+                    //    UsarEmail = false,
+                    //    UsarNumeroCelular = false
+                    //}
                 });
                 await dbContext.SaveChangesAsync();
 
