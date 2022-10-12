@@ -1,6 +1,8 @@
-﻿using api_authentication_boberto.Integrations.Discord;
+﻿using api_authentication_boberto.Exceptions;
+using api_authentication_boberto.Integrations.Discord;
 using api_authentication_boberto.Integrations.DiscordApiClient;
 using api_authentication_boberto.Integrations.ZenviaApiClient;
+using api_authentication_boberto.Models;
 using api_authentication_boberto.Models.Config;
 using Microsoft.Extensions.Options;
 
@@ -21,7 +23,7 @@ namespace api_authentication_boberto.Services.Implements
         {
             if (discordApiConfig.Value.Enabled == false)
             {
-                throw new Exception("Recurso web hook discord desativado");
+                throw new CustomException(StatusCodeEnum.Interno, "Recurso web hook discord desativado");
             }
 
             var discordWebHookID = discordApiConfig.Value.WebHookId;

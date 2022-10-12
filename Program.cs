@@ -1,11 +1,15 @@
 using api_authentication_boberto;
+using api_authentication_boberto.Exceptions;
+using api_authentication_boberto.Models;
 using api_authentication_boberto.Models.Config;
 using api_authentication_boberto.Routes;
 using api_authentication_boberto.Services.Implements;
 using ConfigurationSubstitution;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Microsoft.VisualBasic;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +30,24 @@ builder.InjetarIntegracoes(config);
 
 var app = builder.Build();
 
+app.UseExceptionHandler(exceptionHandlerApp =>
+{
+    exceptionHandlerApp.Run(async context =>
+    {
+        context.Response.ContentType = "application/json";
+        var exceptionHandlerPathFeature =
+            context.Features.Get<IExceptionHandlerPathFeature>();
+
+        if (exceptionHandlerPathFeature?.Error is CustomException customException)
+        {
+            context.Response.StatusCode = customException.CodigoDeStatus;
+
+          
+            await context.Response.WriteAsJsonAsync(customException.ObterResponse());
+        }
+    });
+});
+
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -36,10 +58,15 @@ if (config.GetSection("ApiConfig").Get<ApiConfig>().Swagger)
     app.UseSwaggerUI();
 }
 
+
+
 app.AdicionarLoginRoute();
 app.AdicionarOtpRoute();
 app.AdicionarUsuarioRoute();
 app.AdicionarApiConfigRoute();
+
+
+
 
 app.MapGet("/", ([FromServices] ApiCicloDeVida apiCicloDeVida) =>
 {
@@ -56,9 +83,6 @@ app.MapPost("/teste", [Authorize(AuthenticationSchemes = "ApiKeyAuthenticationHa
     [FromServices] IOptions<ZenviaApiConfig> zeenviaApiConfig
     ) =>
 {
-
-
-   
 
     return Results.Ok();
 }).WithTags("Health Check");

@@ -1,5 +1,7 @@
 ﻿using api_authentication_boberto.CustomDbContext;
+using api_authentication_boberto.Exceptions;
 using api_authentication_boberto.Interfaces;
+using api_authentication_boberto.Models;
 using api_authentication_boberto.Models.Request;
 using api_authentication_boberto.Models.Response;
 using api_authentication_boberto.Services.Implements;
@@ -62,9 +64,21 @@ namespace api_authentication_boberto.Routes
             }).WithTags("Autenticação");
 
           
-
+            ///separar essa rota em outro lugar depois.
             app.MapPost("/registrar", [AllowAnonymous] ([FromBody] RegistrarRequest request, [FromServices] DatabaseContext dbContext) =>
             {
+                if(string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Senha))
+                {
+                    throw new CustomException(StatusCodeEnum.Negocio, "Email e senha são obrigatórios");
+                }
+
+                var emailEmUso = dbContext.Usuarios.Count(x => x.Email.Equals(request.Email)) > 0;
+
+                if(emailEmUso)
+                {
+                    throw new CustomException(StatusCodeEnum.Negocio, "Email já em uso.");
+                }
+
                 string hashed = BC.HashPassword(request.Senha);
 
                 var usuarioConfig = new UsuarioConfigModel()
@@ -86,7 +100,7 @@ namespace api_authentication_boberto.Routes
 
                 dbContext.SaveChanges();
 
-            }).WithTags("Autenticação");
+            }).WithTags("Usuario");
         }
     }
 }
