@@ -35,8 +35,6 @@ namespace api_authentication_boberto
 
             builder.Services.AddSingleton<ApiCicloDeVida>();
 
-            builder.Services.AddSingleton<DiscordService>();
-            builder.Services.AddSingleton<ZenvioService>();
 
             builder.Services.AddScoped<GerenciadorAutenticacao>();
             builder.Services.AddScoped<GerenciadorZenvio>();
@@ -50,6 +48,7 @@ namespace api_authentication_boberto
             builder.Services.Configure<TwoFactorConfig>(options => config.GetSection("TwoFactorConfig").Bind(options));
             builder.Services.Configure<ZenviaApiConfig>(options => config.GetSection("ZenviaApiConfig").Bind(options));
             builder.Services.Configure<ApiConfig>(options => config.GetSection("ApiConfig").Bind(options));
+            builder.Services.Configure<SmtpConfig>(options => config.GetSection("SmtpConfig").Bind(options));
 
         }
 
@@ -83,6 +82,10 @@ namespace api_authentication_boberto
         {
             builder.Services.BuildZenviaAPI(config);
             builder.Services.BuildDiscordAPI(config);
+
+            builder.Services.AddSingleton<IEmailService, EmailService>();
+            builder.Services.AddSingleton<DiscordService>();
+            builder.Services.AddSingleton<ZenvioService>();
         }
 
         public static void InjetarServicosAutenticacao(this WebApplicationBuilder builder, IConfigurationRoot config)

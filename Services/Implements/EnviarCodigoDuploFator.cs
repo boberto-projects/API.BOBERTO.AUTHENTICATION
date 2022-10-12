@@ -9,26 +9,30 @@ namespace api_authentication_boberto.Services.Implements
     {
         private ZenvioService _zenvioService;
         private DiscordService _discordService;
-        private IOptions<ApiConfig> _apiConfig;
+        private IEmailService _emailService;
+        private ApiConfig _apiConfig;
 
-        public EnviarCodigoDuploFator(ZenvioService zenvioService, DiscordService discordService, IOptions<ApiConfig> apiConfig)
+
+        public EnviarCodigoDuploFator(ZenvioService zenvioService, 
+            IEmailService emailService,
+            DiscordService discordService, IOptions<ApiConfig> apiConfig)
         {
+            _emailService = emailService;
             _zenvioService = zenvioService;
             _discordService = discordService;
-            _apiConfig = apiConfig;
+            _apiConfig = apiConfig.Value;
         }
 
-        public void EnviarCodigo(IUsuarioService usuario, string codigo)
+        public void EnviarCodigoSMS(IUsuarioService usuario, string codigo)
         {
             var usuarioAutenticacoes = usuario.ObterAutenticacaoDuplaAtiva();
 
             var usarNumeroCelular = usuarioAutenticacoes.UsarNumeroCelular && usuarioAutenticacoes.NumeroCelular != null;
-            var usarEmail = usuarioAutenticacoes.UsarEmail;
             ///Como não podemos ultrapassar a cota de sms mensal e não temos opção de setar isso no zenvio, 
             ///vamos substituir o sms pela a api do discord.
             if (usarNumeroCelular)
             {
-                if (_apiConfig.Value.PreferirDiscordAoSMS)
+                if (_apiConfig.PreferirDiscordAoSMS)
                 {
                     _discordService.EnviarCodigo(codigo);
                     return;
@@ -36,11 +40,16 @@ namespace api_authentication_boberto.Services.Implements
                 var numeroCelular = usuarioAutenticacoes.NumeroCelular;
                 _zenvioService.EnviarSMSCodigo(numeroCelular, codigo);
             }
-            ///sem email por agora.
-            if (usarEmail)
-            {
+        }
+        
+        public void EnviarCodigoEmail(IUsuarioService usuario, string codigo)
+        {
+            var usuarioAutenticacoes = usuario.ObterAutenticacaoDuplaAtiva();
 
-            }        
+            var to = usuarioAutenticacoes.Email;
+            var subject = "Testando";
+            var html = $"<h1> ApiAuthBoberto: Seu código é {codigo}</h1>";
+            _emailService.Send(to, subject, html);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using api_authentication_boberto.Interfaces;
 using api_authentication_boberto.Models.Config;
 using api_authentication_boberto.Services.Interfaces;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 
 namespace api_authentication_boberto.Services.Implements
@@ -32,7 +33,12 @@ namespace api_authentication_boberto.Services.Implements
                 return;
             }
             var ultimaTentativa = ObterTentativas(chave);
-            redisService.Set(chave, ultimaTentativa + 1);
+
+            var cacheOptions = new DistributedCacheEntryOptions()
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(autenticacaoConfig.Value.SegundosExpiracao)
+            };
+            redisService.Set(chave, ultimaTentativa + 1, cacheOptions);
         }
 
         public void LimparTentativas(string chave)
@@ -48,9 +54,9 @@ namespace api_authentication_boberto.Services.Implements
         public TimeSpan ObterTempoBloqueioRestante()
         {
             var dataAtual = DateTime.Now;
-            var dataFinal = dataAtual.AddSeconds(autenticacaoConfig.Value.SegundosExpiracao);
+            var dataFinal = dataAtual.Add(ObterTempoBloqueio());
 
-            return dataAtual.Subtract(dataFinal);
+            return dataFinal.TimeOfDay;
         }
 
         public int ObterTentativas(string chave)

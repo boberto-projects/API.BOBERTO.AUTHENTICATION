@@ -18,7 +18,22 @@ namespace api_authentication_boberto.Routes
     {
         public static void AdicionarOtpRoute(this WebApplication app)
         {
-            app.MapPost("/gerarotp", [Authorize]  async ([FromServices] DatabaseContext dbContext,
+          app.MapPost("/otp/enviarCodigoSMS", [Authorize] async ([FromServices] DatabaseContext dbContext,
+          IOTPCode otpCode,
+          IEnviarCodigoDuploFator enviarCodigoDuploFator,
+          IUsuarioService usuarioLogado) =>
+            {
+                var usuarioAtual = usuarioLogado.ObterUsuarioLogado();
+
+                var codigo = otpCode.GerarCodigoOTP();
+
+                enviarCodigoDuploFator.EnviarCodigoSMS(usuarioLogado, codigo);
+
+                return Results.Ok();
+
+            }).WithTags("Dupla autenticação");
+
+            app.MapPost("/otp/enviarCodigoEmail", [Authorize] async ([FromServices] DatabaseContext dbContext,
             IOTPCode otpCode,
             IEnviarCodigoDuploFator enviarCodigoDuploFator,
             IUsuarioService usuarioLogado) =>
@@ -27,38 +42,42 @@ namespace api_authentication_boberto.Routes
 
                 var codigo = otpCode.GerarCodigoOTP();
 
-                enviarCodigoDuploFator.EnviarCodigo(usuarioLogado, codigo);
+                enviarCodigoDuploFator.EnviarCodigoEmail(usuarioLogado, codigo);
 
                 return Results.Ok(new GenerateOtpResponse()
                 {
                     Code = codigo
                 });
 
-            }).WithTags("Autenticação");
+            }).WithTags("Dupla autenticação");
 
-            //USANDO Time-based OTPs
-            app.MapPost("/validarotp", [AllowAnonymous] ([FromBody] TwoFactorVerifyRequest request,
+            app.MapPost("/otp/gerarotp", [AllowAnonymous]  async ([FromServices] DatabaseContext dbContext,
+            IOTPCode otpCode) =>
+            {
+                var codigo = otpCode.GerarCodigoOTP();
+
+                return Results.Ok(new GenerateOtpResponse()
+                {
+                    Code = codigo
+                });
+
+            }).WithTags("Dupla autenticação");
+
+            app.MapPost("/otp/validarotp", [AllowAnonymous] ([FromBody] TwoFactorVerifyRequest request,
+               IRedisService redisService,
               IOTPCode otpCode
                 ) =>
             {
                 var valid = otpCode.ValidarCodigoOTP(request.Code);
 
+                if (valid.Valido)
+                {
+                    redisService.Clear(request.ObterChaveCache);
+                }
+
                 return Results.Ok(valid);
 
-            }).WithTags("Autenticação");
-
-            app.MapPost("/ativarDuplaAutenticacao", [Authorize] ([
-                FromBody] AtivarDuplaAutenticacaoRequest request, 
-                [FromServices] DatabaseContext dbContext, [FromServices] IUsuarioService usuarioLogado) =>
-            {
-                usuarioLogado.AtivarAutenticacaoDupla(new AutenticacaoDupla()
-                {
-                    UsarEmail = request.UsarEmail,
-                    UsarNumeroCelular = request.UsarNumeroCelular
-                });
-                
-                return Results.Ok();
-            }).WithTags("Autenticação");
+            }).WithTags("Dupla autenticação");
         }
     }
 }

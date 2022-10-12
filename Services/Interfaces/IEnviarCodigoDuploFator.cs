@@ -7,6 +7,8 @@ namespace api_authentication_boberto.Services.Interfaces
     /// </summary>
     public interface IEnviarCodigoDuploFator
     {
-       void EnviarCodigo(IUsuarioService usuario, string codigo);
+       void EnviarCodigoSMS(IUsuarioService usuario, string codigo);
+
+        void EnviarCodigoEmail(IUsuarioService usuario, string codigo);
     }
 }

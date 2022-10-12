@@ -19,15 +19,14 @@ namespace api_authentication_boberto.Routes
                 [FromServices] GerenciadorAutenticacao gerenciadorAutenticacao,
                 [FromServices] IConfiguration config) =>
             {
-                var CHAVE_CACHE = "TRY_LOGIN_" + request.Email;
 
                 var contaCadastrada = dbContext.Usuarios.Include(c => c.UsuarioConfig).FirstOrDefault(e => e.Email.Equals(request.Email));
 
-                var atingiuLimiteMaximoDeTentativas = gerenciadorAutenticacao.AtingiuLimiteMaximoDeTentativas(CHAVE_CACHE);
+                var atingiuLimiteMaximoDeTentativas = gerenciadorAutenticacao.AtingiuLimiteMaximoDeTentativas(request.ObterChaveCache);
 
                 if (atingiuLimiteMaximoDeTentativas && contaCadastrada.UsuarioConfig.UsarNumeroCelular == false || atingiuLimiteMaximoDeTentativas && contaCadastrada.UsuarioConfig.UsarEmail == false)
                 {
-                    return Results.BadRequest("Você errou a senha muitas vezes. Aguarde um pouco.");
+                    return Results.BadRequest("Você errou a senha muitas vezes. Espere um pouco antes de tentar novamente");
                 }
 
                 if (atingiuLimiteMaximoDeTentativas)
@@ -49,7 +48,7 @@ namespace api_authentication_boberto.Routes
 
                 if (senhaCorreta == false)
                 {
-                    gerenciadorAutenticacao.IncrementarTentativa(CHAVE_CACHE);   
+                    gerenciadorAutenticacao.IncrementarTentativa(request.ObterChaveCache);   
                     return Results.Unauthorized();
                 }
             
@@ -68,7 +67,10 @@ namespace api_authentication_boberto.Routes
             {
                 string hashed = BC.HashPassword(request.Senha);
 
-                var usuarioConfig = new UsuarioConfigModel();
+                var usuarioConfig = new UsuarioConfigModel()
+                {
+                    UsarEmail = true
+                };
 
                 dbContext.UsuariosConfig.Add(usuarioConfig);
                 dbContext.SaveChanges();
