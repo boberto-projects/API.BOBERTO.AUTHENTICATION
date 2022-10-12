@@ -1,18 +1,11 @@
 using api_authentication_boberto;
-using api_authentication_boberto.CustomDbContext;
-using api_authentication_boberto.Integrations;
-using api_authentication_boberto.Integrations.Zenvia;
 using api_authentication_boberto.Models.Config;
-using api_authentication_boberto.Models.Integrations;
 using api_authentication_boberto.Routes;
 using api_authentication_boberto.Services.Implements;
 using ConfigurationSubstitution;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using RestEase;
-using System.Security.Claims;
-using static api_authentication_boberto.Integrations.Zenvia.Request.SendSMSRequest;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,7 +17,6 @@ var config = new ConfigurationBuilder()
 .AddEnvironmentVariables()
 .EnableSubstitutions("%", "%")
 .Build();
-
 
 builder.InjetarConfiguracoes(config);
 builder.InjetarServicosDeArmazenamento(config);
@@ -38,14 +30,15 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (config.GetSection("ApiConfig").Get<ApiConfig>().Swagger)
 {
-app.UseSwagger();
-app.UseSwaggerUI();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.AdicionarLoginRoute();
 app.AdicionarOtpRoute();
+app.AdicionarUsuarioRoute();
 
 app.MapGet("/", ([FromServices] ApiCicloDeVida apiCicloDeVida) =>
 {
@@ -56,12 +49,11 @@ app.MapGet("/", ([FromServices] ApiCicloDeVida apiCicloDeVida) =>
     return ultimoDeploy + Environment.NewLine + "Ambiente:" + ambiente + Environment.NewLine + upTime;
 }).WithTags("Health Check");
 
-app.MapPost("/teste", ([FromServices] GerenciadorZenvio gerenciadorZenvio,
+app.MapPost("/teste", [Authorize(AuthenticationSchemes = "ApiKeyAuthenticationHandler")] ([FromServices] GerenciadorZenvio gerenciadorZenvio,
     [FromServices] IOptions<DiscordAPIConfig> discordApiConfig,
     [FromServices] IOptions<ZenviaApiConfig> zeenviaApiConfig
     ) =>
 {
-    //testando SMS e limite de envio de SMS diário.
 
 
    

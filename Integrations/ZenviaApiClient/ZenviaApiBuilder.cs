@@ -3,7 +3,7 @@ using RestEase;
 
 namespace api_authentication_boberto.Integrations.ZenviaApiClient
 {
-    public static class ZeenviaApiBuilder
+    public static class ZenviaApiBuilder
     {
         public static void BuildZenviaAPI(this IServiceCollection services, IConfigurationRoot config) 
         {

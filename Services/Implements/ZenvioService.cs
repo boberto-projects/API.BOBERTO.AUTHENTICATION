@@ -21,6 +21,11 @@ namespace api_authentication_boberto.Services.Implements
 
         public async Task<SendSMSResponse> EnviarSMS(string numeroCelular, string texto)
         {
+            if (zenviaApiConfig.Value.Enabled == false)
+            {
+                throw new Exception("Recurso envio de SMS desativado");
+            }
+
             var chave = "COUNT_SMS_GLOBAL_SENDED";
             gerenciadorZenvio.IncrementarTentativa(chave);
 

@@ -17,7 +17,6 @@ namespace api_authentication_boberto.Routes
             app.MapPost("/autenticar", [AllowAnonymous] ([FromBody] LoginRequest request, [FromServices] IRedisService redisService,
                 [FromServices] DatabaseContext dbContext,
                 [FromServices] GerenciadorAutenticacao gerenciadorAutenticacao,
-                //[FromServices] GerenciadorZenvio gerenciadorZenvio,
                 [FromServices] IConfiguration config) =>
             {
                 var CHAVE_CACHE = "TRY_LOGIN_" + request.Email;

@@ -1,15 +1,13 @@
 ﻿using api_authentication_boberto.CustomDbContext;
-using api_authentication_boberto.Integrations.Discord;
 using api_authentication_boberto.Interfaces;
+using api_authentication_boberto.Models;
 using api_authentication_boberto.Models.Config;
-using api_authentication_boberto.Models.Integrations;
 using api_authentication_boberto.Models.Request;
 using api_authentication_boberto.Models.Response;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using OtpNet;
-using RestEase;
 using System.Text;
 
 namespace api_authentication_boberto.Routes
@@ -29,16 +27,6 @@ namespace api_authentication_boberto.Routes
                 var usuarioAtual = usuarioLogado.ObterUsuarioLogado();
 
                 var code = totp.ComputeTotp();
-
-                if (discordApiConfig.Value.Enabled)
-                {
-                    IDiscordApi api = RestClient.For<IDiscordApi>("https://discord.com/api");
-
-                    await api.EnviarMensagem(discordApiConfig.Value.WebHookId, discordApiConfig.Value.WebHookToken, new DiscordRequest()
-                    {
-                        Content = $"ApiBoberto: Código: {code}"
-                    });
-                }
 
                 return Results.Ok(new GenerateOtpResponse()
                 {

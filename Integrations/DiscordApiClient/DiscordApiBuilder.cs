@@ -1,4 +1,4 @@
-﻿using api_authentication_boberto.Integrations.ZenviaApiClient;
+﻿using api_authentication_boberto.Integrations.Discord;
 using api_authentication_boberto.Models.Config;
 using RestEase;
 
@@ -10,8 +10,7 @@ namespace api_authentication_boberto.Integrations.DiscordApiClient
         {
             var configOptions = config.GetSection("DiscordAPIConfig").Get<DiscordAPIConfig>();
 
-            IZenviaApi api = RestClient.For<IZenviaApi>(configOptions.Url);
-            api.ApiKey = configOptions.ApiKey;
+            IDiscordApi api = RestClient.For<IDiscordApi>(configOptions.Url);
 
             services.AddSingleton(api);
         }
