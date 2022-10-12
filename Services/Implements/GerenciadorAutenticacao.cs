@@ -5,7 +5,7 @@ using Microsoft.Extensions.Options;
 
 namespace api_authentication_boberto.Services.Implements
 {
-    public class GerenciadorAutenticacao
+    public class GerenciadorAutenticacao : IGerenciadorAcesso
     {   
         private IRedisService redisService { get; set; }
         private IOptions<GerenciadorAutenticacaoConfig> autenticacaoConfig { get; set; }

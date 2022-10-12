@@ -1,9 +1,7 @@
 ﻿using api_authentication_boberto.Models.Config;
-using Microsoft.Extensions.Options;
 using RestEase;
-using System.Configuration;
 
-namespace api_authentication_boberto.Integrations.Zenvia
+namespace api_authentication_boberto.Integrations.ZenviaApiClient
 {
     public static class ZeenviaApiBuilder
     {

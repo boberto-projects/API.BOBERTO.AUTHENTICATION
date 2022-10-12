@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 
 namespace api_authentication_boberto.Services.Implements
 {
-    public class GerenciadorZenvio
+    public class GerenciadorZenvio : IGerenciadorAcesso
     {
         private IRedisService redisService { get; set; }
         private IOptions<GerenciadorZenvioConfig> zenvioConfig { get; set; }

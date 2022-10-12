@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace api_authentication_boberto.Integrations.Zenvia.Request
+namespace api_authentication_boberto.Integrations.ZenviaApiClient
 {
     public class SendSMSRequest
     {

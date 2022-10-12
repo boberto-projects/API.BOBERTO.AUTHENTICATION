@@ -58,34 +58,13 @@ app.MapGet("/", ([FromServices] ApiCicloDeVida apiCicloDeVida) =>
 
 app.MapPost("/teste", ([FromServices] GerenciadorZenvio gerenciadorZenvio,
     [FromServices] IOptions<DiscordAPIConfig> discordApiConfig,
-    [FromServices] IZenviaApi zEnviaAPI,
     [FromServices] IOptions<ZenviaApiConfig> zeenviaApiConfig
     ) =>
 {
     //testando SMS e limite de envio de SMS diário.
 
-    var chave = "COUNT_SMS_GLOBAL_SENDED";
-    //gerenciando envio de sms para limite diário
-    gerenciadorZenvio.IncrementarTentativa(chave);
 
-    if (gerenciadorZenvio.AtingiuLimiteMaximoDeTentativas(chave))
-    {
-        return Results.Ok("Limite máximo de SMS diário atingido.");
-    }
-
-    var mensagem = new List<Content>();
-    mensagem.Add(new()
-    {
-        Type = "text",
-        Text = "ApiBobertoAuth: Seu codigo e"
-    });
-
-    zEnviaAPI.EnviarSMS(new()
-    {
-        To = "numeroCelularTeste",
-        From = zeenviaApiConfig.Value.Alias,
-        Contents = mensagem
-    }).Wait();
+   
 
     return Results.Ok();
 }).WithTags("Health Check");

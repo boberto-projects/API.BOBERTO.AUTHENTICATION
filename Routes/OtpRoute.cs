@@ -1,5 +1,5 @@
 ﻿using api_authentication_boberto.CustomDbContext;
-using api_authentication_boberto.Integrations;
+using api_authentication_boberto.Integrations.Discord;
 using api_authentication_boberto.Interfaces;
 using api_authentication_boberto.Models.Config;
 using api_authentication_boberto.Models.Integrations;
