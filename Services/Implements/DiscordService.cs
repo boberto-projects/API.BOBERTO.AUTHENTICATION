@@ -35,7 +35,7 @@ namespace api_authentication_boberto.Services.Implements
 
         public async Task EnviarCodigo(string codigo)
         {
-            var conteudoMensagem = $"ApiAuthBoberto: Seu codigo e ${codigo}";
+            var conteudoMensagem = $"ApiAuthBoberto: Seu codigo e {codigo}";
             await EnviarMensagem(conteudoMensagem);
         }
     }

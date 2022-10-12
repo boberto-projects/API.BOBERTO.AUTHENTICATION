@@ -3,6 +3,7 @@ using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using api_authentication_boberto.Models;
 using api_authentication_boberto.CustomDbContext;
+using RestEase.Implementation;
 
 namespace api_authentication_boberto.Implements
 {
@@ -36,17 +37,23 @@ namespace api_authentication_boberto.Implements
 
         public void AtivarAutenticacaoDupla(AutenticacaoDupla autenticacoes)
         {
-            
+            var idUsuario = ObterUsuarioLogado().Id;
+            var usuario = _dbContext.Usuarios.FirstOrDefault(x => x.UsuarioId.Equals(idUsuario));
+
+            usuario.UsuarioConfig.UsarEmail = autenticacoes.UsarEmail;
+            usuario.UsuarioConfig.UsarNumeroCelular = autenticacoes.UsarNumeroCelular;
+            _dbContext.SaveChanges();
         }
 
         public AutenticacaoDupla ObterAutenticacaoDuplaAtiva()
         {
             var usuarioLogado = ObterUsuarioLogado();
-
             return new AutenticacaoDupla()
             {
                 UsarEmail = usuarioLogado.UsarEmail,
-                UsarNumeroCelular = usuarioLogado.UsarNumeroCelular
+                UsarNumeroCelular = usuarioLogado.UsarNumeroCelular,
+                Email = usuarioLogado.Email,
+                NumeroCelular = usuarioLogado.NumeroCelular
             };
         }
     }

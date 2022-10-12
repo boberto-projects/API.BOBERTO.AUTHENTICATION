@@ -1,5 +1,6 @@
 ﻿using api_authentication_boberto.CustomDbContext;
 using api_authentication_boberto.Implements;
+using api_authentication_boberto.Integrations.DiscordApiClient;
 using api_authentication_boberto.Integrations.ZenviaApiClient;
 using api_authentication_boberto.Interfaces;
 using api_authentication_boberto.Models;
@@ -26,13 +27,17 @@ namespace api_authentication_boberto
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddHttpContextAccessor();
 
-            builder.Services.AddAuthentication("ApiKeyAuthenticationHandler")
-                   .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>
-                   ("ApiKeyAuthenticationHandler", null);
-
             builder.Services.AddSingleton<IRedisService, RedisService>();
+            builder.Services.AddSingleton<IOTPCode, OTPCodeService>();
+
             builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+            builder.Services.AddScoped<IEnviarCodigoDuploFator, EnviarCodigoDuploFator>();
+
             builder.Services.AddSingleton<ApiCicloDeVida>();
+
+            builder.Services.AddSingleton<DiscordService>();
+            builder.Services.AddSingleton<ZenvioService>();
+
             builder.Services.AddScoped<GerenciadorAutenticacao>();
             builder.Services.AddScoped<GerenciadorZenvio>();
         }
@@ -50,7 +55,8 @@ namespace api_authentication_boberto
 
         public static void InjetarServicosDeArmazenamento(this WebApplicationBuilder builder, IConfigurationRoot config)
         {
-            ///postgree
+            ///O plugin postgree do dokku pode inserir uma URL na variavel de ambiente. Mas localmente não usamos link direto com o POSTGREE.
+            ///GAMB pra converter uma url para o esquema de autenticação da biblioteca Npgsql
             var contextUrl = config.GetConnectionString("Postgree");
             var postGreeConnectionBuilder = new NpgsqlConnectionStringBuilder();
             Uri url;
@@ -76,12 +82,17 @@ namespace api_authentication_boberto
         public static void InjetarIntegracoes(this WebApplicationBuilder builder, IConfigurationRoot config)
         {
             builder.Services.BuildZenviaAPI(config);
-            builder.Services.BuildZenviaAPI(config);
+            builder.Services.BuildDiscordAPI(config);
         }
 
         public static void InjetarServicosAutenticacao(this WebApplicationBuilder builder, IConfigurationRoot config)
         {
             var jwtKey = Encoding.ASCII.GetBytes(config["Jwt:Key"]);
+
+
+            builder.Services.AddAuthentication("ApiKeyAuthenticationHandler")
+                   .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>
+                   ("ApiKeyAuthenticationHandler", null);
 
             builder.Services.AddAuthentication(x =>
             {

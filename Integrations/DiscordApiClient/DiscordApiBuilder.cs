@@ -6,7 +6,7 @@ namespace api_authentication_boberto.Integrations.DiscordApiClient
 {
     public static class DiscordApiBuilder
     {
-        public static void BuildZenviaAPI(this IServiceCollection services, IConfigurationRoot config)
+        public static void BuildDiscordAPI(this IServiceCollection services, IConfigurationRoot config)
         {
             var configOptions = config.GetSection("DiscordAPIConfig").Get<DiscordAPIConfig>();
 

@@ -3,6 +3,7 @@
     public class ApiConfig
     {
         public bool Swagger { get; set; }
+        public bool PreferirDiscordAoSMS { get; set; }
         public Authorization Authorization { get; set; }
     }
 

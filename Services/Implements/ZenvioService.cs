@@ -52,7 +52,7 @@ namespace api_authentication_boberto.Services.Implements
 
         public async Task EnviarSMSCodigo(string numeroCelular, string codigo)
         {
-            var conteudoMensagem = $"ApiAuthBoberto: Seu codigo e ${codigo}";
+            var conteudoMensagem = $"ApiAuthBoberto: Seu codigo e {codigo}";
 
             await EnviarSMS(numeroCelular, conteudoMensagem);
         }
