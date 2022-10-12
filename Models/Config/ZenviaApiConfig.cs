@@ -6,6 +6,5 @@
         public string ApiKey { get;set; }
         public string Alias { get; set; }
         public bool Enabled { get; set; }
-
     }
 }

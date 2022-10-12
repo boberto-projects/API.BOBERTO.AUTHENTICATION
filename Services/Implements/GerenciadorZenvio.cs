@@ -38,7 +38,7 @@ namespace api_authentication_boberto.Services.Implements
 
             var cacheOptions = new DistributedCacheEntryOptions
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(zenvioConfig.Value.SegundosExpiracao),
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(24),
             };
 
             redisService.Set(chave, ultimaTentativa + 1, cacheOptions);

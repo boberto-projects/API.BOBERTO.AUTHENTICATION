@@ -1,7 +1,7 @@
 ﻿using api_authentication_boberto.Models.Config;
-using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.Options;
 using RestEase;
-using System.Security.Policy;
+using System.Configuration;
 
 namespace api_authentication_boberto.Integrations.Zenvia
 {
@@ -9,12 +9,12 @@ namespace api_authentication_boberto.Integrations.Zenvia
     {
         public static void BuildZenviaAPI(this IServiceCollection services, IConfigurationRoot config) 
         {
-            var configOptions = config.Get<ZenviaApiConfig>();
+            var configOptions = config.GetSection("ZenviaApiConfig").Get<ZenviaApiConfig>();
 
             IZenviaApi api = RestClient.For<IZenviaApi>(configOptions.Url);
             api.ApiKey = configOptions.ApiKey;
 
-            services.AddSingleton<IZenviaApi>();
+            services.AddSingleton(api);
         }
     }
 }

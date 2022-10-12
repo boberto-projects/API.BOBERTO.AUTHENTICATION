@@ -56,12 +56,13 @@ app.MapGet("/", ([FromServices] ApiCicloDeVida apiCicloDeVida) =>
     return ultimoDeploy + Environment.NewLine + "Ambiente:" + ambiente + Environment.NewLine + upTime;
 }).WithTags("Health Check");
 
-app.MapPost("/teste", async ([FromServices] GerenciadorZenvio gerenciadorZenvio,
+app.MapPost("/teste", ([FromServices] GerenciadorZenvio gerenciadorZenvio,
     [FromServices] IOptions<DiscordAPIConfig> discordApiConfig,
-    [FromServices] IZenviaApi zEnviaAPI
+    [FromServices] IZenviaApi zEnviaAPI,
+    [FromServices] IOptions<ZenviaApiConfig> zeenviaApiConfig
     ) =>
 {
-    IDiscordApi api = RestClient.For<IDiscordApi>("https://discord.com/api");
+    //testando SMS e limite de envio de SMS diário.
 
     var chave = "COUNT_SMS_GLOBAL_SENDED";
     //gerenciando envio de sms para limite diário
@@ -72,12 +73,19 @@ app.MapPost("/teste", async ([FromServices] GerenciadorZenvio gerenciadorZenvio,
         return Results.Ok("Limite máximo de SMS diário atingido.");
     }
 
+    var mensagem = new List<Content>();
+    mensagem.Add(new()
+    {
+        Type = "text",
+        Text = "ApiBobertoAuth: Seu codigo e"
+    });
 
-    //await api.EnviarMensagem(discordApiConfig.Value.WebHookId, discordApiConfig.Value.WebHookToken, 
-    //new DiscordRequest()
-    //{
-    //    Content = $"ApiBoberto: Teste"
-    //});
+    zEnviaAPI.EnviarSMS(new()
+    {
+        To = "numeroCelularTeste",
+        From = zeenviaApiConfig.Value.Alias,
+        Contents = mensagem
+    }).Wait();
 
     return Results.Ok();
 }).WithTags("Health Check");
