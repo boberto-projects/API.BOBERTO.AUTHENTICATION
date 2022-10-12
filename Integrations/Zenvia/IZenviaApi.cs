@@ -6,6 +6,9 @@ namespace api_authentication_boberto.Integrations.Zenvia
 {
     public interface IZenviaApi
     {
+        [Header("X-API-Key")]
+        string ApiKey { get; set; }
+
         [Post("channels/sms/messages")]
         Task<SendSMSResponse> EnviarSMS([Body] SendSMSRequest request);
     }

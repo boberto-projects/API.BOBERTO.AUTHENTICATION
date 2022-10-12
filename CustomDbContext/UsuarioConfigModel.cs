@@ -9,6 +9,6 @@ namespace api_authentication_boberto.CustomDbContext
         public bool UsarEmail { get; set; }
         public bool UsarNumeroCelular { get; set; }
 
-        public virtual UsuarioModel Usuario { get; set; }
+     //   public virtual UsuarioModel Usuario { get; set; }
     }
 }

@@ -1,6 +1,8 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
-using MinecraftServer.Api.Services;
+﻿using api_authentication_boberto.Interfaces;
+using Microsoft.Extensions.Caching.Distributed;
+using System.Drawing;
 using System.Text.Json;
+using System.Threading;
 
 namespace api_authentication_boberto.Implements
 {
@@ -25,12 +27,12 @@ namespace api_authentication_boberto.Implements
 
         }
 
-        public T Set<T>(string chave, T valor, int expiracao)
+        public T Set<T>(string chave, T valor, TimeSpan expiracao)
         {
             var timeOut = new DistributedCacheEntryOptions
             {
                 AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(24),
-                SlidingExpiration = TimeSpan.FromSeconds(expiracao)
+                SlidingExpiration = expiracao
             };
 
             _redisCache.SetString(chave, JsonSerializer.Serialize(valor), timeOut);
@@ -52,6 +54,12 @@ namespace api_authentication_boberto.Implements
         public bool Exists(string chave)
         {
             return _redisCache.Get(chave) != null;
+        }
+
+        public T Set<T>(string chave, T valor, DistributedCacheEntryOptions cacheOptions)
+        {
+            _redisCache.SetString(chave, JsonSerializer.Serialize(valor), cacheOptions);
+            return valor;
         }
     }
 }

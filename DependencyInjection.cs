@@ -1,11 +1,13 @@
 ﻿using api_authentication_boberto.CustomDbContext;
 using api_authentication_boberto.Implements;
+using api_authentication_boberto.Integrations.Zenvia;
 using api_authentication_boberto.Interfaces;
 using api_authentication_boberto.Models.Config;
+using api_authentication_boberto.Services.Implements;
+using api_authentication_boberto.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using MinecraftServer.Api.Services;
 using Npgsql;
 using System.Text;
 
@@ -25,12 +27,18 @@ namespace api_authentication_boberto
             builder.Services.AddSingleton<IRedisService, RedisService>();
             builder.Services.AddScoped<IUsuarioService, UsuarioService>();
             builder.Services.AddSingleton<ApiCicloDeVida>();
+            builder.Services.AddScoped<GerenciadorAutenticacao>();
+            builder.Services.AddScoped<GerenciadorZenvio>();
         }
 
         public static void InjetarConfiguracoes(this WebApplicationBuilder builder, IConfigurationRoot config)
         {
+            builder.Services.Configure<GerenciadorAutenticacaoConfig>(options => config.GetSection("GerenciadorAutenticacaoConfig").Bind(options));
+            builder.Services.Configure<GerenciadorZenvioConfig>(options => config.GetSection("GerenciadorZenvioConfig").Bind(options));
             builder.Services.Configure<DiscordAPIConfig>(options => config.GetSection("DiscordApiConfig").Bind(options));
             builder.Services.Configure<TwoFactorConfig>(options => config.GetSection("TwoFactorConfig").Bind(options));
+            builder.Services.Configure<ZenviaApiConfig>(options => config.GetSection("ZenviaApiConfig").Bind(options));
+
         }
 
         public static void InjetarServicosDeArmazenamento(this WebApplicationBuilder builder, IConfigurationRoot config)
@@ -60,7 +68,7 @@ namespace api_authentication_boberto
 
         public static void InjetarIntegracoes(this WebApplicationBuilder builder, IConfigurationRoot config)
         {
-
+            builder.Services.BuildZenviaAPI(config);
         }
 
         public static void InjetarServicosAutenticacao(this WebApplicationBuilder builder, IConfigurationRoot config)

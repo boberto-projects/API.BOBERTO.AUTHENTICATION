@@ -1,10 +1,11 @@
 ﻿using api_authentication_boberto.CustomDbContext;
+using api_authentication_boberto.Interfaces;
 using api_authentication_boberto.Models.Request;
 using api_authentication_boberto.Models.Response;
+using api_authentication_boberto.Services.Implements;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MinecraftServer.Api.Services;
 using BC = BCrypt.Net.BCrypt;
 
 namespace api_authentication_boberto.Routes
@@ -13,18 +14,25 @@ namespace api_authentication_boberto.Routes
     {
         public  static void AdicionarLoginRoute(this WebApplication app)
         {
-            app.MapPost("/autenticar", [AllowAnonymous] ([FromBody] LoginRequest request, [FromServices] IRedisService redisService ,[FromServices] DatabaseContext dbContext, [FromServices] IConfiguration config) =>
+            app.MapPost("/autenticar", [AllowAnonymous] ([FromBody] LoginRequest request, [FromServices] IRedisService redisService,
+                [FromServices] DatabaseContext dbContext,
+                [FromServices] GerenciadorAutenticacao gerenciadorAutenticacao,
+                //[FromServices] GerenciadorZenvio gerenciadorZenvio,
+                [FromServices] IConfiguration config) =>
             {
                 var CHAVE_CACHE = "TRY_LOGIN_" + request.Email;
 
                 var contaCadastrada = dbContext.Usuarios.Include(c => c.UsuarioConfig).FirstOrDefault(e => e.Email.Equals(request.Email));
 
-                if (AtingiuMaximoLimiteDeTentativas() && contaCadastrada.UsuarioConfig.UsarNumeroCelular == false || AtingiuMaximoLimiteDeTentativas() && contaCadastrada.UsuarioConfig.UsarEmail == false)
+                var atingiuLimiteMaximoDeTentativas = gerenciadorAutenticacao.AtingiuLimiteMaximoDeTentativas(CHAVE_CACHE);
+
+                if (atingiuLimiteMaximoDeTentativas && contaCadastrada.UsuarioConfig.UsarNumeroCelular == false || atingiuLimiteMaximoDeTentativas && contaCadastrada.UsuarioConfig.UsarEmail == false)
                 {
                     return Results.BadRequest("Você errou a senha muitas vezes. Aguarde um pouco.");
                 }
 
-                if (AtingiuMaximoLimiteDeTentativas()){
+                if (atingiuLimiteMaximoDeTentativas)
+                {
                     return Results.BadRequest(new LoginResponse()
                     {
                         DuplaAutenticacaoObrigatoria = true
@@ -42,40 +50,16 @@ namespace api_authentication_boberto.Routes
 
                 if (senhaCorreta == false)
                 {
-                    if (AtingiuMaximoLimiteDeTentativas() == false)
-                    {
-                        IncrementarTentativa();
-                    }
+                    gerenciadorAutenticacao.IncrementarTentativa(CHAVE_CACHE);   
                     return Results.Unauthorized();
                 }
             
                 return Results.Ok(new LoginResponse()
                 {
-                    DuplaAutenticacaoObrigatoria = AtingiuMaximoLimiteDeTentativas(),
+                    DuplaAutenticacaoObrigatoria = atingiuLimiteMaximoDeTentativas,
                     Token = contaCadastrada.GerarTokenJWT(config)
                 });
-                
-                void IncrementarTentativa()
-                {
-                    var ultimaTentativa = ObterTentativasLogin();
-                    redisService.Set(CHAVE_CACHE, ultimaTentativa + 1, 60);
-                }
-
-                bool AtingiuMaximoLimiteDeTentativas()
-                {
-                    var tentativasDeLogin = ObterTentativasLogin();
-                    ///colocar em appsettings depois
-                    if(tentativasDeLogin >= 3)
-                    {
-                        return true;
-                    }
-                    return false;
-                }
-
-                int ObterTentativasLogin()
-                {
-                    return redisService.Get<int>(CHAVE_CACHE);
-                }
+  
 
             }).WithTags("Autenticação");
 
