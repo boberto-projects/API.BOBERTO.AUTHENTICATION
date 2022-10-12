@@ -9,6 +9,6 @@ namespace api_authentication_boberto.Services.Interfaces
     {
        void EnviarCodigoSMS(IUsuarioService usuario, string codigo);
 
-        void EnviarCodigoEmail(IUsuarioService usuario, string codigo);
+       void EnviarCodigoEmail(IUsuarioService usuario, string codigo);
     }
 }

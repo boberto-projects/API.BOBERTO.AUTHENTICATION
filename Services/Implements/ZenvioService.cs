@@ -1,7 +1,6 @@
 ﻿using api_authentication_boberto.Integrations.ZenviaApiClient;
 using api_authentication_boberto.Models.Config;
 using Microsoft.Extensions.Options;
-using RestEase;
 using static api_authentication_boberto.Integrations.ZenviaApiClient.SendSMSRequest;
 
 namespace api_authentication_boberto.Services.Implements

@@ -12,7 +12,6 @@ namespace api_authentication_boberto.Services.Implements
         private IEmailService _emailService;
         private ApiConfig _apiConfig;
 
-
         public EnviarCodigoDuploFator(ZenvioService zenvioService, 
             IEmailService emailService,
             DiscordService discordService, IOptions<ApiConfig> apiConfig)
