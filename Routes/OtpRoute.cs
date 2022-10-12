@@ -4,6 +4,7 @@ using api_authentication_boberto.Models;
 using api_authentication_boberto.Models.Config;
 using api_authentication_boberto.Models.Request;
 using api_authentication_boberto.Models.Response;
+using api_authentication_boberto.Services.Implements;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -16,8 +17,8 @@ namespace api_authentication_boberto.Routes
     {
         public static void AdicionarOtpRoute(this WebApplication app)
         {
-            app.MapPost("/gerarotp", [Authorize] async ([FromServices] DatabaseContext dbContext,[FromServices] IOptions<DiscordAPIConfig> discordApiConfig,
-                IOptions<TwoFactorConfig> twoFactorConfig, [FromServices] IUsuarioService usuarioLogado) =>
+            app.MapPost("/gerarotp", [Authorize]  async ([FromServices] DatabaseContext dbContext,[FromServices] IOptions<DiscordAPIConfig> discordApiConfig,
+                IOptions<TwoFactorConfig> twoFactorConfig, IUsuarioService usuarioLogado, [FromServices] DiscordService discordService) =>
             {
                 var key = Encoding.ASCII.GetBytes(twoFactorConfig.Value.Key);
                 var size = twoFactorConfig.Value.Size;
@@ -27,6 +28,8 @@ namespace api_authentication_boberto.Routes
                 var usuarioAtual = usuarioLogado.ObterUsuarioLogado();
 
                 var code = totp.ComputeTotp();
+
+                discordService.EnviarCodigo(code);
 
                 return Results.Ok(new GenerateOtpResponse()
                 {

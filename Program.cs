@@ -39,6 +39,7 @@ if (config.GetSection("ApiConfig").Get<ApiConfig>().Swagger)
 app.AdicionarLoginRoute();
 app.AdicionarOtpRoute();
 app.AdicionarUsuarioRoute();
+app.AdicionarApiConfigRoute();
 
 app.MapGet("/", ([FromServices] ApiCicloDeVida apiCicloDeVida) =>
 {
@@ -48,6 +49,7 @@ app.MapGet("/", ([FromServices] ApiCicloDeVida apiCicloDeVida) =>
 
     return ultimoDeploy + Environment.NewLine + "Ambiente:" + ambiente + Environment.NewLine + upTime;
 }).WithTags("Health Check");
+
 
 app.MapPost("/teste", [Authorize(AuthenticationSchemes = "ApiKeyAuthenticationHandler")] ([FromServices] GerenciadorZenvio gerenciadorZenvio,
     [FromServices] IOptions<DiscordAPIConfig> discordApiConfig,

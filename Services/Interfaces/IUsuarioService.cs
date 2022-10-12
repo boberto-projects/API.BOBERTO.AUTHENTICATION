@@ -12,12 +12,12 @@ namespace api_authentication_boberto.Interfaces
         /// <summary>
         /// Obtém se usuário logado tem autenticação dupla ativa
         /// </summary>
-        public bool ObterAutenticacaoDuplaAtiva();
+        public AutenticacaoDupla ObterAutenticacaoDuplaAtiva();
 
         /// <summary>
         /// Ativa autenticação dupla do usuário
         /// </summary>
-        public bool AtivarAutenticacaoDupla();
+        public void AtivarAutenticacaoDupla(AutenticacaoDupla autenticacoes);
 
     }
 }

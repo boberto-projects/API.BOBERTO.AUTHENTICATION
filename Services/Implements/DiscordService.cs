@@ -32,5 +32,11 @@ namespace api_authentication_boberto.Services.Implements
             };
            await discordApi.EnviarMensagem(discordWebHookID, discordWebHookToken, discordRequest);
         }
+
+        public async Task EnviarCodigo(string codigo)
+        {
+            var conteudoMensagem = $"ApiAuthBoberto: Seu codigo e ${codigo}";
+            await EnviarMensagem(conteudoMensagem);
+        }
     }
 }

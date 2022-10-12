@@ -34,14 +34,20 @@ namespace api_authentication_boberto.Implements
             };
         }
 
-        public bool AtivarAutenticacaoDupla()
+        public void AtivarAutenticacaoDupla(AutenticacaoDupla autenticacoes)
         {
-            throw new NotImplementedException();
+            
         }
 
-        public bool ObterAutenticacaoDuplaAtiva()
+        public AutenticacaoDupla ObterAutenticacaoDuplaAtiva()
         {
-            throw new NotImplementedException();
+            var usuarioLogado = ObterUsuarioLogado();
+
+            return new AutenticacaoDupla()
+            {
+                UsarEmail = usuarioLogado.UsarEmail,
+                UsarNumeroCelular = usuarioLogado.UsarNumeroCelular
+            };
         }
     }
 }
