@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Npgsql;
+using StackExchange.Redis;
 using System.Text;
 
 namespace api_authentication_boberto
@@ -56,26 +57,43 @@ namespace api_authentication_boberto
         {
             ///O plugin postgree do dokku pode inserir uma URL na variavel de ambiente. Mas localmente não usamos link direto com o POSTGREE.
             ///GAMB pra converter uma url para o esquema de autenticação da biblioteca Npgsql
-            var contextUrl = config.GetConnectionString("Postgree");
+            var postGreeContext = config.GetConnectionString("Postgree");
             var postGreeConnectionBuilder = new NpgsqlConnectionStringBuilder();
-            Uri url;
-            bool isUrl = Uri.TryCreate(contextUrl, UriKind.Absolute, out url);
-            if (isUrl)
+            Uri postGreeUrl;
+            bool isPostGreeUrl = Uri.TryCreate(postGreeContext, UriKind.Absolute, out postGreeUrl);
+            if (isPostGreeUrl)
             {
-                postGreeConnectionBuilder.Host = url.Host;
-                postGreeConnectionBuilder.Port = url.Port;
-                postGreeConnectionBuilder.Database = url.LocalPath.Substring(1);
-                postGreeConnectionBuilder.Username = url.UserInfo.Split(':')[0];
-                postGreeConnectionBuilder.Password = url.UserInfo.Split(':')[1];
+                postGreeConnectionBuilder.Host = postGreeUrl.Host;
+                postGreeConnectionBuilder.Port = postGreeUrl.Port;
+                postGreeConnectionBuilder.Database = postGreeUrl.LocalPath.Substring(1);
+                postGreeConnectionBuilder.Username = postGreeUrl.UserInfo.Split(':')[0];
+                postGreeConnectionBuilder.Password = postGreeUrl.UserInfo.Split(':')[1];
                 builder.Services.AddEntityFrameworkNpgsql().AddDbContext<DatabaseContext>(o => o.UseNpgsql(postGreeConnectionBuilder.ToString()));
             }
-
-            builder.Services.AddEntityFrameworkNpgsql().AddDbContext<DatabaseContext>(o => o.UseNpgsql(contextUrl));
-            ///redis
-            builder.Services.AddStackExchangeRedisCache(options =>
+            else
             {
-                options.Configuration = config.GetConnectionString("Redis");
-            });
+                builder.Services.AddEntityFrameworkNpgsql().AddDbContext<DatabaseContext>(o => o.UseNpgsql(postGreeContext));
+            }
+
+            ///redis
+            var redisContextUrl = config.GetConnectionString("Redis");
+            Uri redisUrl;
+            bool isRedisUrl = Uri.TryCreate(redisContextUrl, UriKind.Absolute, out redisUrl);
+            if (isRedisUrl)
+            {
+                builder.Services.AddStackExchangeRedisCache(options =>
+                {
+                    options.Configuration = string.Format("{0}:{1},password={2}", redisUrl.Host, redisUrl.Port, redisUrl.UserInfo.Split(':')[1]);
+                });
+            }
+            else
+            {
+                builder.Services.AddStackExchangeRedisCache(options =>
+                {
+                    options.Configuration = config.GetConnectionString("Redis");
+                });
+            }
+         
         }
 
         public static void InjetarIntegracoes(this WebApplicationBuilder builder, IConfigurationRoot config)

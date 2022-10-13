@@ -24,11 +24,18 @@ namespace api_authentication_boberto.Routes
 
                 var contaCadastrada = dbContext.Usuarios.Include(c => c.UsuarioConfig).FirstOrDefault(e => e.Email.Equals(request.Email));
 
+                var contaExiste = contaCadastrada != null;
+
+                if (contaExiste == false)
+                {
+                    throw new CustomException(StatusCodeEnum.NaoAutorizado, "Conta não existe.");
+                }
+
                 var atingiuLimiteMaximoDeTentativas = gerenciadorAutenticacao.AtingiuLimiteMaximoDeTentativas(request.ObterChaveCache);
 
                 if (atingiuLimiteMaximoDeTentativas && contaCadastrada.UsuarioConfig.UsarNumeroCelular == false || atingiuLimiteMaximoDeTentativas && contaCadastrada.UsuarioConfig.UsarEmail == false)
                 {
-                    return Results.BadRequest("Você errou a senha muitas vezes. Espere um pouco antes de tentar novamente");
+                    throw new CustomException(StatusCodeEnum.NaoAutorizado, "Você errou a senha muitas vezes. Espere um pouco antes de tentar novamente.");
                 }
 
                 if (atingiuLimiteMaximoDeTentativas)
@@ -38,22 +45,15 @@ namespace api_authentication_boberto.Routes
                         DuplaAutenticacaoObrigatoria = true
                     });
                 }
-
-                var contaExiste = contaCadastrada != null;
-
-                if (contaExiste == false)
-                {
-                    return Results.Unauthorized();
-                }
-
+ 
                 var senhaCorreta = BC.Verify(request.Senha, contaCadastrada.Senha);
 
                 if (senhaCorreta == false)
                 {
-                    gerenciadorAutenticacao.IncrementarTentativa(request.ObterChaveCache);   
-                    return Results.Unauthorized();
+                    gerenciadorAutenticacao.IncrementarTentativa(request.ObterChaveCache);
+                    throw new CustomException(StatusCodeEnum.NaoAutorizado, "Dados inválidos.");
                 }
-            
+
                 return Results.Ok(new LoginResponse()
                 {
                     DuplaAutenticacaoObrigatoria = atingiuLimiteMaximoDeTentativas,

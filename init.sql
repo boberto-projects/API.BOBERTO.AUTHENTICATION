@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS usuarios (
     id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-	email text NOT NULL,
+	email text NOT NULL UNIQUE,
 	senha text NOT NULL,
 	nome text NULL,
     numero_celular text NULL,
@@ -11,17 +11,6 @@ CREATE TABLE IF NOT EXISTS usuarios_config (
     id INT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
 	usaremail BOOL default false,
 	usarnumerocelular BOOL default false
-);
-
-/*ALTER TABLE usuarios_config
-ADD FOREIGN KEY (id) REFERENCES usuarios (id)
-on delete cascade on update cascade
-DEFERRABLE INITIALLY DEFERRED;*/
-
-ALTER TABLE usuarios
-ADD FOREIGN KEY (id) REFERENCES usuarios_config (id)
-on delete cascade on update cascade
-DEFERRABLE INITIALLY DEFERRED;lt false
 );
 
 ALTER TABLE usuarios_config
