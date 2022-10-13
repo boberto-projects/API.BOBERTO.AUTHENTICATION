@@ -16,7 +16,8 @@ namespace api_authentication_boberto.Routes
     {
         public  static void AdicionarLoginRoute(this WebApplication app)
         {
-            app.MapPost("/autenticar", [AllowAnonymous] ([FromBody] LoginRequest request, [FromServices] IRedisService redisService,
+            app.MapPost("/autenticar", [AllowAnonymous] ([FromBody] LoginRequest request,
+                [FromServices] IRedisService redisService,
                 [FromServices] DatabaseContext dbContext,
                 [FromServices] GerenciadorAutenticacao gerenciadorAutenticacao,
                 [FromServices] IConfiguration config) =>
