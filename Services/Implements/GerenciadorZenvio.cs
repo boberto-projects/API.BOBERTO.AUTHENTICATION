@@ -10,18 +10,18 @@ namespace api_authentication_boberto.Services.Implements
     public class GerenciadorZenvio : IGerenciadorAcesso
     {
         private IRedisService redisService { get; set; }
-        private IOptions<GerenciadorZenvioConfig> zenvioConfig { get; set; }
+        private GerenciadorZenvioConfig zenvioConfig { get; set; }
 
         public GerenciadorZenvio(IRedisService _redisService, IOptions<GerenciadorZenvioConfig> _zenvioConfig)
         {
             redisService = _redisService;
-            zenvioConfig = _zenvioConfig;
+            zenvioConfig = _zenvioConfig.Value;
         }
 
         public bool AtingiuLimiteMaximoDeTentativas(string chave)
         {
             var tentativasEnvioSMS = ObterTentativas(chave);
-            if (tentativasEnvioSMS >= zenvioConfig.Value.QuantidadeMaximaTentativas)
+            if (tentativasEnvioSMS >= zenvioConfig.QuantidadeMaximaTentativas)
             {
                 return true;
             }
@@ -38,7 +38,7 @@ namespace api_authentication_boberto.Services.Implements
 
             var cacheOptions = new DistributedCacheEntryOptions
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(24),
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromHours(zenvioConfig.SegundosExpiracao),
             };
 
             redisService.Set(chave, ultimaTentativa + 1, cacheOptions);
@@ -51,13 +51,13 @@ namespace api_authentication_boberto.Services.Implements
 
         public TimeSpan ObterTempoBloqueio()
         {
-            return TimeSpan.FromSeconds(zenvioConfig.Value.SegundosExpiracao);
+            return TimeSpan.FromSeconds(zenvioConfig.SegundosExpiracao);
         }
 
         public TimeSpan ObterTempoBloqueioRestante()
         {
             var dataAtual = DateTime.Now;
-            var dataFinal = dataAtual.AddSeconds(zenvioConfig.Value.SegundosExpiracao);
+            var dataFinal = dataAtual.AddSeconds(zenvioConfig.SegundosExpiracao);
 
             return dataFinal.Subtract(dataAtual);
         }

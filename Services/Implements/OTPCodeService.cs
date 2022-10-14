@@ -20,7 +20,7 @@ namespace api_authentication_boberto.Services.Implements
         {
             var key = Encoding.ASCII.GetBytes(_twoFactorConfig.Key);
             var size = _twoFactorConfig.Size;
-            var totp = new Totp(key, totpSize: size);
+            var totp = new Totp(key, totpSize: size, step: _twoFactorConfig.Step);
             var code = totp.ComputeTotp();
             return code;
         }
@@ -29,7 +29,7 @@ namespace api_authentication_boberto.Services.Implements
         {
             var key = Encoding.ASCII.GetBytes(_twoFactorConfig.Key);
             var size = _twoFactorConfig.Size;
-            var totp = new Totp(key, totpSize: size);
+            var totp = new Totp(key, totpSize: size, step: _twoFactorConfig.Step);
             var valid = totp.VerifyTotp(code, out long timeStepMatched);
             return new ValidarCodigoOTPResponse()
             {

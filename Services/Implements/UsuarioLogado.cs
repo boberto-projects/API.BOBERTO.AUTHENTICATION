@@ -40,8 +40,20 @@ namespace api_authentication_boberto.Implements
             var idUsuario = ObterUsuarioLogado().Id;
             var usuario = _dbContext.Usuarios.FirstOrDefault(x => x.UsuarioId.Equals(idUsuario));
 
-            usuario.UsuarioConfig.UsarEmail = autenticacoes.UsarEmail;
-            usuario.UsuarioConfig.UsarNumeroCelular = autenticacoes.UsarNumeroCelular;
+            var usarEmail = autenticacoes.UsarEmail;
+            var usarNumeroCelular = autenticacoes.UsarNumeroCelular;
+
+            if (usarEmail)
+            {
+                usuario.Email = autenticacoes.Email;
+                usuario.UsuarioConfig.UsarEmail = usarEmail;
+            }
+            if (usarNumeroCelular)
+            {
+                usuario.NumeroCelular = autenticacoes.NumeroCelular;
+                usuario.UsuarioConfig.UsarNumeroCelular = usarNumeroCelular;
+            }
+     
             _dbContext.SaveChanges();
         }
 

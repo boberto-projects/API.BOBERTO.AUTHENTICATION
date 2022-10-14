@@ -4,5 +4,6 @@
     {
         public string Key { get; set; }
         public int Size { get; set; }
+        public int Step { get; set; }
     }
 }
