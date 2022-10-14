@@ -36,8 +36,6 @@ namespace api_authentication_boberto.Routes
                 var emailValido = string.IsNullOrEmpty(request.Email) == false;
                 var numeroCelularValido = string.IsNullOrEmpty(request.NumeroCelular) == false;
 
-             
-
                 usuarioLogado.AtivarAutenticacaoDupla(
                 new AutenticacaoDupla()
                 {

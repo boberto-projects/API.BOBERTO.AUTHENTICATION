@@ -60,10 +60,6 @@ namespace api_authentication_boberto.CustomDbContext
                 entity.Property(e => e.UsarEmail).HasColumnName("usaremail");
                 entity.Property(e => e.UsarNumeroCelular).HasColumnName("usarnumerocelular");
 
-                //entity.HasOne(e => e.Usuario)
-                // .WithOne()
-                // .HasForeignKey<UsuarioConfigModel>(e => e.UsuarioConfigId);
-
             });
         }
 

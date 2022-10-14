@@ -80,6 +80,7 @@ namespace api_authentication_boberto.Routes
 
                 return Results.Ok(new LoginResponse()
                 {
+                    DuplaAutenticacaoObrigatoria = duplaAutenticacaoAtiva,
                     Token = contaCadastrada.GerarTokenJWT(config)
                 });
             }).WithTags("Autenticação");
