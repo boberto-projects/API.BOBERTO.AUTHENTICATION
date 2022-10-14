@@ -18,63 +18,53 @@ namespace api_authentication_boberto.Routes
     {
         public static void AdicionarOtpRoute(this WebApplication app)
         {
-          app.MapPost("/otp/enviarCodigoSMS", [Authorize] async ([FromServices] DatabaseContext dbContext,
-          IOTPCode otpCode,
-          IEnviarCodigoDuploFator enviarCodigoDuploFator,
-          IUsuarioService usuarioLogado) =>
+          app.MapPost("/otp/enviarCodigoSMS", [Authorize(AuthenticationSchemes = "ApiKeyAuthenticationHandler")] (
+              [FromBody] EnviarCodigoSMSRequest request,
+             [FromServices] DatabaseContext dbContext,
+              IOTPCode otpCode,
+              IEnviarCodigoDuploFator enviarCodigoDuploFator
+          ) =>
             {
-                var usuarioAtual = usuarioLogado.ObterUsuarioLogado();
-
+                request.Validar();
                 var codigo = otpCode.GerarCodigoOTP();
-
-                enviarCodigoDuploFator.EnviarCodigoSMS(usuarioLogado, codigo);
-
+                enviarCodigoDuploFator.EnviarCodigoSMS(request.NumeroCelular, codigo);
                 return Results.Ok();
 
             }).WithTags("Dupla autenticação");
 
-            app.MapPost("/otp/enviarCodigoEmail", [Authorize] async ([FromServices] DatabaseContext dbContext,
+            app.MapPost("/otp/enviarCodigoEmail", [Authorize(AuthenticationSchemes = "ApiKeyAuthenticationHandler")] (
+            [FromBody] EnviarCodigoEmailRequest request,
+            [FromServices] DatabaseContext dbContext,
             IOTPCode otpCode,
-            IEnviarCodigoDuploFator enviarCodigoDuploFator,
-            IUsuarioService usuarioLogado) =>
+            IEnviarCodigoDuploFator enviarCodigoDuploFator) =>
             {
-                var usuarioAtual = usuarioLogado.ObterUsuarioLogado();
-
+                request.Validar();
                 var codigo = otpCode.GerarCodigoOTP();
-
-                enviarCodigoDuploFator.EnviarCodigoEmail(usuarioLogado, codigo);
-
-                return Results.Ok(new GenerateOtpResponse()
-                {
-                    Code = codigo
-                });
+                enviarCodigoDuploFator.EnviarCodigoEmail(request.Email, codigo);
+                return Results.Ok();
 
             }).WithTags("Dupla autenticação");
 
-            app.MapPost("/otp/gerarotp", [AllowAnonymous]  async ([FromServices] DatabaseContext dbContext,
+            app.MapPost("/otp/gerarotp", [Authorize(AuthenticationSchemes = "ApiKeyAuthenticationHandler")] (
+            [FromServices] DatabaseContext dbContext,
             IOTPCode otpCode) =>
             {
                 var codigo = otpCode.GerarCodigoOTP();
-
                 return Results.Ok(new GenerateOtpResponse()
                 {
-                    Code = codigo
+                    Codigo = codigo
                 });
 
             }).WithTags("Dupla autenticação");
 
-            app.MapPost("/otp/validarotp", [AllowAnonymous] ([FromBody] TwoFactorVerifyRequest request,
-               IRedisService redisService,
+              app.MapPost("/otp/validarotp", [Authorize(AuthenticationSchemes = "ApiKeyAuthenticationHandler")] (
+                [FromBody] TwoFactorVerifyRequest request,
               IOTPCode otpCode
                 ) =>
             {
-                var valid = otpCode.ValidarCodigoOTP(request.Code);
-
-                if (valid.Valido)
-                {
-                    redisService.Clear(request.ObterChaveCache);
-                }
-
+                request.Validar();
+                var valid = otpCode.ValidarCodigoOTP(request.Codigo);
+              
                 return Results.Ok(valid);
 
             }).WithTags("Dupla autenticação");

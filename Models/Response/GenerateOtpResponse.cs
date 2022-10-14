@@ -2,6 +2,6 @@
 {
     public class GenerateOtpResponse
     {
-        public string Code { get; set; }
+        public string Codigo { get; set; }
     }
 }

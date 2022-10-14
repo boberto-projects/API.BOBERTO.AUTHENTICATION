@@ -1,10 +1,17 @@
-﻿namespace api_authentication_boberto.Models.Request
+﻿using api_authentication_boberto.Exceptions;
+
+namespace api_authentication_boberto.Models.Request
 {
     public class TwoFactorVerifyRequest
     {
-        public string Email { get; set; }
-        public string Code { get; set; }
+        public string Codigo { get; set; }
 
-        public string ObterChaveCache => "TRY_LOGIN_" + this.Email;
+        public void Validar()
+        {
+            if (string.IsNullOrEmpty(Codigo))
+            {
+                throw new CustomException(StatusCodeEnum.Negocio, "Código não informado.");
+            }
+        }
     }
 }

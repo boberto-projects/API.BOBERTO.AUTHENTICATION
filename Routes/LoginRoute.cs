@@ -44,23 +44,24 @@ namespace api_authentication_boberto.Routes
                 ///Então eu posso verificar se esse usuário informou um código de OTP pra saber se ele pode logar ou não.
                 var duplaAutenticacaoAtiva = contaCadastrada.UsuarioConfig.UsarNumeroCelular  || contaCadastrada.UsuarioConfig.UsarEmail;
 
-                var codigoOtpInformado = string.isnu
-                var codigoOtpInformadoValido = string.IsNullOrEmpty(request.Codigo) == false && otpCode.ValidarCodigoOTP(request.Codigo).Valido;
+                var codigoOtpExiste = string.IsNullOrEmpty(request.Codigo) == false;
+               
+                var codigoOtp = codigoOtpExiste && otpCode.ValidarCodigoOTP(request.Codigo).Valido;
 
-                ///verifico se já tentou logar muitas vezes antes.
-                if (atingiuLimiteMaximoDeTentativas && codigoOtpInformadoValido == false)
+                ///Se atingiu o limite máximo de tentativas de login falhas e o codigo otp não foi informado
+                if (atingiuLimiteMaximoDeTentativas && codigoOtpExiste == false)
                 {
                     throw new CustomException(StatusCodeEnum.NaoAutorizado, "Você errou a senha muitas vezes. Espere um pouco antes de tentar novamente.");
                 }
 
                 ///Se a dupla autenticação estiver ativa e o código não for informado ou inválido.. Eu vou vou obrigar a logar novamente.
-                if (duplaAutenticacaoAtiva && codigoOtpInformadoValido == false)
+                if (duplaAutenticacaoAtiva && codigoOtpExiste == false)
                 {
                     throw new CustomException(StatusCodeEnum.NaoAutorizado, "É necessário informar um código OTP para efetuar login.");
                 }
 
                 ///Código informado mas não é válido
-                if (codigoOtpInformadoValido == false)
+                if (codigoOtpExiste && codigoOtp == false)
                 {
                     throw new CustomException(StatusCodeEnum.NaoAutorizado, "Código informado inválido.");
                 }
