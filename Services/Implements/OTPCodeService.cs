@@ -1,5 +1,5 @@
-﻿using api_authentication_boberto.Models;
-using api_authentication_boberto.Models.Config;
+﻿using api_authentication_boberto.Models.Config;
+using api_authentication_boberto.Models.Response;
 using api_authentication_boberto.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using OtpNet;

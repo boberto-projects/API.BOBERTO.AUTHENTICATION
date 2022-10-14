@@ -6,9 +6,7 @@
       "composeLaunchAction": "None",
       "composeLaunchServiceName": "api-authentication-boberto",
       "serviceActions": {
-        "api-authentication-boberto": "StartDebugging",
-        "database_service": "StartWithoutDebugging",
-        "redis_service": "StartWithoutDebugging"
+        "api-authentication-boberto": "StartDebugging"
       }
     }
   }

@@ -11,6 +11,7 @@ namespace api_authentication_boberto.CustomDbContext
         public string Email { get; set; }
         public string Senha { get; set; }
         public string? NumeroCelular { get; set; }
+        public DateTime UltimoLogin { get; set; }
 
         public int UsuarioConfigId { get; set; }
         public virtual UsuarioConfigModel UsuarioConfig { get;set; }

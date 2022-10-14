@@ -3,6 +3,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
 	email text NOT NULL UNIQUE,
 	senha text NOT NULL,
 	nome text NULL,
+	ultimo_login timestamp NULL,
     numero_celular text NULL,
 	usuario_config_id INT NOT NULL
 );
@@ -13,10 +14,10 @@ CREATE TABLE IF NOT EXISTS usuarios_config (
 	usarnumerocelular BOOL default false
 );
 
-ALTER TABLE usuarios_config
+/*ALTER TABLE usuarios_config
 ADD FOREIGN KEY (id) REFERENCES usuarios (id)
 on delete cascade on update cascade
-DEFERRABLE INITIALLY DEFERRED;
+DEFERRABLE INITIALLY DEFERRED;*/
 
 ALTER TABLE usuarios
 ADD FOREIGN KEY (id) REFERENCES usuarios_config (id)

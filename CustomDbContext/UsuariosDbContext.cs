@@ -38,6 +38,9 @@ namespace api_authentication_boberto.CustomDbContext
 
                 entity.Property(e => e.UsuarioConfigId).HasColumnName("usuario_config_id");
 
+                entity.Property(e => e.UltimoLogin).HasColumnName("ultimo_login");
+
+
                 entity.HasOne(e => e.UsuarioConfig)
                 .WithOne()
                 .HasForeignKey<UsuarioConfigModel>(e => e.UsuarioConfigId)

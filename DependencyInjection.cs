@@ -39,6 +39,10 @@ namespace api_authentication_boberto
 
             builder.Services.AddScoped<GerenciadorAutenticacao>();
             builder.Services.AddScoped<GerenciadorZenvio>();
+
+            //config temporaria
+
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
 
         public static void InjetarConfiguracoes(this WebApplicationBuilder builder, IConfigurationRoot config)
@@ -68,12 +72,10 @@ namespace api_authentication_boberto
                 postGreeConnectionBuilder.Database = postGreeUrl.LocalPath.Substring(1);
                 postGreeConnectionBuilder.Username = postGreeUrl.UserInfo.Split(':')[0];
                 postGreeConnectionBuilder.Password = postGreeUrl.UserInfo.Split(':')[1];
-                builder.Services.AddEntityFrameworkNpgsql().AddDbContext<DatabaseContext>(o => o.UseNpgsql(postGreeConnectionBuilder.ToString()));
+                postGreeContext = postGreeConnectionBuilder.ToString();
             }
-            else
-            {
-                builder.Services.AddEntityFrameworkNpgsql().AddDbContext<DatabaseContext>(o => o.UseNpgsql(postGreeContext));
-            }
+            
+            builder.Services.AddEntityFrameworkNpgsql().AddDbContext<DatabaseContext>(o => o.UseNpgsql(postGreeContext));
 
             ///redis
             var redisContextUrl = config.GetConnectionString("Redis");
@@ -81,19 +83,14 @@ namespace api_authentication_boberto
             bool isRedisUrl = Uri.TryCreate(redisContextUrl, UriKind.Absolute, out redisUrl);
             if (isRedisUrl)
             {
-                builder.Services.AddStackExchangeRedisCache(options =>
-                {
-                    options.Configuration = string.Format("{0}:{1},password={2}", redisUrl.Host, redisUrl.Port, redisUrl.UserInfo.Split(':')[1]);
-                });
+               redisContextUrl = string.Format("{0}:{1},password={2}", redisUrl.Host, redisUrl.Port, redisUrl.UserInfo.Split(':')[1]);
             }
-            else
+            
+            builder.Services.AddStackExchangeRedisCache(options =>
             {
-                builder.Services.AddStackExchangeRedisCache(options =>
-                {
-                    options.Configuration = config.GetConnectionString("Redis");
-                });
-            }
-         
+                options.Configuration = redisContextUrl;
+            });
+
         }
 
         public static void InjetarIntegracoes(this WebApplicationBuilder builder, IConfigurationRoot config)
