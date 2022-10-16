@@ -14,12 +14,12 @@ namespace api_authentication_boberto.Routes
         public static void AdicionarApiConfigRoute(this WebApplication app)
         {
             //obter status dos serviços de integração e uso de sms
-            app.MapGet("/apiconfig/resources", [Authorize(AuthenticationSchemes = "ApiKeyAuthenticationHandler")] (IOptions<ResourcesConfig> resourceConfig) =>
+            app.MapGet("/apiconfig/resource", [Authorize(AuthenticationSchemes = "ApiKeyAuthenticationHandler")] (IOptions<ResourcesConfig> resourceConfig) =>
             {
                 return resourceConfig;
             });
 
-            app.MapPost("/apiconfig/alterar", [Authorize(AuthenticationSchemes = "ApiKeyAuthenticationHandler")] ([FromBody] AlterarApiConfigRequest request, [FromServices] AtualizarAppsettings atualizarAppSettings, IOptions <ResourcesConfig> resourceConfig) =>
+            app.MapPost("/apiconfig/resource/atualizar", [Authorize(AuthenticationSchemes = "ApiKeyAuthenticationHandler")] ([FromBody] AlterarApiConfigRequest request, [FromServices] AtualizarAppsettings atualizarAppSettings, IOptions <ResourcesConfig> resourceConfig) =>
             {
                 var resources = resourceConfig.Value.Resources.ToList();
 
