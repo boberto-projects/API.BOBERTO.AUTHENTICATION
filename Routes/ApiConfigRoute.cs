@@ -17,7 +17,7 @@ namespace api_authentication_boberto.Routes
             app.MapGet("/apiconfig/resource", [Authorize(AuthenticationSchemes = "ApiKeyAuthenticationHandler")] (IOptions<ResourcesConfig> resourceConfig) =>
             {
                 return resourceConfig;
-            });
+            }).WithTags("Gerenciador de appsettings"); ;
 
             app.MapPost("/apiconfig/resource/atualizar", [Authorize(AuthenticationSchemes = "ApiKeyAuthenticationHandler")] ([FromBody] AlterarApiConfigRequest request, [FromServices] AtualizarAppsettings atualizarAppSettings, IOptions <ResourcesConfig> resourceConfig) =>
             {
@@ -36,7 +36,7 @@ namespace api_authentication_boberto.Routes
                 {
                     PreferirDiscordAoSMS = request.PreferirDiscordAoSMS
                 };
-            });
+            }).WithTags("Gerenciador de appsettings");
 
         }
     }
