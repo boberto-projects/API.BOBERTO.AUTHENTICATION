@@ -2,6 +2,10 @@
 using api_authentication_boberto.Models.Config;
 using api_authentication_boberto.Services.Interfaces;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json.Linq;
+using Org.BouncyCastle.Asn1.Ocsp;
+using RestEase.Implementation;
+using System.Resources;
 
 namespace api_authentication_boberto.Services.Implements
 {
@@ -12,26 +16,34 @@ namespace api_authentication_boberto.Services.Implements
         private IEmailService _emailService;
         private ApiConfig _apiConfig;
 
+        private ResourcesConfig _resourceConfig;
         public EnviarCodigoDuploFator(ZenvioService zenvioService, 
             IEmailService emailService,
-            DiscordService discordService, IOptions<ApiConfig> apiConfig)
+            DiscordService discordService,
+            IOptions<ResourcesConfig> resourceConfig,
+            IOptions<ApiConfig> apiConfig)
         {
             _emailService = emailService;
             _zenvioService = zenvioService;
             _discordService = discordService;
             _apiConfig = apiConfig.Value;
+            _resourceConfig = resourceConfig.Value;
         }
 
         public void EnviarCodigoSMS(string numeroCelular, string codigo)
         {
             ///Como não podemos ultrapassar a cota de sms mensal e não temos opção de setar isso no zenvio, 
             ///vamos substituir o sms pela a api do discord.
-          
-            if (_apiConfig.PreferirDiscordAoSMS)
+            var resources = _resourceConfig.Resources;
+            foreach (var resource in resources)
             {
-                _discordService.EnviarCodigo(codigo);
-                return;
+                if (resource.Key.Equals("PreferirDiscordAoSMS") && resource.Value)
+                {
+                    _discordService.EnviarCodigo(codigo);
+                    break;
+                }
             }
+
             _zenvioService.EnviarSMSCodigo(numeroCelular, codigo);
         }
         
