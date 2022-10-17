@@ -1,6 +1,6 @@
 ﻿using api_authentication_boberto.CustomDbContext;
 using api_authentication_boberto.Interfaces;
-using api_authentication_boberto.Models;
+using api_authentication_boberto.Models.Cache;
 using api_authentication_boberto.Models.Config;
 using api_authentication_boberto.Services.Interfaces;
 using Microsoft.Extensions.Caching.Distributed;
@@ -42,7 +42,6 @@ namespace api_authentication_boberto.Services.Implements
 
             obterCacheUsuario.TentativasDeLogin += 1;
             obterCacheUsuario.UltimaTentativa = DateTime.Now;
-            obterCacheUsuario.AcessoBloqueado = true;
 
             redisService.Set(CACHE_USUARIO, obterCacheUsuario);
         }

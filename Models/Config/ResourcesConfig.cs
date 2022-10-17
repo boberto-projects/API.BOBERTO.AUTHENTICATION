@@ -7,6 +7,6 @@
     public class ResourceOptionConfig
     {
         public string Key { get; set; }
-        public bool Value { get; set; }
+        public bool Enabled { get; set; }
     }
 }

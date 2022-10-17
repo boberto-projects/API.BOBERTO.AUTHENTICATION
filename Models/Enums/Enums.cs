@@ -8,4 +8,9 @@
         NaoAutorizado = 401,
         Interno = 500,
     }
+    public enum CodigoOTPEnum
+    {
+        CodigoOTPInvalido = 1,
+        CodigoOTPNaoInformado = 2,
+    }
 }

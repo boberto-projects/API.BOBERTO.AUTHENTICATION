@@ -37,6 +37,7 @@ namespace api_authentication_boberto.Exceptions
                     return "nao_autorizado";
                 case StatusCodeEnum.Validacao:
                     return "validacao";
+
             }
 
             return "nao_reconhecido";

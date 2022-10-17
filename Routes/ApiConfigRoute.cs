@@ -27,7 +27,7 @@ namespace api_authentication_boberto.Routes
                 resource => {
                     if (resource.Key.Equals("PreferirDiscordAoSMS"))
                     {
-                        resource.Value = request.PreferirDiscordAoSMS;
+                        resource.Enabled = request.PreferirDiscordAoSMS;
                     }
                 });
 

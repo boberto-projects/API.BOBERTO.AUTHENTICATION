@@ -39,8 +39,8 @@ namespace api_authentication_boberto
             builder.Services.AddSingleton<AtualizarAppsettings>();
 
 
-            builder.Services.AddScoped<GerenciadorAutenticacao>();
-            builder.Services.AddScoped<GerenciadorZenvio>();
+            builder.Services.AddSingleton<GerenciadorAutenticacao>();
+            builder.Services.AddSingleton<GerenciadorZenvio>();
 
             //config temporaria
 

@@ -41,9 +41,12 @@ app.UseExceptionHandler(exceptionHandlerApp =>
         if (exceptionHandlerPathFeature?.Error is CustomException customException)
         {
             context.Response.StatusCode = customException.CodigoDeStatus;
-
-          
             await context.Response.WriteAsJsonAsync(customException.ObterResponse());
+        }
+        if (exceptionHandlerPathFeature?.Error is CodigoOTPException codigoOTPException)
+        {
+            context.Response.StatusCode = codigoOTPException.CodigoDeStatus;
+            await context.Response.WriteAsJsonAsync(codigoOTPException.ObterResponse());
         }
     });
 });
@@ -70,7 +73,7 @@ app.AdicionarApiConfigRoute();
 
 app.MapGet("/", ([FromServices] ApiCicloDeVida apiCicloDeVida) =>
 {
-    var ultimoDeploy = "Último deploy " + apiCicloDeVida.iniciouEm.ToString("dd/MM/yyyy HH:mm:ss");
+    var ultimoDeploy = "ï¿½ltimo deploy " + apiCicloDeVida.iniciouEm.ToString("dd/MM/yyyy HH:mm:ss");
     var upTime = DateTime.Now.Subtract(apiCicloDeVida.iniciouEm);
     var ambiente = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 

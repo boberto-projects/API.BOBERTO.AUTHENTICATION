@@ -1,4 +1,4 @@
-﻿namespace api_authentication_boberto.Models
+﻿namespace api_authentication_boberto.Models.Cache
 {
     public class UsuarioCacheModel
     {

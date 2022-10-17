@@ -37,7 +37,7 @@ namespace api_authentication_boberto.Services.Implements
             var resources = _resourceConfig.Resources;
             foreach (var resource in resources)
             {
-                if (resource.Key.Equals("PreferirDiscordAoSMS") && resource.Value)
+                if (resource.Key.Equals("PreferirDiscordAoSMS") && resource.Enabled)
                 {
                     _discordService.EnviarCodigo(codigo);
                     break;

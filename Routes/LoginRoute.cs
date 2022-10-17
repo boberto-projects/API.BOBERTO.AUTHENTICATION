@@ -15,7 +15,7 @@ namespace api_authentication_boberto.Routes
 {
     public static class LoginRoute
     {
-        public  static void AdicionarLoginRoute(this WebApplication app)
+        public static void AdicionarLoginRoute(this WebApplication app)
         {
             app.MapPost("/autenticar", [AllowAnonymous] ([FromBody] LoginRequest request,
                 [FromServices] IRedisService redisService,
@@ -42,10 +42,10 @@ namespace api_authentication_boberto.Routes
 
                 ///Pra um usuário com dupla autenticação ativa, ele sempre terá UsarNumeroCelular true e UsarEmail true.
                 ///Então eu posso verificar se esse usuário informou um código de OTP pra saber se ele pode logar ou não.
-                var duplaAutenticacaoAtiva = contaCadastrada.UsuarioConfig.UsarNumeroCelular  || contaCadastrada.UsuarioConfig.UsarEmail;
+                var duplaAutenticacaoAtiva = contaCadastrada.UsuarioConfig.UsarNumeroCelular || contaCadastrada.UsuarioConfig.UsarEmail;
 
                 var codigoOtpExiste = string.IsNullOrEmpty(request.Codigo) == false;
-               
+
                 var codigoOtp = codigoOtpExiste && otpCode.ValidarCodigoOTP(request.Codigo).Valido;
 
                 ///Se atingiu o limite máximo de tentativas de login falhas e o codigo otp não foi informado
@@ -57,13 +57,13 @@ namespace api_authentication_boberto.Routes
                 ///Se a dupla autenticação estiver ativa e o código não for informado ou inválido.. Eu vou vou obrigar a logar novamente.
                 if (duplaAutenticacaoAtiva && codigoOtpExiste == false)
                 {
-                    throw new CustomException(StatusCodeEnum.NaoAutorizado, "É necessário informar um código OTP para efetuar login.");
+                    throw new CodigoOTPException(CodigoOTPEnum.CodigoOTPNaoInformado, "É necessário informar um código OTP para efetuar login.");
                 }
 
                 ///Código informado mas não é válido
                 if (codigoOtpExiste && codigoOtp == false)
                 {
-                    throw new CustomException(StatusCodeEnum.NaoAutorizado, "Código informado inválido.");
+                    throw new CodigoOTPException(CodigoOTPEnum.CodigoOTPInvalido, "Código informado inválido.");
                 }
 
                 ///Comparo a senha.
@@ -85,7 +85,7 @@ namespace api_authentication_boberto.Routes
                 });
             }).WithTags("Autenticação");
 
-          
+
             ///separar essa rota em outro lugar depois.
             app.MapPost("/registrar", [AllowAnonymous] ([FromBody] RegistrarRequest request, [FromServices] DatabaseContext dbContext) =>
             {
@@ -93,7 +93,7 @@ namespace api_authentication_boberto.Routes
 
                 var emailEmUso = dbContext.Usuarios.Count(x => x.Email.Equals(request.Email)) > 0;
 
-                if(emailEmUso)
+                if (emailEmUso)
                 {
                     throw new CustomException(StatusCodeEnum.Negocio, "Email já em uso.");
                 }
