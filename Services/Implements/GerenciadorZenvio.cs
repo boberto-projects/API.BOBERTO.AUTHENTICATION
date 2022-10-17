@@ -22,7 +22,7 @@ namespace api_authentication_boberto.Services.Implements
             CriarCacheZenvio();
         }
 
-        public bool AtingiuLimiteMaximoDeTentativas(string chave)
+        public bool AtingiuLimiteMaximoDeTentativas()
         {
             var obterCacheZenvio = ObterCacheZenvio();
             var tentativasDeEnvio = obterCacheZenvio.Tentativas;
@@ -33,9 +33,9 @@ namespace api_authentication_boberto.Services.Implements
             return false;
         }
 
-        public void IncrementarTentativa(string chave)
+        public void IncrementarTentativa()
         {
-            if (AtingiuLimiteMaximoDeTentativas(chave))
+            if (AtingiuLimiteMaximoDeTentativas())
             {
                 return;
             }

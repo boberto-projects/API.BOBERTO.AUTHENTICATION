@@ -73,7 +73,7 @@ app.AdicionarApiConfigRoute();
 
 app.MapGet("/", ([FromServices] ApiCicloDeVida apiCicloDeVida) =>
 {
-    var ultimoDeploy = "�ltimo deploy " + apiCicloDeVida.iniciouEm.ToString("dd/MM/yyyy HH:mm:ss");
+    var ultimoDeploy = "Último deploy " + apiCicloDeVida.iniciouEm.ToString("dd/MM/yyyy HH:mm:ss");
     var upTime = DateTime.Now.Subtract(apiCicloDeVida.iniciouEm);
     var ambiente = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 

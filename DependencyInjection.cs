@@ -29,21 +29,17 @@ namespace api_authentication_boberto
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddHttpContextAccessor();
 
+            builder.Services.AddSingleton<ApiCicloDeVida>();
             builder.Services.AddSingleton<IRedisService, RedisService>();
             builder.Services.AddSingleton<IOTPCode, OTPCodeService>();
-
-            builder.Services.AddScoped<IUsuarioService, UsuarioService>();
             builder.Services.AddSingleton<IEnviarCodigoDuploFator, EnviarCodigoDuploFator>();
-
-            builder.Services.AddSingleton<ApiCicloDeVida>();
             builder.Services.AddSingleton<AtualizarAppsettings>();
-
-
-            builder.Services.AddScoped<GerenciadorAutenticacao>();
             builder.Services.AddSingleton<GerenciadorZenvio>();
 
-            //config temporaria
+            builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+            builder.Services.AddScoped<GerenciadorAutenticacao>();
 
+            //config temporaria
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
 

@@ -27,10 +27,9 @@ namespace api_authentication_boberto.Services.Implements
                 throw new CustomException(StatusCodeEnum.Interno, "Recurso envio de SMS desativado");
             }
 
-            var chave = "COUNT_SMS_GLOBAL_SENDED";
-            gerenciadorZenvio.IncrementarTentativa(chave);
+            gerenciadorZenvio.IncrementarTentativa();
 
-            if (gerenciadorZenvio.AtingiuLimiteMaximoDeTentativas(chave))
+            if (gerenciadorZenvio.AtingiuLimiteMaximoDeTentativas())
             {
                 throw new CustomException(StatusCodeEnum.Interno, "Limite máximo de SMS diário atingido.");
             }
