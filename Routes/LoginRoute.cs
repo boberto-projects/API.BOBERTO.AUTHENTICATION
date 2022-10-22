@@ -77,7 +77,7 @@ namespace api_authentication_boberto.Routes
                         enviarCodigoDuploFator.EnviarCodigoSMS(contaCadastrada.NumeroCelular, codigo);
                     }
                     enviarCodigoDuploFator.EnviarCodigoEmail(contaCadastrada.Email, codigo);
-                    throw new CodigoOTPException(CodigoOTPEnum.CodigoOTPNaoInformado, "É necessário informar um código OTP para efetuar login.");
+                  //  throw new CodigoOTPException(CodigoOTPEnum.CodigoOTPNaoInformado, "É necessário informar um código OTP para efetuar login.");
                 }
 
                 ///Código informado mas não é válido

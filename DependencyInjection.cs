@@ -1,6 +1,7 @@
 ﻿using api_authentication_boberto.CustomDbContext;
 using api_authentication_boberto.Implements;
 using api_authentication_boberto.Integrations.DiscordApiClient;
+using api_authentication_boberto.Integrations.SMSAdbTester;
 using api_authentication_boberto.Integrations.ZenviaApiClient;
 using api_authentication_boberto.Interfaces;
 using api_authentication_boberto.Models;
@@ -105,10 +106,11 @@ namespace api_authentication_boberto
         {
             builder.Services.BuildZenviaAPI(config);
             builder.Services.BuildDiscordAPI(config);
+            builder.Services.BuildADBTesterBuilder(config);
 
             builder.Services.AddSingleton<IEmailService, EmailService>();
             builder.Services.AddSingleton<DiscordService>();
-            builder.Services.AddSingleton<ZenvioService>();
+            builder.Services.AddSingleton<ZenvioService>();    
         }
 
         public static void InjetarServicosAutenticacao(this WebApplicationBuilder builder, IConfigurationRoot config)
