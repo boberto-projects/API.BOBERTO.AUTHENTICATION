@@ -1,9 +1,11 @@
 ﻿using api_authentication_boberto.CustomDbContext;
 using api_authentication_boberto.Models.Config;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Principal;
 using System.Text;
 
 namespace api_authentication_boberto.Services.Implements
@@ -14,12 +16,12 @@ namespace api_authentication_boberto.Services.Implements
         public TokenJWTService(IOptions<JwtConfig> jwtConfig)
         {
             _jwtConfig = jwtConfig.Value;
+            JWTKey = Encoding.UTF8.GetBytes(jwtConfig.Value.Key);
         }
 
-        public string GerarTokenJWT(UsuarioModel usuario, DateTime? expriacao = null)
+        public string GerarTokenJWT(UsuarioModel usuario, DateTime? expiracao = null)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_jwtConfig.Key);
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
@@ -29,11 +31,39 @@ namespace api_authentication_boberto.Services.Implements
                 {
                     new Claim("UserId", usuario.UsuarioId.ToString()),
                 }),
-                Expires = expriacao.GetValueOrDefault(DateTime.UtcNow.AddHours(1)),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                Expires = expiracao.GetValueOrDefault(DateTime.UtcNow.AddHours(1)),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(JWTKey), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
+        }
+        public bool ValidarTokenJWT(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var validationParameters = GetValidationParameters();
+            SecurityToken validatedToken;
+            try
+            {
+                tokenHandler.ValidateToken(token, validationParameters, out validatedToken);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }   
+        }
+        private byte[] JWTKey { get; set; }
+        private TokenValidationParameters GetValidationParameters()
+        {
+            return new TokenValidationParameters()
+            {
+                ValidateLifetime = true, // Because there is no expiration in the generated token
+                ValidateAudience = true, // Because there is no audiance in the generated token
+                ValidateIssuer = true,   // Because there is no issuer in the generated token
+                ValidIssuer = _jwtConfig.Issuer,
+                ValidAudience = _jwtConfig.Audience,
+                IssuerSigningKey = new SymmetricSecurityKey(JWTKey) // The same key as the one that generate the token
+            };
         }
     }
 }

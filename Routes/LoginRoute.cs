@@ -9,6 +9,7 @@ using api_authentication_boberto.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Dynamic;
 using BC = BCrypt.Net.BCrypt;
 
 namespace api_authentication_boberto.Routes
@@ -70,13 +71,29 @@ namespace api_authentication_boberto.Routes
                 ///Se a dupla autenticação estiver ativa e o código não for informado ou inválido.. Eu vou vou obrigar a logar novamente.
                 if (duplaAutenticacaoAtiva && codigoOtpExiste == false)
                 {
-                    var codigo = otpCode.GerarCodigoOTP();
-                    var enviarSMS = contaCadastrada.UsuarioConfig.UsarNumeroCelular;
-                    if (enviarSMS)
+                    //var codigo = otpCode.GerarCodigoOTP();
+                    //var enviarSMS = contaCadastrada.UsuarioConfig.UsarNumeroCelular;
+                    //var enviarEmail = contaCadastrada.UsuarioConfig.UsarEmail;
+
+                    //if (enviarSMS)
+                    //{
+                    //    enviarCodigoDuploFator.EnviarCodigoSMS(contaCadastrada.NumeroCelular, codigo);
+                    //}
+                    //if (enviarEmail)
+                    //{
+                    //    enviarCodigoDuploFator.EnviarCodigoEmail(contaCadastrada.Email, codigo);
+                    //}
+                    var expiraEm = DateTime.UtcNow.AddMinutes(5);
+                    var token_refresh = tokenJWTService.GerarTokenJWT(contaCadastrada, expiraEm);
+                    ///criar objeto depois
+                    return Results.Ok(new LoginResponse()
                     {
-                        enviarCodigoDuploFator.EnviarCodigoSMS(contaCadastrada.NumeroCelular, codigo);
-                    }
-                    enviarCodigoDuploFator.EnviarCodigoEmail(contaCadastrada.Email, codigo);
+                        Tipo = "token_temporario",
+                        Token = token_refresh,
+                        DuplaAutenticacaoObrigatoria = duplaAutenticacaoAtiva,
+                        ExpiraEm = expiraEm
+                    });
+                  
                   //  throw new CodigoOTPException(CodigoOTPEnum.CodigoOTPNaoInformado, "É necessário informar um código OTP para efetuar login.");
                 }
 
@@ -86,7 +103,6 @@ namespace api_authentication_boberto.Routes
                     throw new CodigoOTPException(CodigoOTPEnum.CodigoOTPInvalido, "Código informado inválido.");
                 }
 
-    
                 /// Atualizo que o UltimoLogin do usuário e retorno um sucesso com o JWT.
                 contaCadastrada.UltimoLogin = DateTime.Now;
                 var token = tokenJWTService.GerarTokenJWT(contaCadastrada);
@@ -99,9 +115,35 @@ namespace api_authentication_boberto.Routes
                 });
             }).WithTags("Autenticação");
 
+            //refresh token
+            app.MapPost("/refresh_token", [Authorize] ([FromBody] RefreshTokenRequest request, IUsuarioService usuarioLogado, [FromServices] TokenJWTService tokenJWTService, [FromServices] DatabaseContext dbContext) =>
+            {
+                var tokenValido = tokenJWTService.ValidarTokenJWT(request.Token);
+                if(tokenValido == false)
+                {
+                    throw new CustomException(StatusCodeEnum.NaoAutorizado, "Token inválido");
+                }
+                var usuario = usuarioLogado.ObterUsuarioLogado();
+                
+                var expiracao = DateTime.UtcNow.AddHours(1);
+                var token = tokenJWTService.GerarTokenJWT(new UsuarioModel()
+                {
+                    UsuarioId = usuario.Id,
+                    Email = usuario.Email,
+                    Nome = usuario.Nome,
+                    NumeroCelular = usuario.NumeroCelular
+                }, expiracao);
 
-            ///separar essa rota em outro lugar depois.
-            app.MapPost("/registrar", [AllowAnonymous] ([FromBody] RegistrarRequest request, [FromServices] DatabaseContext dbContext) =>
+                return Results.Ok(new RefreshTokenResponse()
+                {
+                    Token = token,
+                    ExpiraEm = expiracao
+                });    
+            });
+
+
+                ///separar essa rota em outro lugar depois.
+                app.MapPost("/registrar", [AllowAnonymous] ([FromBody] RegistrarRequest request, [FromServices] DatabaseContext dbContext) =>
             {
                 request.Validar();
 

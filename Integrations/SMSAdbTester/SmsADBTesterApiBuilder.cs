@@ -1,5 +1,6 @@
 ﻿using api_authentication_boberto.Integrations.ZenviaApiClient;
 using api_authentication_boberto.Models.Config;
+using Newtonsoft.Json;
 using RestEase;
 
 namespace api_authentication_boberto.Integrations.SMSAdbTester
@@ -11,7 +12,7 @@ namespace api_authentication_boberto.Integrations.SMSAdbTester
             var configOptions = config.GetSection("SmsAdbTesterApiConfig").Get<SmsAdbTesterApiConfig>();
 
             ISmsAdbTesterApi api = RestClient.For<ISmsAdbTesterApi>(configOptions.Url);
-
+            
             services.AddSingleton(api);
         }
     }

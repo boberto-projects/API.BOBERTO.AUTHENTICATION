@@ -56,8 +56,8 @@ namespace api_authentication_boberto.Services.Implements
                 _smsAdbTesterApi.EnviarSMS(
                  new Integrations.SMSAdbTester.Request.SendAdbTesterMessageRequest()
                 {
-                    Message = codigo
-                });
+                    Message = $"ApiAuthBoberto: Seu código é {codigo}"
+                 });
 
                 return;
             }
