@@ -21,6 +21,7 @@ namespace api_authentication_boberto.Routes
                 [FromServices] IRedisService redisService,
                 [FromServices] DatabaseContext dbContext,
                 IOTPCode otpCode,
+                IEnviarCodigoDuploFator enviarCodigoDuploFator,
                 [FromServices] GerenciadorAutenticacao gerenciadorAutenticacao,
                 [FromServices] IConfiguration config,
                 [FromServices] TokenJWTService tokenJWTService
@@ -53,19 +54,8 @@ namespace api_authentication_boberto.Routes
                 ///Se atingiu o limite máximo de tentativas de login falhas e o codigo otp não foi informado
                 if (atingiuLimiteMaximoDeTentativas && codigoOtpExiste == false)
                 {
+         
                     throw new CustomException(StatusCodeEnum.NaoAutorizado, "Você errou a senha muitas vezes. Espere um pouco antes de tentar novamente.");
-                }
-
-                ///Se a dupla autenticação estiver ativa e o código não for informado ou inválido.. Eu vou vou obrigar a logar novamente.
-                if (duplaAutenticacaoAtiva && codigoOtpExiste == false)
-                {
-                    throw new CodigoOTPException(CodigoOTPEnum.CodigoOTPNaoInformado, "É necessário informar um código OTP para efetuar login.");
-                }
-
-                ///Código informado mas não é válido
-                if (codigoOtpExiste && codigoOtp == false)
-                {
-                    throw new CodigoOTPException(CodigoOTPEnum.CodigoOTPInvalido, "Código informado inválido.");
                 }
 
                 ///Comparo a senha.
@@ -76,6 +66,27 @@ namespace api_authentication_boberto.Routes
                     gerenciadorAutenticacao.IncrementarTentativa();
                     throw new CustomException(StatusCodeEnum.NaoAutorizado, "Dados inválidos.");
                 }
+
+                ///Se a dupla autenticação estiver ativa e o código não for informado ou inválido.. Eu vou vou obrigar a logar novamente.
+                if (duplaAutenticacaoAtiva && codigoOtpExiste == false)
+                {
+                    var codigo = otpCode.GerarCodigoOTP();
+                    var enviarSMS = contaCadastrada.UsuarioConfig.UsarNumeroCelular;
+                    if (enviarSMS)
+                    {
+                        enviarCodigoDuploFator.EnviarCodigoSMS(contaCadastrada.NumeroCelular, codigo);
+                    }
+                    enviarCodigoDuploFator.EnviarCodigoEmail(contaCadastrada.Email, codigo);
+                    throw new CodigoOTPException(CodigoOTPEnum.CodigoOTPNaoInformado, "É necessário informar um código OTP para efetuar login.");
+                }
+
+                ///Código informado mas não é válido
+                if (codigoOtpExiste && codigoOtp == false)
+                {
+                    throw new CodigoOTPException(CodigoOTPEnum.CodigoOTPInvalido, "Código informado inválido.");
+                }
+
+    
                 /// Atualizo que o UltimoLogin do usuário e retorno um sucesso com o JWT.
                 contaCadastrada.UltimoLogin = DateTime.Now;
                 var token = tokenJWTService.GerarTokenJWT(contaCadastrada);

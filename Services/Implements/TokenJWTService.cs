@@ -16,7 +16,7 @@ namespace api_authentication_boberto.Services.Implements
             _jwtConfig = jwtConfig.Value;
         }
 
-        public string GerarTokenJWT(UsuarioModel usuario)
+        public string GerarTokenJWT(UsuarioModel usuario, DateTime? expriacao = null)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_jwtConfig.Key);
@@ -29,7 +29,7 @@ namespace api_authentication_boberto.Services.Implements
                 {
                     new Claim("UserId", usuario.UsuarioId.ToString()),
                 }),
-                Expires = DateTime.UtcNow.AddHours(1),
+                Expires = expriacao.GetValueOrDefault(DateTime.UtcNow.AddHours(1)),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);

@@ -6,7 +6,7 @@
         public ApiConfig ApiConfig { get; set; }
         public ResourcesConfig ResourcesConfig { get; set; }
         public SmtpConfig SmtpConfig { get; set; }
-        public JwtConfig Jwt { get; set; }
+        public JwtConfig JwtConfig { get; set; }
         public TwoFactorConfig TwoFactorConfig { get; set; }
         public GerenciadorAutenticacaoConfig GerenciadorAutenticacaoConfig { get; set; }
         public GerenciadorZenvioConfig GerenciadorZenvioConfig { get; set; }
