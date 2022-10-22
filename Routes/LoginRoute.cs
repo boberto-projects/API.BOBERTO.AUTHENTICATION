@@ -22,7 +22,9 @@ namespace api_authentication_boberto.Routes
                 [FromServices] DatabaseContext dbContext,
                 IOTPCode otpCode,
                 [FromServices] GerenciadorAutenticacao gerenciadorAutenticacao,
-                [FromServices] IConfiguration config) =>
+                [FromServices] IConfiguration config,
+                [FromServices] TokenJWTService tokenJWTService
+                ) =>
             {
                 request.Validar();
 
@@ -76,12 +78,13 @@ namespace api_authentication_boberto.Routes
                 }
                 /// Atualizo que o UltimoLogin do usuário e retorno um sucesso com o JWT.
                 contaCadastrada.UltimoLogin = DateTime.Now;
+                var token = tokenJWTService.GerarTokenJWT(contaCadastrada);
                 dbContext.SaveChanges();
 
                 return Results.Ok(new LoginResponse()
                 {
                     DuplaAutenticacaoObrigatoria = duplaAutenticacaoAtiva,
-                    Token = contaCadastrada.GerarTokenJWT(config)
+                    Token = token
                 });
             }).WithTags("Autenticação");
 

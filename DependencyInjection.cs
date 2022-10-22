@@ -22,10 +22,12 @@ namespace api_authentication_boberto
     {
         public static void InjetarServicos(this WebApplicationBuilder builder, IConfigurationRoot config)
         {
+            builder.Services.AddCors();
+
+            builder.Services.AddAuthorization();
 
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            builder.Services.AddAuthorization();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddHttpContextAccessor();
 
@@ -35,11 +37,12 @@ namespace api_authentication_boberto
             builder.Services.AddSingleton<IEnviarCodigoDuploFator, EnviarCodigoDuploFator>();
             builder.Services.AddSingleton<AtualizarAppsettings>();
             builder.Services.AddSingleton<GerenciadorZenvio>();
+            builder.Services.AddSingleton<GerenciadorAutenticacao>();
 
+            builder.Services.AddScoped<TokenJWTService>();
             builder.Services.AddScoped<IUsuarioService, UsuarioService>();
-            builder.Services.AddScoped<GerenciadorAutenticacao>();
 
-            //config temporaria
+            //config temporaria postgree
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
 
@@ -53,8 +56,10 @@ namespace api_authentication_boberto
             builder.Services.Configure<ApiConfig>(options => config.GetSection("ApiConfig").Bind(options));
             builder.Services.Configure<SmtpConfig>(options => config.GetSection("SmtpConfig").Bind(options));
             builder.Services.Configure<ResourcesConfig>(options => config.GetSection("ResourcesConfig").Bind(options));
+            builder.Services.Configure<JwtConfig>(options => config.GetSection("JwtConfig").Bind(options));
+
         }
-       
+
         public static void InjetarServicosDeArmazenamento(this WebApplicationBuilder builder, IConfigurationRoot config)
         {
             ///O plugin postgree do dokku insere uma URL na variavel de ambiente. Mas localmente não usamos link direto com o POSTGREE.
@@ -107,19 +112,17 @@ namespace api_authentication_boberto
         }
 
         public static void InjetarServicosAutenticacao(this WebApplicationBuilder builder, IConfigurationRoot config)
-        {
-            var jwtKey = Encoding.ASCII.GetBytes(config["Jwt:Key"]);
-
+        { 
+            var jwtKey = Encoding.ASCII.GetBytes(config["JwtConfig:Key"]);
 
             builder.Services.AddAuthentication("ApiKeyAuthenticationHandler")
-                   .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>
-                   ("ApiKeyAuthenticationHandler", null);
+            .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>
+            ("ApiKeyAuthenticationHandler", null);
 
             builder.Services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(x =>
             {
@@ -127,12 +130,12 @@ namespace api_authentication_boberto
                 x.SaveToken = true;
                 x.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(jwtKey),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
+                   ValidateIssuerSigningKey = true,
+                   IssuerSigningKey = new SymmetricSecurityKey(jwtKey),
+                   ValidateIssuer = false,
+                   ValidateAudience = false
                 };
-            });
+            });   
         }
     }
 }

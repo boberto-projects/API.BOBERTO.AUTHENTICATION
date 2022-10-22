@@ -1,5 +1,6 @@
 using api_authentication_boberto;
 using api_authentication_boberto.Exceptions;
+using api_authentication_boberto.Interfaces;
 using api_authentication_boberto.Models;
 using api_authentication_boberto.Models.Config;
 using api_authentication_boberto.Routes;
@@ -24,9 +25,9 @@ var config = new ConfigurationBuilder()
 
 builder.InjetarConfiguracoes(config);
 builder.InjetarServicosDeArmazenamento(config);
-builder.InjetarServicosAutenticacao(config);
 builder.InjetarServicos(config);
 builder.InjetarIntegracoes(config);
+builder.InjetarServicosAutenticacao(config);
 
 var app = builder.Build();
 
@@ -51,9 +52,6 @@ app.UseExceptionHandler(exceptionHandlerApp =>
     });
 });
 
-app.UseAuthentication();
-app.UseAuthorization();
-
 // Configure the HTTP request pipeline.
 if (config.GetSection("ApiConfig").Get<ApiConfig>().Swagger)
 {
@@ -61,14 +59,19 @@ if (config.GetSection("ApiConfig").Get<ApiConfig>().Swagger)
     app.UseSwaggerUI();
 }
 
+app.UseCors(x => x
+    .AllowAnyOrigin()
+    .AllowAnyMethod()
+    .AllowAnyHeader());
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 
 app.AdicionarLoginRoute();
 app.AdicionarOtpRoute();
 app.AdicionarUsuarioRoute();
 app.AdicionarApiConfigRoute();
-
-
 
 
 app.MapGet("/", ([FromServices] ApiCicloDeVida apiCicloDeVida) =>
@@ -81,12 +84,9 @@ app.MapGet("/", ([FromServices] ApiCicloDeVida apiCicloDeVida) =>
 }).WithTags("Health Check");
 
 
-app.MapPost("/teste", [Authorize(AuthenticationSchemes = "ApiKeyAuthenticationHandler")] ([FromServices] GerenciadorZenvio gerenciadorZenvio,
-    [FromServices] IOptions<DiscordAPIConfig> discordApiConfig,
-    [FromServices] IOptions<ZenviaApiConfig> zeenviaApiConfig
-    ) =>
+app.MapGet("/teste", (HttpContext httpContext) =>
 {
-
+    var teste = httpContext.User;
     return Results.Ok();
 }).WithTags("Health Check");
 

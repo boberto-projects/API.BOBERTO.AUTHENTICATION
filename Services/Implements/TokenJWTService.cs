@@ -1,19 +1,30 @@
 ﻿using api_authentication_boberto.CustomDbContext;
+using api_authentication_boberto.Models.Config;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace api_authentication_boberto
+namespace api_authentication_boberto.Services.Implements
 {
-    public static class HashUtils
+    public class TokenJWTService
     {
-        public static string GerarTokenJWT(this UsuarioModel usuario, IConfiguration _config)
+        private JwtConfig _jwtConfig;
+        public TokenJWTService(IOptions<JwtConfig> jwtConfig)
+        {
+            _jwtConfig = jwtConfig.Value;
+        }
+
+        public string GerarTokenJWT(UsuarioModel usuario)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_config["Jwt:Key"]);
+            var key = Encoding.ASCII.GetBytes(_jwtConfig.Key);
+
             var tokenDescriptor = new SecurityTokenDescriptor
             {
+                Issuer = _jwtConfig.Issuer,
+                Audience = _jwtConfig.Audience,
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim("UserId", usuario.UsuarioId.ToString()),
