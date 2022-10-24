@@ -28,7 +28,14 @@ namespace api_authentication_boberto.Routes
                 request.Validar();
                 var codigo = otpCode.GerarCodigoOTP();
                 enviarCodigoDuploFator.EnviarCodigoSMS(request.NumeroCelular, codigo);
-                return Results.Ok();
+
+                ///TODO: essas tentativas de sincronizar timezone tá bem chatinha :c
+                ///Próximo plano é configurar um DateTime global para toda a api. Possivelmente usando timezone America/Sao_Paulo
+
+                return Results.Ok(new
+                {
+                    ExpiraEm = DateTime.Now
+                });
 
             }).WithTags("Dupla autenticação");
 

@@ -68,7 +68,8 @@ namespace api_authentication_boberto.Routes
                     throw new CustomException(StatusCodeEnum.NaoAutorizado, "Dados inválidos.");
                 }
 
-                ///Se a dupla autenticação estiver ativa e o código não for informado ou inválido.. Eu vou vou obrigar a logar novamente.
+                ///Se a dupla autenticação estiver ativa e o código não for informado ou inválido.. Eu vou retornar um token do tipo token_temporario
+                ///um token de 35 segundos que o aplicativo usuará apenas para obter informações
                 if (duplaAutenticacaoAtiva && codigoOtpExiste == false)
                 {
                     //var codigo = otpCode.GerarCodigoOTP();
@@ -83,7 +84,7 @@ namespace api_authentication_boberto.Routes
                     //{
                     //    enviarCodigoDuploFator.EnviarCodigoEmail(contaCadastrada.Email, codigo);
                     //}
-                    var expiraEm = DateTime.UtcNow.AddMinutes(5);
+                    var expiraEm = DateTime.UtcNow.AddSeconds(35);
                     var token_refresh = tokenJWTService.GerarTokenJWT(contaCadastrada, expiraEm);
                     ///criar objeto depois
                     return Results.Ok(new LoginResponse()
@@ -123,8 +124,7 @@ namespace api_authentication_boberto.Routes
                 {
                     throw new CustomException(StatusCodeEnum.NaoAutorizado, "Token inválido");
                 }
-                var usuario = usuarioLogado.ObterUsuarioLogado();
-                
+                var usuario = usuarioLogado.ObterUsuarioLogado();      
                 var expiracao = DateTime.UtcNow.AddHours(1);
                 var token = tokenJWTService.GerarTokenJWT(new UsuarioModel()
                 {
@@ -172,7 +172,7 @@ namespace api_authentication_boberto.Routes
 
                 dbContext.SaveChanges();
 
-            }).WithTags("Usuario");
+            }).WithTags("Usuário");
         }
     }
 }

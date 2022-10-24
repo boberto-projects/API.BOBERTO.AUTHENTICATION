@@ -22,7 +22,6 @@ namespace api_authentication_boberto.Services.Implements
         public string GerarTokenJWT(UsuarioModel usuario, DateTime? expiracao = null)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Issuer = _jwtConfig.Issuer,
