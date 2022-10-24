@@ -10,6 +10,7 @@ namespace api_authentication_boberto.Services.Implements
     public class OTPCodeService : IOTPCode
     {
         private TwoFactorConfig _twoFactorConfig;
+        private byte[] ChaveOTP => Base32Encoding.ToBytes(_twoFactorConfig.Key);
 
         public OTPCodeService(IOptions<TwoFactorConfig> twoFactorConfig)
         {
@@ -18,18 +19,16 @@ namespace api_authentication_boberto.Services.Implements
 
         public string GerarCodigoOTP()
         {
-            var key = Encoding.ASCII.GetBytes(_twoFactorConfig.Key);
             var size = _twoFactorConfig.Size;
-            var totp = new Totp(key, totpSize: size, step: _twoFactorConfig.Step);
+            var totp = new Totp(ChaveOTP, totpSize: size, step: _twoFactorConfig.Step);
             var code = totp.ComputeTotp();
             return code;
         }
 
         public ValidarCodigoOTPResponse ValidarCodigoOTP(string code)
         {
-            var key = Encoding.ASCII.GetBytes(_twoFactorConfig.Key);
             var size = _twoFactorConfig.Size;
-            var totp = new Totp(key, totpSize: size, step: _twoFactorConfig.Step);
+            var totp = new Totp(ChaveOTP, totpSize: size, step: _twoFactorConfig.Step);
             var valid = totp.VerifyTotp(code, out long timeStepMatched);
             return new ValidarCodigoOTPResponse()
             {

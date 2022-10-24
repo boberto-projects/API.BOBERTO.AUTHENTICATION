@@ -32,10 +32,7 @@ namespace api_authentication_boberto.Routes
                 ///TODO: essas tentativas de sincronizar timezone tá bem chatinha :c
                 ///Próximo plano é configurar um DateTime global para toda a api. Possivelmente usando timezone America/Sao_Paulo
 
-                return Results.Ok(new
-                {
-                    ExpiraEm = DateTime.Now
-                });
+                return Results.Ok();
 
             }).WithTags("Dupla autenticação");
 
