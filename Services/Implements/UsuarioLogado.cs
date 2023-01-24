@@ -1,15 +1,15 @@
-﻿using api_authentication_boberto.Interfaces;
-using System.Security.Claims;
-using Microsoft.EntityFrameworkCore;
+﻿using api_authentication_boberto.CustomDbContext;
+using api_authentication_boberto.Interfaces;
 using api_authentication_boberto.Models;
-using api_authentication_boberto.CustomDbContext;
+using Microsoft.EntityFrameworkCore;
 using RestEase.Implementation;
+using System.Security.Claims;
 
 namespace api_authentication_boberto.Implements
 {
     public class UsuarioService : IUsuarioService
     {
-      
+
         private IHttpContextAccessor _httpContextAccessor { get; set; }
         private DatabaseContext _dbContext { get; set; }
 
@@ -31,7 +31,8 @@ namespace api_authentication_boberto.Implements
                 UsarNumeroCelular = usuario.UsuarioConfig.UsarNumeroCelular,
                 Email = usuario.Email,
                 Nome = usuario.Nome,
-                NumeroCelular = usuario.NumeroCelular
+                NumeroCelular = usuario.NumeroCelular,
+                ApiKeys = usuario.ApiKeys
             };
         }
 
@@ -53,7 +54,6 @@ namespace api_authentication_boberto.Implements
                 usuario.NumeroCelular = autenticacoes.NumeroCelular;
                 usuario.UsuarioConfig.UsarNumeroCelular = usarNumeroCelular;
             }
-     
             _dbContext.SaveChanges();
         }
 

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.Extensions.Options;
 using System.Diagnostics;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using DbContext = Microsoft.EntityFrameworkCore.DbContext;
 
 namespace api_authentication_boberto.CustomDbContext
@@ -10,7 +11,7 @@ namespace api_authentication_boberto.CustomDbContext
     {
         public DbSet<UsuarioModel> Usuarios { get; set; }
         public DbSet<UsuarioConfigModel> UsuariosConfig { get; set; }
-
+        public DbSet<ApiKeyModel> ApiKey { get; set; }
 
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
         {
@@ -18,7 +19,7 @@ namespace api_authentication_boberto.CustomDbContext
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-     
+
 
             modelBuilder.Entity<UsuarioModel>(entity =>
             {
@@ -45,7 +46,18 @@ namespace api_authentication_boberto.CustomDbContext
                 .WithOne()
                 .HasForeignKey<UsuarioConfigModel>(e => e.UsuarioConfigId)
                 .OnDelete(DeleteBehavior.Cascade);
-                
+
+
+                entity.HasMany(c => c.ApiKeys)
+                .WithOne()
+                .HasForeignKey(s => s.UsuarioId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+                //entity.HasOne(e => e.ApiKey)
+                //.WithOne()
+                //.HasForeignKey<ApiKeyModel>(e => e.ApiKeyId)
+                //.OnDelete(DeleteBehavior.Cascade);
+
             });
 
             modelBuilder.Entity<UsuarioConfigModel>(entity =>
@@ -59,6 +71,25 @@ namespace api_authentication_boberto.CustomDbContext
 
                 entity.Property(e => e.UsarEmail).HasColumnName("usaremail");
                 entity.Property(e => e.UsarNumeroCelular).HasColumnName("usarnumerocelular");
+            });
+
+            modelBuilder.Entity<ApiKeyModel>(entity =>
+            {
+
+                entity.ToTable("api_keys");
+
+                entity.HasKey(e => e.ApiKeyId).HasName("api_keys_pkey");
+                entity.Property(e => e.ApiKeyId).HasColumnName("id");
+                entity.Property(e => e.ApiKeyId).UseIdentityAlwaysColumn();
+
+                entity.Property(e => e.ApiKey).HasColumnName("apikey");
+                entity.Property(e => e.Scopes).HasColumnName("scopes");
+                entity.Property(e => e.UsuarioId).HasColumnName("usuarioid");
+
+                entity.HasOne(e => e.Usuario)
+                .WithMany(c => c.ApiKeys)
+                .HasForeignKey(e => e.UsuarioId);
+
 
             });
         }

@@ -1,4 +1,6 @@
-﻿namespace api_authentication_boberto.Models
+﻿using api_authentication_boberto.CustomDbContext;
+
+namespace api_authentication_boberto.Models
 {
     public class UsuarioLogado
     {
@@ -9,7 +11,9 @@
 
         public bool UsarEmail { get; set; }
         public bool UsarNumeroCelular { get; set; }
+
+        public IEnumerable<ApiKeyModel> ApiKeys { get; set; }
     }
 
-   
+
 }

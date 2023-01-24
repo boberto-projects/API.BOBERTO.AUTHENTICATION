@@ -14,6 +14,8 @@ namespace api_authentication_boberto.CustomDbContext
         public DateTime UltimoLogin { get; set; }
 
         public int UsuarioConfigId { get; set; }
-        public virtual UsuarioConfigModel UsuarioConfig { get;set; }
+        public virtual UsuarioConfigModel UsuarioConfig { get; set; }
+        public ICollection<ApiKeyModel> ApiKeys { get; set; }
+
     }
 }

@@ -69,6 +69,7 @@ app.UseAuthorization();
 
 
 app.AdicionarLoginRoute();
+app.AddApiKeyRoute();
 app.AdicionarOtpRoute();
 app.AdicionarUsuarioRoute();
 app.AdicionarApiConfigRoute();
