@@ -1,4 +1,4 @@
-﻿using api_authentication_boberto.CustomDbContext;
+﻿using api_authentication_boberto.Domain.CustomDbContext;
 
 namespace api_authentication_boberto.Models
 {
@@ -12,7 +12,7 @@ namespace api_authentication_boberto.Models
         public bool UsarEmail { get; set; }
         public bool UsarNumeroCelular { get; set; }
 
-        public IEnumerable<ApiKeyModel> ApiKeys { get; set; }
+        public IEnumerable<GetApiKeyModel> ApiKeys { get; set; }
     }
 
 

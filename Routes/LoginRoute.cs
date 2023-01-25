@@ -1,4 +1,4 @@
-﻿using api_authentication_boberto.CustomDbContext;
+﻿using api_authentication_boberto.Domain.CustomDbContext;
 using api_authentication_boberto.Exceptions;
 using api_authentication_boberto.Interfaces;
 using api_authentication_boberto.Models;
@@ -55,7 +55,7 @@ namespace api_authentication_boberto.Routes
                 ///Se atingiu o limite máximo de tentativas de login falhas e o codigo otp não foi informado
                 if (atingiuLimiteMaximoDeTentativas && codigoOtpExiste == false)
                 {
-         
+
                     throw new CustomException(StatusCodeEnum.NaoAutorizado, "Você errou a senha muitas vezes. Espere um pouco antes de tentar novamente.");
                 }
 
@@ -94,8 +94,8 @@ namespace api_authentication_boberto.Routes
                         DuplaAutenticacaoObrigatoria = duplaAutenticacaoAtiva,
                         ExpiraEm = expiraEm
                     });
-                  
-                  //  throw new CodigoOTPException(CodigoOTPEnum.CodigoOTPNaoInformado, "É necessário informar um código OTP para efetuar login.");
+
+                    //  throw new CodigoOTPException(CodigoOTPEnum.CodigoOTPNaoInformado, "É necessário informar um código OTP para efetuar login.");
                 }
 
                 ///Código informado mas não é válido
@@ -120,11 +120,11 @@ namespace api_authentication_boberto.Routes
             app.MapPost("/refresh_token", [Authorize] ([FromBody] RefreshTokenRequest request, IUsuarioService usuarioLogado, [FromServices] TokenJWTService tokenJWTService, [FromServices] DatabaseContext dbContext) =>
             {
                 var tokenValido = tokenJWTService.ValidarTokenJWT(request.Token);
-                if(tokenValido == false)
+                if (tokenValido == false)
                 {
                     throw new CustomException(StatusCodeEnum.NaoAutorizado, "Token inválido");
                 }
-                var usuario = usuarioLogado.ObterUsuarioLogado();      
+                var usuario = usuarioLogado.ObterUsuarioLogado();
                 var expiracao = DateTime.UtcNow.AddHours(1);
                 var token = tokenJWTService.GerarTokenJWT(new UsuarioModel()
                 {
@@ -138,41 +138,41 @@ namespace api_authentication_boberto.Routes
                 {
                     Token = token,
                     ExpiraEm = expiracao
-                });    
+                });
             });
 
 
-                ///separar essa rota em outro lugar depois.
-                app.MapPost("/registrar", [AllowAnonymous] ([FromBody] RegistrarRequest request, [FromServices] DatabaseContext dbContext) =>
+            ///separar essa rota em outro lugar depois.
+            app.MapPost("/registrar", [AllowAnonymous] ([FromBody] RegistrarRequest request, [FromServices] DatabaseContext dbContext) =>
+        {
+            request.Validar();
+
+            var emailEmUso = dbContext.Usuarios.Count(x => x.Email.Equals(request.Email)) > 0;
+
+            if (emailEmUso)
             {
-                request.Validar();
+                throw new CustomException(StatusCodeEnum.Negocio, "Email já em uso.");
+            }
 
-                var emailEmUso = dbContext.Usuarios.Count(x => x.Email.Equals(request.Email)) > 0;
+            string hashed = BC.HashPassword(request.Senha);
 
-                if (emailEmUso)
-                {
-                    throw new CustomException(StatusCodeEnum.Negocio, "Email já em uso.");
-                }
+            var usuarioConfig = new UsuarioConfigModel();
 
-                string hashed = BC.HashPassword(request.Senha);
+            dbContext.UsuariosConfig.Add(usuarioConfig);
+            dbContext.SaveChanges();
 
-                var usuarioConfig = new UsuarioConfigModel();
+            dbContext.Usuarios.Add(new()
+            {
+                Email = request.Email,
+                Nome = request.Nome,
+                Senha = hashed,
+                NumeroCelular = request.NumeroCelular,
+                UsuarioConfigId = usuarioConfig.UsuarioConfigId
+            });
 
-                dbContext.UsuariosConfig.Add(usuarioConfig);
-                dbContext.SaveChanges();
+            dbContext.SaveChanges();
 
-                dbContext.Usuarios.Add(new()
-                {
-                    Email = request.Email,
-                    Nome = request.Nome,
-                    Senha = hashed,
-                    NumeroCelular = request.NumeroCelular,
-                    UsuarioConfigId = usuarioConfig.UsuarioConfigId
-                });
-
-                dbContext.SaveChanges();
-
-            }).WithTags("Usuário");
+        }).WithTags("Usuário");
         }
     }
 }

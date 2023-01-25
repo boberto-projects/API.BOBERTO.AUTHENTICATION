@@ -1,4 +1,4 @@
-﻿using api_authentication_boberto.CustomDbContext;
+﻿using api_authentication_boberto.Domain.CustomDbContext;
 using api_authentication_boberto.Exceptions;
 using api_authentication_boberto.Interfaces;
 using api_authentication_boberto.Models;

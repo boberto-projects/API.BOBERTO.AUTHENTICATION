@@ -1,11 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using System.Diagnostics;
+using System.Text.Json;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using DbContext = Microsoft.EntityFrameworkCore.DbContext;
 
-namespace api_authentication_boberto.CustomDbContext
+namespace api_authentication_boberto.Domain.CustomDbContext
 {
     public class DatabaseContext : DbContext
     {
@@ -83,14 +86,17 @@ namespace api_authentication_boberto.CustomDbContext
                 entity.Property(e => e.ApiKeyId).UseIdentityAlwaysColumn();
 
                 entity.Property(e => e.ApiKey).HasColumnName("apikey");
-                entity.Property(e => e.Scopes).HasColumnName("scopes");
                 entity.Property(e => e.UsuarioId).HasColumnName("usuarioid");
+
+                entity.Property(e => e.Scopes)
+                .HasColumnName("scopes")
+                .HasConversion(new ValueConverter<List<string>, string>(
+            v => JsonConvert.SerializeObject(v),
+            v => JsonConvert.DeserializeObject<List<string>>(v)));
 
                 entity.HasOne(e => e.Usuario)
                 .WithMany(c => c.ApiKeys)
                 .HasForeignKey(e => e.UsuarioId);
-
-
             });
         }
 

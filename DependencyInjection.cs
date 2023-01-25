@@ -1,4 +1,4 @@
-﻿using api_authentication_boberto.CustomDbContext;
+﻿using api_authentication_boberto.Domain.CustomDbContext;
 using api_authentication_boberto.Implements;
 using api_authentication_boberto.Integrations.DiscordApiClient;
 using api_authentication_boberto.Integrations.SMSAdbTester;
@@ -43,6 +43,8 @@ namespace api_authentication_boberto
             builder.Services.AddScoped<TokenJWTService>();
             builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
+            builder.Services.AddScoped<IApiKeyService, ApiKeyService>();
+
             //config temporaria postgree
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
         }
@@ -58,19 +60,16 @@ namespace api_authentication_boberto
             builder.Services.Configure<SmtpConfig>(options => config.GetSection("SmtpConfig").Bind(options));
             builder.Services.Configure<ResourcesConfig>(options => config.GetSection("ResourcesConfig").Bind(options));
             builder.Services.Configure<JwtConfig>(options => config.GetSection("JwtConfig").Bind(options));
-
         }
 
         public static void InjetarServicosDeArmazenamento(this WebApplicationBuilder builder, IConfigurationRoot config)
         {
             ///O plugin postgree do dokku insere uma URL na variavel de ambiente. Mas localmente não usamos link direto com o POSTGREE.
             ///GAMB pra converter uma url para o esquema de autenticação da biblioteca Npgsql
-           
-            
             builder.Services.AddEntityFrameworkNpgsql().AddDbContext<DatabaseContext>(o => o.UseNpgsql(ObterPostGreeContext()));
             ///redis               
-            builder.Services.AddStackExchangeRedisCache(options =>options.Configuration = ObterRedisContext());
-            
+            builder.Services.AddStackExchangeRedisCache(options => options.Configuration = ObterRedisContext());
+
             string ObterRedisContext()
             {
                 var redisContextUrl = config.GetConnectionString("RedisConnectionContext");
@@ -110,17 +109,15 @@ namespace api_authentication_boberto
 
             builder.Services.AddSingleton<IEmailService, EmailService>();
             builder.Services.AddSingleton<DiscordService>();
-            builder.Services.AddSingleton<ZenvioService>();    
+            builder.Services.AddSingleton<ZenvioService>();
         }
 
         public static void InjetarServicosAutenticacao(this WebApplicationBuilder builder, IConfigurationRoot config)
-        { 
+        {
             var jwtKey = Encoding.ASCII.GetBytes(config["JwtConfig:Key"]);
-
             builder.Services.AddAuthentication("ApiKeyAuthenticationHandler")
             .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>
             ("ApiKeyAuthenticationHandler", null);
-
             builder.Services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -132,12 +129,12 @@ namespace api_authentication_boberto
                 x.SaveToken = true;
                 x.TokenValidationParameters = new TokenValidationParameters
                 {
-                   ValidateIssuerSigningKey = true,
-                   IssuerSigningKey = new SymmetricSecurityKey(jwtKey),
-                   ValidateIssuer = false,
-                   ValidateAudience = false
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(jwtKey),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
                 };
-            });   
+            });
         }
     }
 }

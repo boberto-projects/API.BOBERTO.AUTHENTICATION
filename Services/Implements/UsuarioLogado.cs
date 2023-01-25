@@ -1,4 +1,4 @@
-﻿using api_authentication_boberto.CustomDbContext;
+﻿using api_authentication_boberto.Domain.CustomDbContext;
 using api_authentication_boberto.Interfaces;
 using api_authentication_boberto.Models;
 using Microsoft.EntityFrameworkCore;
@@ -31,8 +31,7 @@ namespace api_authentication_boberto.Implements
                 UsarNumeroCelular = usuario.UsuarioConfig.UsarNumeroCelular,
                 Email = usuario.Email,
                 Nome = usuario.Nome,
-                NumeroCelular = usuario.NumeroCelular,
-                ApiKeys = usuario.ApiKeys
+                NumeroCelular = usuario.NumeroCelular
             };
         }
 
