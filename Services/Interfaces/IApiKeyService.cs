@@ -5,7 +5,10 @@ namespace api_authentication_boberto.Services.Interfaces
 {
     public interface IApiKeyService
     {
-        public GetApiKeyModel? Validate(string key);
-        public GetApiKeyModel GetApiKey();
+        public bool Validate(string key);
+        public GetApiKeyModel Get(string key);
+        public string DecryptApiKey(string key);
+        public string EncryptApiKey(string key);
+        public GetApiKeyModel Generate();
     }
 }

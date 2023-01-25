@@ -4,6 +4,7 @@ using api_authentication_boberto.Exceptions;
 using api_authentication_boberto.Models;
 using api_authentication_boberto.Models.Config;
 using api_authentication_boberto.Services.Interfaces;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
 using System.Security.Cryptography;
 using BC = BCrypt.Net.BCrypt;
@@ -12,9 +13,13 @@ namespace api_authentication_boberto.Services.Implements
 {
     public class ApiKeyService : IApiKeyService
     {
-        const string _prefix = "MODEDITOR-";
+        const string _prefix = "BOBERTOAUTH-";
         const int _numberOfSecureBytesToGenerate = 32;
         const int _lengthOfKey = 36;
+
+        /// <summary>
+        /// Scopes needs be enums.
+        /// </summary>
         public static string[] DefaultScopes = new string[] { "manage_modpack" };
         DatabaseContext DbContext { get; set; }
         ApiConfig ApiConfig { get; set; }
@@ -23,33 +28,50 @@ namespace api_authentication_boberto.Services.Implements
             DbContext = dbContext;
             ApiConfig = apiConfig.Value;
         }
-        public GetApiKeyModel? Validate(string key)
+
+        public string DecryptApiKey(string key)
         {
-            ///Only valid if siugned by tis api
-            var errors = new List<string>();
-            try
+            return EncryptUtils.DecryptString(ApiConfig.ApiKeyAuthentication.Key, key);
+        }
+        public string EncryptApiKey(string key)
+        {
+            return EncryptUtils.EncryptString(ApiConfig.ApiKeyAuthentication.Key, key);
+        }
+        public bool Validate(string key)
+        {
+            var decrypt = DecryptApiKey(key);
+            return decrypt != null;
+        }
+        /// <summary>
+        /// Get a API by ApiKey
+        /// I Put this api key with hashed string with key because its wrong that a user with invalid api key can do multiple requests do database
+        /// This can be a issue. So.. we need to put this as cache on redis and validate the api key before acess user settings
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        /// <exception cref="CustomException"></exception>
+        public GetApiKeyModel? Get(string key)
+        {
+            var isValid = Validate(key);
+            if (isValid == false)
             {
-                var decrypt = EncryptUtils.DecryptString(ApiConfig.ApiKeyAuthentication.Key, key);
-                var apiKeys = DbContext.ApiKey.FirstOrDefault(e => e.ApiKey.Equals(decrypt));
-
-                if (apiKeys != null)
-                {
-                    var apiKeyVerified = BC.Verify(decrypt, apiKeys.ApiKey);
-                    if (apiKeyVerified == false)
-                    {
-                        throw new CustomException(StatusCodeEnum.NaoAutorizado, "Api Key invalid or expired.");
-                    }
-                    return new GetApiKeyModel()
-                    {
-                        ApiKey = decrypt,
-                        Scopes = apiKeys.Scopes.ToArray()
-                    };
-                }
+                throw new CustomException(StatusCodeEnum.NaoAutorizado, "Api Key invalid or expired.");
             }
-
-            catch (Exception ex)
+            var decrypt = DecryptApiKey(key);
+            var apiKey = DbContext.ApiKey.FirstOrDefault(e => e.ApiKey.Equals(decrypt));
+            if (apiKey != null)
             {
-                throw new CustomException(StatusCodeEnum.NaoAutorizado, "You cant acess this route");
+                var apiKeyVerified = BC.Verify(decrypt, apiKey.ApiKey);
+                if (apiKeyVerified == false)
+                {
+                    throw new CustomException(StatusCodeEnum.NaoAutorizado, "Api Key invalid or expired.");
+                }
+                return new GetApiKeyModel()
+                {
+                    ApiKey = decrypt,
+                    Scopes = apiKey.Scopes.ToArray(),
+                    UserId = apiKey.UsuarioId
+                };
             }
             return null;
         }
@@ -58,7 +80,7 @@ namespace api_authentication_boberto.Services.Implements
         /// Get a api key.
         /// </summary>
         /// <returns></returns>
-        public GetApiKeyModel GetApiKey()
+        public GetApiKeyModel Generate()
         {
             var bytes = RandomNumberGenerator.GetBytes(_numberOfSecureBytesToGenerate);
             var key = string.Concat(_prefix, Convert.ToBase64String(bytes)
@@ -71,7 +93,8 @@ namespace api_authentication_boberto.Services.Implements
             var hashKey = BC.HashPassword(key);
             return new GetApiKeyModel()
             {
-                ApiKey = hashAes,
+                ApiKey = key,
+                ApiKeyCrypt = hashAes,
                 ApiKeyHashed = hashKey,
                 Scopes = DefaultScopes
             };

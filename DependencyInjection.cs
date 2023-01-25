@@ -111,9 +111,18 @@ namespace api_authentication_boberto
             builder.Services.AddSingleton<DiscordService>();
             builder.Services.AddSingleton<ZenvioService>();
         }
-
+        /// <summary>
+        /// WTF???
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="config"></param>
         public static void InjetarServicosAutenticacao(this WebApplicationBuilder builder, IConfigurationRoot config)
         {
+            ///now we need to creat require scopes for each api key type.
+            builder.Services.AddAuthorization(options =>
+          options.AddPolicy("modpack_manage",
+          policy => policy.RequireClaim("api_key_scope")));
+
             var jwtKey = Encoding.ASCII.GetBytes(config["JwtConfig:Key"]);
             builder.Services.AddAuthentication("ApiKeyAuthenticationHandler")
             .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>

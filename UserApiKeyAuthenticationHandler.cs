@@ -30,7 +30,7 @@ namespace api_authentication_boberto
             ///TODO: this is a base to use before identity class.
             ///
 
-            var claims = new[] { new Claim("api_key_authentication", "can_call_routes") };
+            var claims = new[] { new Claim("api_key_scope", "can_call_routes") };
             var identity = new ClaimsIdentity(claims, Scheme.Name);
             var principal = new ClaimsPrincipal(identity);
             var ticket = new AuthenticationTicket(principal, Scheme.Name);
@@ -46,8 +46,12 @@ namespace api_authentication_boberto
                 return Task.FromResult(AuthenticateResult.Fail("Api key not found."));
             }
 
-            ApiKeyService.Validate(extractedApiKey);
-
+            var apiKey = ApiKeyService.Get(extractedApiKey);
+            if (apiKey == null)
+            {
+                return Task.FromResult(AuthenticateResult.Fail("Api key wrong or not exists."));
+            }
+            ticket = apiKey.GetAuthenticationTicket();
             return Task.FromResult(AuthenticateResult.Success(ticket));
         }
     }
