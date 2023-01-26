@@ -1,9 +1,17 @@
-﻿namespace api_authentication_boberto.Services.OTPSender
+﻿using api_authentication_boberto.Integrations.SMSAdbTester;
+using api_authentication_boberto.Models.Config;
+using api_authentication_boberto.Services.Discord;
+using api_authentication_boberto.Services.Email;
+using api_authentication_boberto.Services.SenderService;
+using api_authentication_boberto.Services.Zenvio;
+using Microsoft.Extensions.Options;
+
+namespace api_authentication_boberto.Services.OTPSender
 {
-    public class OTPSender : IEnviarCodigoDuploFator
+    public class OTPSender : IOTPSender
     {
         private ZenvioService _zenvioService;
-        private DiscordService _discordService;
+        private IDiscordService _discordService;
         private IEmailService _emailService;
         private ApiConfig _apiConfig;
         private ISmsAdbTesterApi _smsAdbTesterApi;
@@ -11,7 +19,7 @@
         private ResourcesConfig _resourceConfig;
         public OTPSender(ZenvioService zenvioService,
             IEmailService emailService,
-            DiscordService discordService,
+            IDiscordService discordService,
             IOptions<ResourcesConfig> resourceConfig,
             IOptions<ApiConfig> apiConfig,
             ISmsAdbTesterApi smsAdbTesterApi
@@ -25,7 +33,7 @@
             _smsAdbTesterApi = smsAdbTesterApi;
         }
 
-        public void EnviarCodigoSMS(string numeroCelular, string codigo)
+        public void SendSMS(string numeroCelular, string codigo)
         {
             ///Como não podemos ultrapassar a cota de sms mensal e não temos opção de setar isso no zenvio, 
             ///vamos substituir o sms pela a api do discord.
@@ -44,17 +52,17 @@
             if (alternativaAoSMS)
             {
                 _smsAdbTesterApi.EnviarSMS(
-                 new Integrations.SMSAdbTester.Request.SendAdbTesterMessageRequest()
+                 new SendAdbTesterMessageRequest()
                  {
                      Message = $"ApiAuthBoberto: Seu código é {codigo}"
                  });
 
                 return;
             }
-            _zenvioService.EnviarSMSCodigo(numeroCelular, codigo);
+            _zenvioService.SendSMSCode(numeroCelular, codigo);
         }
 
-        public void EnviarCodigoEmail(string email, string codigo)
+        public void SendEmail(string email, string codigo)
         {
             var to = email;
             var subject = "[TESTE] ApiAuthBoberto";

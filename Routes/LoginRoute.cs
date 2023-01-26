@@ -3,14 +3,15 @@ using api_authentication_boberto.Exceptions;
 using api_authentication_boberto.Models.Enums;
 using api_authentication_boberto.Models.Request;
 using api_authentication_boberto.Models.Response;
-using api_authentication_boberto.Services.Implements;
-using api_authentication_boberto.Services.OTPSender;
+using api_authentication_boberto.Services.JWT;
+using api_authentication_boberto.Services.OTP;
 using api_authentication_boberto.Services.Redis;
+using api_authentication_boberto.Services.SenderService;
 using api_authentication_boberto.Services.User;
+using api_authentication_boberto.Services.UserSecurity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Dynamic;
 using BC = BCrypt.Net.BCrypt;
 
 namespace api_authentication_boberto.Routes
@@ -31,7 +32,7 @@ namespace api_authentication_boberto.Routes
             {
                 request.Validar();
 
-                var contaCadastrada = dbContext.Usuarios.Include(c => c.UsuarioConfig).FirstOrDefault(e => e.Email.Equals(request.Email));
+                var contaCadastrada = dbContext.Usuarios.Include(c => c.UserConfig).FirstOrDefault(e => e.Email.Equals(request.Email));
 
                 var contaExiste = contaCadastrada != null;
 
@@ -41,17 +42,17 @@ namespace api_authentication_boberto.Routes
                 }
                 ///crio um cache para essa tentativa de login.
 
-                gerenciadorAutenticacao.CriarCacheUsuario(contaCadastrada);
+                gerenciadorAutenticacao.CreateUserCache(contaCadastrada);
 
-                var atingiuLimiteMaximoDeTentativas = gerenciadorAutenticacao.AtingiuLimiteMaximoDeTentativas();
+                var atingiuLimiteMaximoDeTentativas = gerenciadorAutenticacao.ReachedMaximumLimitOfAttempts();
 
                 ///Pra um usuário com dupla autenticação ativa, ele sempre terá UsarNumeroCelular true e UsarEmail true.
                 ///Então eu posso verificar se esse usuário informou um código de OTP pra saber se ele pode logar ou não.
-                var duplaAutenticacaoAtiva = contaCadastrada.UsuarioConfig.UsarNumeroCelular || contaCadastrada.UsuarioConfig.UsarEmail;
+                var duplaAutenticacaoAtiva = contaCadastrada.UserConfig.EnabledPhoneNumber || contaCadastrada.UserConfig.EnabledEmail;
 
                 var codigoOtpExiste = string.IsNullOrEmpty(request.Codigo) == false;
 
-                var codigoOtp = codigoOtpExiste && otpCode.ValidarCodigoOTP(request.Codigo).Valido;
+                var codigoOtp = codigoOtpExiste && otpCode.Validate(request.Codigo).Valido;
 
                 ///Se atingiu o limite máximo de tentativas de login falhas e o codigo otp não foi informado
                 if (atingiuLimiteMaximoDeTentativas && codigoOtpExiste == false)
@@ -61,11 +62,11 @@ namespace api_authentication_boberto.Routes
                 }
 
                 ///Comparo a senha.
-                var senhaCorreta = BC.Verify(request.Senha, contaCadastrada?.Senha);
+                var senhaCorreta = BC.Verify(request.Senha, contaCadastrada?.Password);
 
                 if (senhaCorreta == false)
                 {
-                    gerenciadorAutenticacao.IncrementarTentativa();
+                    gerenciadorAutenticacao.IncrementAttemp();
                     throw new CustomException(StatusCodeEnum.NOTAUTHORIZED, "Dados inválidos.");
                 }
 
@@ -74,7 +75,7 @@ namespace api_authentication_boberto.Routes
                 if (duplaAutenticacaoAtiva && codigoOtpExiste == false)
                 {
                     var expiraEm = DateTime.UtcNow.AddSeconds(35);
-                    var token_refresh = tokenJWTService.GerarTokenJWT(contaCadastrada, expiraEm);
+                    var token_refresh = tokenJWTService.Generate(contaCadastrada, expiraEm);
                     return Results.Ok(new LoginResponse()
                     {
                         Tipo = "token_temporario",
@@ -89,8 +90,8 @@ namespace api_authentication_boberto.Routes
                     throw new CodigoOTPException(OTPEnum.OTPInvalid, "Código informado inválido.");
                 }
                 /// Atualizo que o UltimoLogin do usuário e retorno um sucesso com o JWT.
-                contaCadastrada.UltimoLogin = DateTime.Now;
-                var token = tokenJWTService.GerarTokenJWT(contaCadastrada);
+                contaCadastrada.LastLogin = DateTime.Now;
+                var token = tokenJWTService.Generate(contaCadastrada);
                 dbContext.SaveChanges();
 
                 return Results.Ok(new LoginResponse()
@@ -103,19 +104,19 @@ namespace api_authentication_boberto.Routes
             //refresh token
             app.MapPost("/refresh_token", [Authorize] ([FromBody] RefreshTokenRequest request, ICurrentUserService usuarioLogado, [FromServices] JWTService tokenJWTService, [FromServices] DatabaseContext dbContext) =>
             {
-                var tokenValido = tokenJWTService.ValidarTokenJWT(request.Token);
+                var tokenValido = tokenJWTService.Validate(request.Token);
                 if (tokenValido == false)
                 {
                     throw new CustomException(StatusCodeEnum.NOTAUTHORIZED, "Token inválido");
                 }
                 var usuario = usuarioLogado.ObterUsuarioLogado();
                 var expiracao = DateTime.UtcNow.AddHours(1);
-                var token = tokenJWTService.GerarTokenJWT(new UsuarioModel()
+                var token = tokenJWTService.Generate(new UserModel()
                 {
-                    UsuarioId = usuario.Id,
+                    UserId = usuario.Id,
                     Email = usuario.Email,
-                    Nome = usuario.Nome,
-                    NumeroCelular = usuario.NumeroCelular
+                    Name = usuario.Nome,
+                    PhoneNumber = usuario.NumeroCelular
                 }, expiracao);
 
                 return Results.Ok(new RefreshTokenResponse()
@@ -140,7 +141,7 @@ namespace api_authentication_boberto.Routes
 
             string hashed = BC.HashPassword(request.Senha);
 
-            var usuarioConfig = new UsuarioConfigModel();
+            var usuarioConfig = new UserConfigModel();
 
             dbContext.UsuariosConfig.Add(usuarioConfig);
             dbContext.SaveChanges();
@@ -148,10 +149,10 @@ namespace api_authentication_boberto.Routes
             dbContext.Usuarios.Add(new()
             {
                 Email = request.Email,
-                Nome = request.Nome,
-                Senha = hashed,
-                NumeroCelular = request.NumeroCelular,
-                UsuarioConfigId = usuarioConfig.UsuarioConfigId,
+                Name = request.Nome,
+                Password = hashed,
+                PhoneNumber = request.NumeroCelular,
+                UserConfigId = usuarioConfig.UserConfigId,
                 Role = RolesEnum.USER
             });
 

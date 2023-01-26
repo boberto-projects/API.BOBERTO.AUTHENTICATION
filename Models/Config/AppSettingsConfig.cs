@@ -8,10 +8,9 @@
         public SmtpConfig SmtpConfig { get; set; }
         public JwtConfig JwtConfig { get; set; }
         public TwoFactorConfig TwoFactorConfig { get; set; }
-        public GerenciadorAutenticacaoConfig GerenciadorAutenticacaoConfig { get; set; }
-        public GerenciadorZenvioConfig GerenciadorZenvioConfig { get; set; }
+        public UserSecurityConfig UserSecurityConfig { get; set; }
+        public ZenvioSecurityConfig ZenvioSecurityConfig { get; set; }
         public DiscordAPIConfig DiscordApiConfig { get; set; }
         public ZenviaApiConfig ZenviaApiConfig { get; set; }
-        public string AllowedHosts { get; set; }
     }
 }

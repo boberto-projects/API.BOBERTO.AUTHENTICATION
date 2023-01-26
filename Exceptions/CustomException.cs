@@ -1,4 +1,4 @@
-﻿using api_authentication_boberto.Models;
+﻿using api_authentication_boberto.Models.Enums;
 using api_authentication_boberto.Models.Response;
 
 namespace api_authentication_boberto.Exceptions

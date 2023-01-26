@@ -5,39 +5,39 @@ using System.Security.Claims;
 
 namespace api_authentication_boberto.Services.User
 {
-    public class UsuarioService : ICurrentUserService
+    public class CurrentUserService : ICurrentUserService
     {
 
         private IHttpContextAccessor _httpContextAccessor { get; set; }
         private DatabaseContext _dbContext { get; set; }
 
-        public UsuarioService(IHttpContextAccessor httpContextAccessor, DatabaseContext dbContext)
+        public CurrentUserService(IHttpContextAccessor httpContextAccessor, DatabaseContext dbContext)
         {
             _httpContextAccessor = httpContextAccessor;
             _dbContext = dbContext;
         }
-        public UsuarioLogado ObterUsuarioLogado()
+        public Profile ObterUsuarioLogado()
         {
             int.TryParse(_httpContextAccessor.HttpContext.User.FindFirstValue("UserId"), out int usuarioId);
 
-            var usuario = _dbContext.Usuarios.Include(c => c.UsuarioConfig).FirstOrDefault(e => e.UsuarioId.Equals(usuarioId));
+            var usuario = _dbContext.Usuarios.Include(c => c.UserConfig).FirstOrDefault(e => e.UserId.Equals(usuarioId));
 
-            return new UsuarioLogado
+            return new Profile
             {
                 Id = usuarioId,
-                UsarEmail = usuario.UsuarioConfig.UsarEmail,
-                UsarNumeroCelular = usuario.UsuarioConfig.UsarNumeroCelular,
+                UsarEmail = usuario.UserConfig.EnabledEmail,
+                UsarNumeroCelular = usuario.UserConfig.EnabledPhoneNumber,
                 Email = usuario.Email,
-                Nome = usuario.Nome,
+                Nome = usuario.Name,
                 Role = usuario.Role,
-                NumeroCelular = usuario.NumeroCelular
+                NumeroCelular = usuario.PhoneNumber
             };
         }
 
         public void AtivarAutenticacaoDupla(AutenticacaoDupla autenticacoes)
         {
             var idUsuario = ObterUsuarioLogado().Id;
-            var usuario = _dbContext.Usuarios.FirstOrDefault(x => x.UsuarioId.Equals(idUsuario));
+            var usuario = _dbContext.Usuarios.FirstOrDefault(x => x.UserId.Equals(idUsuario));
 
             var usarEmail = autenticacoes.UsarEmail;
             var usarNumeroCelular = autenticacoes.UsarNumeroCelular;
@@ -45,12 +45,12 @@ namespace api_authentication_boberto.Services.User
             if (usarEmail)
             {
                 usuario.Email = autenticacoes.Email;
-                usuario.UsuarioConfig.UsarEmail = usarEmail;
+                usuario.UserConfig.EnabledEmail = usarEmail;
             }
             if (usarNumeroCelular)
             {
-                usuario.NumeroCelular = autenticacoes.NumeroCelular;
-                usuario.UsuarioConfig.UsarNumeroCelular = usarNumeroCelular;
+                usuario.PhoneNumber = autenticacoes.NumeroCelular;
+                usuario.UserConfig.EnabledPhoneNumber = usarNumeroCelular;
             }
             _dbContext.SaveChanges();
         }

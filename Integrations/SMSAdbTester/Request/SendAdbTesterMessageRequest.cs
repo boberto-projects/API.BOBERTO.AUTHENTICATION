@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace api_authentication_boberto.Integrations.SMSAdbTester.Request
+namespace api_authentication_boberto.Integrations.SMSAdbTester
 {
     public class SendAdbTesterMessageRequest
     {

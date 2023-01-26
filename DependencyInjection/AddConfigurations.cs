@@ -1,4 +1,5 @@
 ﻿using api_authentication_boberto.Models.Config;
+using ConfigurationSubstitution;
 
 namespace api_authentication_boberto.DependencyInjection
 {
@@ -6,9 +7,15 @@ namespace api_authentication_boberto.DependencyInjection
     {
         public static void AddConfigurations(this WebApplicationBuilder builder)
         {
-            var config = builder.Configuration;
-            builder.Services.Configure<GerenciadorAutenticacaoConfig>(options => config.GetSection("GerenciadorAutenticacaoConfig").Bind(options));
-            builder.Services.Configure<GerenciadorZenvioConfig>(options => config.GetSection("GerenciadorZenvioConfig").Bind(options));
+            var config = new ConfigurationBuilder()
+                .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+                .AddJsonFile($"appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables()
+                .EnableSubstitutions("%", "%")
+                .Build();
+            builder.Services.Configure<UserSecurityConfig>(options => config.GetSection("AuthenticationSecurityConfig").Bind(options));
+            builder.Services.Configure<ZenvioSecurityConfig>(options => config.GetSection("ZenvioSecurityServiceConfig").Bind(options));
             builder.Services.Configure<DiscordAPIConfig>(options => config.GetSection("DiscordApiConfig").Bind(options));
             builder.Services.Configure<TwoFactorConfig>(options => config.GetSection("TwoFactorConfig").Bind(options));
             builder.Services.Configure<ZenviaApiConfig>(options => config.GetSection("ZenviaApiConfig").Bind(options));

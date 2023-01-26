@@ -1,15 +1,23 @@
-﻿namespace api_authentication_boberto.Services.JWT
+﻿using api_authentication_boberto.Domain.CustomDbContext;
+using api_authentication_boberto.Models.Config;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+
+namespace api_authentication_boberto.Services.JWT
 {
-    public class TokenJWTService
+    public class JWTService : IJWTService
     {
         private JwtConfig _jwtConfig;
-        public TokenJWTService(IOptions<JwtConfig> jwtConfig)
+        public JWTService(IOptions<JwtConfig> jwtConfig)
         {
             _jwtConfig = jwtConfig.Value;
             JWTKey = Encoding.UTF8.GetBytes(jwtConfig.Value.Key);
         }
 
-        public string GerarTokenJWT(UsuarioModel usuario, DateTime? expiracao = null)
+        public string Generate(UserModel usuario, DateTime? expiracao = null)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -18,7 +26,7 @@
                 Audience = _jwtConfig.Audience,
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim("UserId", usuario.UsuarioId.ToString()),
+                    new Claim("UserId", usuario.UserId.ToString()),
                 }),
                 Expires = expiracao.GetValueOrDefault(DateTime.UtcNow.AddHours(1)),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(JWTKey), SecurityAlgorithms.HmacSha256Signature)
@@ -26,7 +34,7 @@
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
-        public bool ValidarTokenJWT(string token)
+        public bool Validate(string token)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var validationParameters = GetValidationParameters();

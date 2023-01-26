@@ -1,74 +1,70 @@
 ﻿using api_authentication_boberto.Models.Cache;
-using api_authentication_boberto.Services.RedisService;
+using api_authentication_boberto.Models.Config;
+using api_authentication_boberto.Services.Redis;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 
-namespace api_authentication_boberto.Services.Zenvio
+namespace api_authentication_boberto.Services.ZenvioSecurity
 {
-    public class ZenvioSecurityService
+    public class ZenvioSecurityService : IZenvioSecurityService
     {
         private IRedisService redisService { get; set; }
-        private ZenvioSecurityServiceConfig zenvioConfig { get; set; }
+        private ZenvioSecurityConfig zenvioConfig { get; set; }
 
         private const string CACHE_ZENVIO = "COUNT_SMS_GLOBAL_SENDED";
 
-        public ZenvioSecurityService(IRedisService _redisService, IOptions<ZenvioSecurityServiceConfig> _zenvioConfig)
+        public ZenvioSecurityService(IRedisService _redisService, IOptions<ZenvioSecurityConfig> _zenvioConfig)
         {
             redisService = _redisService;
             zenvioConfig = _zenvioConfig.Value;
-            CriarCacheZenvio();
+            CreateCache();
         }
 
-        public bool AtingiuLimiteMaximoDeTentativas()
+        public bool ReachedMaximumLimitOfAttempts()
         {
-            var obterCacheZenvio = ObterCacheZenvio();
+            var obterCacheZenvio = GetCahe();
             var tentativasDeEnvio = obterCacheZenvio.Tentativas;
-            if (tentativasDeEnvio >= zenvioConfig.QuantidadeMaximaTentativas)
+            if (tentativasDeEnvio >= zenvioConfig.MaximumAttempts)
             {
                 return true;
             }
             return false;
         }
 
-        public void IncrementarTentativa()
+        public void IncrementAttemp()
         {
-            if (AtingiuLimiteMaximoDeTentativas())
+            if (ReachedMaximumLimitOfAttempts())
             {
                 return;
             }
-            var oberCacheZenvio = ObterCacheZenvio();
+            var oberCacheZenvio = GetCahe();
             oberCacheZenvio.Tentativas += 1;
             oberCacheZenvio.UltimaTentativa = DateTime.Now;
             redisService.Set(CACHE_ZENVIO, oberCacheZenvio);
         }
 
-        public void LimparTentativas(string chave)
+        public TimeSpan GetBlockTime()
         {
-            redisService.Clear(chave);
+            return TimeSpan.FromSeconds(zenvioConfig.SecondsExpiration);
         }
 
-        public TimeSpan ObterTempoBloqueio()
-        {
-            return TimeSpan.FromSeconds(zenvioConfig.SegundosExpiracao);
-        }
-
-        public TimeSpan ObterTempoBloqueioRestante()
+        public TimeSpan GetBlockTimeRemaining()
         {
             var dataAtual = DateTime.Now;
-            var dataFinal = dataAtual.AddSeconds(zenvioConfig.SegundosExpiracao);
+            var dataFinal = dataAtual.AddSeconds(zenvioConfig.SecondsExpiration);
             return dataFinal.Subtract(dataAtual);
         }
-        public ZenvioCacheModel ObterCacheZenvio()
+        public ZenvioCacheModel GetCahe()
         {
             return redisService.Get<ZenvioCacheModel>(CACHE_ZENVIO);
         }
-        private void CriarCacheZenvio()
+        public void CreateCache()
         {
             var cacheZenvio = new ZenvioCacheModel();
             cacheZenvio.UltimaTentativa = DateTime.MinValue;
             var cacheOptions = new DistributedCacheEntryOptions()
             {
-                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(zenvioConfig.SegundosExpiracao)
+                AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(zenvioConfig.SecondsExpiration)
             };
             if (redisService.Exists(CACHE_ZENVIO) == false)
             {

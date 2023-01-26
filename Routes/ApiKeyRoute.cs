@@ -1,9 +1,8 @@
 ﻿using api_authentication_boberto.Domain.CustomDbContext;
-using api_authentication_boberto.EncryptionDecryptionUsingSymmetricKey;
 using api_authentication_boberto.Exceptions;
-using api_authentication_boberto.Models;
 using api_authentication_boberto.Models.Config;
-using api_authentication_boberto.Services.ApiKeyAuthenticationService;
+using api_authentication_boberto.Models.Enums;
+using api_authentication_boberto.Services.ApiKeyAuthentication;
 using api_authentication_boberto.Services.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -29,8 +28,8 @@ namespace api_authentication_boberto.Routes
                         throw new CustomException(StatusCodeEnum.BUSINESS, "YOU CANT USE THIS");
                     }
                     var key = apiKeyService.Generate(user.Id, user.Role);
-                    var apiKeys = dbContext.ApiKey.Where(e => e.UsuarioId.Equals(user.Id)).ToList();
-                    var userContext = dbContext.Usuarios.FirstOrDefault(e => e.UsuarioId.Equals(user.Id));
+                    var apiKeys = dbContext.ApiKey.Where(e => e.UserId.Equals(user.Id)).ToList();
+                    var userContext = dbContext.Usuarios.FirstOrDefault(e => e.UserId.Equals(user.Id));
                     if (apiKeys.Count() > 0)
                     {
                         throw new CustomException(StatusCodeEnum.BUSINESS, "You already have a key.");
@@ -38,7 +37,7 @@ namespace api_authentication_boberto.Routes
                     var apiKey = new ApiKeyModel()
                     {
                         ApiKey = key.ApiKeyCrypt,
-                        UsuarioId = user.Id,
+                        UserId = user.Id,
                     };
                     apiKey.AddScopes(key.Scopes);
                     userContext.ApiKeys.Add(apiKey);
@@ -57,18 +56,18 @@ namespace api_authentication_boberto.Routes
                 {
                     throw new CustomException(StatusCodeEnum.BUSINESS, "YOU CANT USE THIS");
                 }
-                var apiKeys = dbContext.ApiKey.Where(e => e.UsuarioId.Equals(user.Id)).ToList();
+                var apiKeys = dbContext.ApiKey.Where(e => e.UserId.Equals(user.Id)).ToList();
                 if (apiKeys.Count() == 0)
                 {
                     throw new CustomException(StatusCodeEnum.BUSINESS, "You need to generate a api key first.");
                 }
                 var key = apiKeyService.Generate(user.Id, user.Role);
-                var userContext = dbContext.Usuarios.FirstOrDefault(e => e.UsuarioId.Equals(user.Id));
+                var userContext = dbContext.Usuarios.FirstOrDefault(e => e.UserId.Equals(user.Id));
                 userContext.ApiKeys.Clear();
                 var apiKey = new ApiKeyModel()
                 {
                     ApiKey = key.ApiKeyCrypt,
-                    UsuarioId = user.Id,
+                    UserId = user.Id,
                 };
                 apiKey.AddScopes(key.Scopes);
                 userContext.ApiKeys.Add(apiKey);

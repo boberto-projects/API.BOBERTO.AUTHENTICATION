@@ -7,7 +7,7 @@ namespace api_authentication_boberto.Services.User
         /// <summary>
         /// Obter o usuário logado usando o claim principal
         /// </summary>
-        public UsuarioLogado ObterUsuarioLogado();
+        public Profile ObterUsuarioLogado();
 
         /// <summary>
         /// Obtém se usuário logado tem autenticação dupla ativa

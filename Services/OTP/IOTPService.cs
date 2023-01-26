@@ -1,9 +1,10 @@
-﻿namespace api_authentication_boberto.Services.OTP
+﻿using api_authentication_boberto.Models.Response;
+
+namespace api_authentication_boberto.Services.OTP
 {
     public interface IOTPService
     {
-        ValidarCodigoOTPResponse ValidarCodigoOTP(string code);
-
-        string GerarCodigoOTP();
+        OTPResult Validate(string code);
+        string Generate();
     }
 }

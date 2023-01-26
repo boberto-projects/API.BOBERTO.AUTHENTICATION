@@ -1,6 +1,4 @@
-﻿using api_authentication_boberto.Integrations.SMSAdbTester.Request;
-using api_authentication_boberto.Integrations.ZenviaApiClient;
-using RestEase;
+﻿using RestEase;
 
 namespace api_authentication_boberto.Integrations.SMSAdbTester
 {

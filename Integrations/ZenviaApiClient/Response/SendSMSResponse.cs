@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace api_authentication_boberto.Integrations.ZenviaApiClient.Response
+namespace api_authentication_boberto.Integrations.ZenviaApiClient
 {
     public class SendSMSResponse
     {
@@ -21,15 +21,13 @@ namespace api_authentication_boberto.Integrations.ZenviaApiClient.Response
 
         [JsonProperty("direction")]
         public string Direction { get; set; }
+    }
+    public class Content
+    {
+        [JsonProperty("type")]
+        public string Type { get; set; }
 
-        public class Content
-        {
-            [JsonProperty("type")]
-            public string Type { get; set; }
-
-            [JsonProperty("text")]
-            public string Text { get; set; }
-        }
-
+        [JsonProperty("text")]
+        public string Text { get; set; }
     }
 }

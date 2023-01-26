@@ -1,20 +1,15 @@
 ﻿using api_authentication_boberto.Models.Enums;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using System.Diagnostics;
-using System.Text.Json;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using DbContext = Microsoft.EntityFrameworkCore.DbContext;
 
 namespace api_authentication_boberto.Domain.CustomDbContext
 {
     public class DatabaseContext : DbContext
     {
-        public DbSet<UsuarioModel> Usuarios { get; set; }
-        public DbSet<UsuarioConfigModel> UsuariosConfig { get; set; }
+        public DbSet<UserModel> Usuarios { get; set; }
+        public DbSet<UserConfigModel> UsuariosConfig { get; set; }
         public DbSet<ApiKeyModel> ApiKey { get; set; }
 
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options)
@@ -25,25 +20,25 @@ namespace api_authentication_boberto.Domain.CustomDbContext
             base.OnModelCreating(modelBuilder);
 
 
-            modelBuilder.Entity<UsuarioModel>(entity =>
+            modelBuilder.Entity<UserModel>(entity =>
             {
-                entity.ToTable("usuarios");
+                entity.ToTable("users");
 
-                entity.HasKey(e => e.UsuarioId).HasName("usuarios_pkey");
-                entity.Property(e => e.UsuarioId).HasColumnName("id");
-                entity.Property(e => e.UsuarioId).UseIdentityAlwaysColumn();
+                entity.HasKey(e => e.UserId).HasName("users_pkey");
+                entity.Property(e => e.UserId).HasColumnName("id");
+                entity.Property(e => e.UserId).UseIdentityAlwaysColumn();
 
-                entity.Property(e => e.Nome).HasColumnName("nome");
+                entity.Property(e => e.Name).HasColumnName("name");
 
                 entity.Property(e => e.Email).HasColumnName("email");
 
-                entity.Property(e => e.Senha).HasColumnName("senha");
+                entity.Property(e => e.Password).HasColumnName("password");
 
-                entity.Property(e => e.NumeroCelular).HasColumnName("numero_celular");
+                entity.Property(e => e.PhoneNumber).HasColumnName("phone_number");
 
-                entity.Property(e => e.UsuarioConfigId).HasColumnName("usuario_config_id");
+                entity.Property(e => e.UserConfigId).HasColumnName("users_config_id");
 
-                entity.Property(e => e.UltimoLogin).HasColumnName("ultimo_login");
+                entity.Property(e => e.LastLogin).HasColumnName("last_login");
 
                 entity.Property(e => e.Role)
                 .HasColumnName("role")
@@ -51,15 +46,15 @@ namespace api_authentication_boberto.Domain.CustomDbContext
                 .HasConversion(new EnumToNumberConverter<RolesEnum, int>());
 
 
-                entity.HasOne(e => e.UsuarioConfig)
+                entity.HasOne(e => e.UserConfig)
                 .WithOne()
-                .HasForeignKey<UsuarioConfigModel>(e => e.UsuarioConfigId)
+                .HasForeignKey<UserConfigModel>(e => e.UserConfigId)
                 .OnDelete(DeleteBehavior.Cascade);
 
 
                 entity.HasMany(c => c.ApiKeys)
                 .WithOne()
-                .HasForeignKey(s => s.UsuarioId)
+                .HasForeignKey(s => s.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
                 //entity.HasOne(e => e.ApiKey)
@@ -69,17 +64,17 @@ namespace api_authentication_boberto.Domain.CustomDbContext
 
             });
 
-            modelBuilder.Entity<UsuarioConfigModel>(entity =>
+            modelBuilder.Entity<UserConfigModel>(entity =>
             {
 
-                entity.ToTable("usuarios_config");
+                entity.ToTable("users_config");
 
-                entity.HasKey(e => e.UsuarioConfigId).HasName("usuarios_config_pkey");
-                entity.Property(e => e.UsuarioConfigId).HasColumnName("id");
-                entity.Property(e => e.UsuarioConfigId).UseIdentityAlwaysColumn();
+                entity.HasKey(e => e.UserConfigId).HasName("users_config_pkey");
+                entity.Property(e => e.UserConfigId).HasColumnName("id");
+                entity.Property(e => e.UserConfigId).UseIdentityAlwaysColumn();
 
-                entity.Property(e => e.UsarEmail).HasColumnName("usaremail");
-                entity.Property(e => e.UsarNumeroCelular).HasColumnName("usarnumerocelular");
+                entity.Property(e => e.EnabledEmail).HasColumnName("enabled_email");
+                entity.Property(e => e.EnabledPhoneNumber).HasColumnName("enabled_phone_number");
             });
 
             modelBuilder.Entity<ApiKeyModel>(entity =>
@@ -92,7 +87,7 @@ namespace api_authentication_boberto.Domain.CustomDbContext
                 entity.Property(e => e.ApiKeyId).UseIdentityAlwaysColumn();
 
                 entity.Property(e => e.ApiKey).HasColumnName("apikey");
-                entity.Property(e => e.UsuarioId).HasColumnName("usuarioid");
+                entity.Property(e => e.UserId).HasColumnName("userid");
 
                 entity.Property(e => e.Scopes)
                 .HasColumnName("scopes")
@@ -100,9 +95,9 @@ namespace api_authentication_boberto.Domain.CustomDbContext
             v => JsonConvert.SerializeObject(v),
             v => JsonConvert.DeserializeObject<List<string>>(v)));
 
-                entity.HasOne(e => e.Usuario)
+                entity.HasOne(e => e.User)
                 .WithMany(c => c.ApiKeys)
-                .HasForeignKey(e => e.UsuarioId);
+                .HasForeignKey(e => e.UserId);
             });
         }
 

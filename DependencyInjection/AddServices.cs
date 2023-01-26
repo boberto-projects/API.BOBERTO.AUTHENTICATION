@@ -1,11 +1,13 @@
-﻿using api_authentication_boberto.Services.ApiKeyAuthenticationService;
+﻿using api_authentication_boberto.Services.ApiKeyAuthentication;
 using api_authentication_boberto.Services.GlobalConfig;
-using api_authentication_boberto.Services.Implements;
+using api_authentication_boberto.Services.JWT;
 using api_authentication_boberto.Services.OTP;
 using api_authentication_boberto.Services.OTPSender;
-using api_authentication_boberto.Services.RedisService;
+using api_authentication_boberto.Services.Redis;
 using api_authentication_boberto.Services.SenderService;
 using api_authentication_boberto.Services.User;
+using api_authentication_boberto.Services.UserSecurity;
+using api_authentication_boberto.Services.ZenvioSecurity;
 
 namespace api_authentication_boberto.DependencyInjection
 {
@@ -26,12 +28,12 @@ namespace api_authentication_boberto.DependencyInjection
             builder.Services.AddSingleton<IRedisService, RedisService>();
             builder.Services.AddSingleton<IOTPService, OTPService>();
             builder.Services.AddSingleton<IOTPSender, OTPSender>();
-            builder.Services.AddSingleton<AtualizarAppsettings>();
-            builder.Services.AddSingleton<ZenvioSecurity>();
-            builder.Services.AddSingleton<UserSecurity>();
+            builder.Services.AddSingleton<ApiConfigService>();
+            builder.Services.AddSingleton<IZenvioSecurityService, ZenvioSecurityService>();
+            builder.Services.AddSingleton<IUserSecurity, UserSecurity>();
 
-            builder.Services.AddScoped<JWTService>();
-            builder.Services.AddScoped<ICurrentUserService, UsuarioService>();
+            builder.Services.AddScoped<IJWTService, JWTService>();
+            builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
             builder.Services.AddScoped<IApiKeyAuthenticationService, ApiKeyAuthenticationService>();
 

@@ -20,7 +20,7 @@ namespace api_authentication_boberto.Models.Response
             }
             if (emailInformado && numeroCelularInformado)
             {
-                throw new CustomException(StatusCodeEnum.VALIDATION, "Necessário informar NumeroCelular ou Email.");
+                throw new CustomException(StatusCodeEnum.VALIDATION, "Necessário informar PhoneNumber ou Email.");
             }
         }
     }

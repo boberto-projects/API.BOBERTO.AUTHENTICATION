@@ -1,6 +1,4 @@
-﻿using api_authentication_boberto.Integrations.ZenviaApiClient.Request;
-using api_authentication_boberto.Integrations.ZenviaApiClient.Response;
-using RestEase;
+﻿using RestEase;
 
 namespace api_authentication_boberto.Integrations.ZenviaApiClient
 {
@@ -10,6 +8,6 @@ namespace api_authentication_boberto.Integrations.ZenviaApiClient
         string ApiKey { get; set; }
 
         [Post("channels/sms/messages")]
-        Task<SendSMSResponse> EnviarSMS([Body] SendSMSRequest request);
+        Task<SendSMSResponse> SendSMS([Body] SendSMSRequest request);
     }
 }

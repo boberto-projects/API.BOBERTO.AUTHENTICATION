@@ -1,14 +1,14 @@
 ﻿namespace api_authentication_boberto.Models.Config
 {
-    public class GerenciadorZenvioConfig
+    public class ZenvioSecurityConfig
     {
         /// <summary>
         /// Tempo máximo de expiração 
         /// </summary>
-        public int SegundosExpiracao { get; set; }
+        public int SecondsExpiration { get; set; }
         /// <summary>
         /// Quantidade máxima de envio de sms diário
         /// </summary>
-        public int QuantidadeMaximaTentativas { get; set; }
+        public int MaximumAttempts { get; set; }
     }
 }

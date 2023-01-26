@@ -1,8 +1,8 @@
-﻿using api_authentication_boberto.Domain.CustomDbContext;
+﻿using api_authentication_boberto.Models.Enums;
 
 namespace api_authentication_boberto.Models
 {
-    public class UsuarioLogado
+    public class Profile
     {
         public int Id { get; set; }
         public string Email { get; set; }

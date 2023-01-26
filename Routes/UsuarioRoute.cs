@@ -3,7 +3,7 @@ using api_authentication_boberto.Exceptions;
 using api_authentication_boberto.Models;
 using api_authentication_boberto.Models.Enums;
 using api_authentication_boberto.Models.Response;
-using api_authentication_boberto.Services.Interfaces;
+using api_authentication_boberto.Services.OTP;
 using api_authentication_boberto.Services.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -27,7 +27,7 @@ namespace api_authentication_boberto.Routes
             {
                 request.Validar();
 
-                var codigoOtpValido = otpCode.ValidarCodigoOTP(request.Codigo).Valido;
+                var codigoOtpValido = otpCode.Validate(request.Codigo).Valido;
 
                 if (codigoOtpValido == false)
                 {

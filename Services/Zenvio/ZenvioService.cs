@@ -1,61 +1,60 @@
-﻿using api_authentication_boberto.Exceptions;
+﻿
+
+using api_authentication_boberto.Exceptions;
 using api_authentication_boberto.Integrations.ZenviaApiClient;
-using api_authentication_boberto.Models;
 using api_authentication_boberto.Models.Config;
-using api_authentication_boberto.Services.Implements;
+using api_authentication_boberto.Models.Enums;
+using api_authentication_boberto.Services.ZenvioSecurity;
 using Microsoft.Extensions.Options;
-using static api_authentication_boberto.Integrations.ZenviaApiClient.SendSMSRequest;
 
 namespace api_authentication_boberto.Services.Zenvio
 {
     public class ZenvioService
     {
         private IOptions<ZenviaApiConfig> zenviaApiConfig;
-        private ZenvioSecurity gerenciadorZenvio;
+        private IZenvioSecurityService gerenciadorZenvio;
         private IZenviaApi zenviaApiClient;
 
-        public ZenvioService(IOptions<ZenviaApiConfig> zenviaApiConfig, ZenvioSecurity gerenciadorZenvio, IZenviaApi zenviaApiClient)
+        public ZenvioService(IOptions<ZenviaApiConfig> zenviaApiConfig, IZenvioSecurityService gerenciadorZenvio, IZenviaApi zenviaApiClient)
         {
             this.zenviaApiConfig = zenviaApiConfig;
             this.gerenciadorZenvio = gerenciadorZenvio;
             this.zenviaApiClient = zenviaApiClient;
         }
 
-        public async Task<SendSMSResponse> EnviarSMS(string numeroCelular, string texto)
+        public async Task<SendSMSResponse> SendSMS(string phoneNumber, string texto)
         {
             if (zenviaApiConfig.Value.Enabled == false)
             {
                 throw new CustomException(StatusCodeEnum.INTERN, "Recurso envio de SMS desativado");
             }
 
-            gerenciadorZenvio.IncrementarTentativa();
+            gerenciadorZenvio.IncrementAttemp();
 
-            if (gerenciadorZenvio.AtingiuLimiteMaximoDeTentativas())
+            if (gerenciadorZenvio.ReachedMaximumLimitOfAttempts())
             {
                 throw new CustomException(StatusCodeEnum.INTERN, "Limite máximo de SMS diário atingido.");
             }
 
-            var conteudoMensagem = new List<Content>();
-
-            conteudoMensagem.Add(new()
+            var messageContent = new List<SendSMSRequest.Content>() { new()
             {
                 Type = "text",
                 Text = texto
-            });
+            }};
 
-            return await zenviaApiClient.EnviarSMS(new()
+            return await zenviaApiClient.SendSMS(new()
             {
-                To = numeroCelular,
+                To = phoneNumber,
                 From = zenviaApiConfig.Value.Alias,
-                Contents = conteudoMensagem
+                Contents = messageContent
             });
         }
 
-        public async Task EnviarSMSCodigo(string numeroCelular, string codigo)
+        public async Task SendSMSCode(string phoneNumber, string code)
         {
-            var conteudoMensagem = $"ApiAuthBoberto: Seu codigo e {codigo}";
+            var messageContent = $"ApiAuthBoberto: Your code is {code}";
 
-            await EnviarSMS(numeroCelular, conteudoMensagem);
+            await SendSMS(phoneNumber, messageContent);
         }
     }
 }

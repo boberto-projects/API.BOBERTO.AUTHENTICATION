@@ -3,11 +3,12 @@ using api_authentication_boberto.EncryptionDecryptionUsingSymmetricKey;
 using api_authentication_boberto.Exceptions;
 using api_authentication_boberto.Models;
 using api_authentication_boberto.Models.Config;
+using api_authentication_boberto.Models.Enums;
 using Microsoft.Extensions.Options;
 using System.Security.Cryptography;
 using BC = BCrypt.Net.BCrypt;
 
-namespace api_authentication_boberto.Services.ApiKeyAuthenticationService
+namespace api_authentication_boberto.Services.ApiKeyAuthentication
 {
     public class ApiKeyAuthenticationService : IApiKeyAuthenticationService
     {
@@ -124,7 +125,7 @@ namespace api_authentication_boberto.Services.ApiKeyAuthenticationService
             var keyWithoutPrefix = RemoveKeyPrefix(key);
             var decrypt = DecryptApiKey(keyWithoutPrefix);
             var userId = GetUserId(key);
-            var apiKey = DbContext.ApiKey.FirstOrDefault(token => token.UsuarioId.Equals(userId));
+            var apiKey = DbContext.ApiKey.FirstOrDefault(token => token.UserId.Equals(userId));
             if (apiKey != null)
             {
                 var apiKeyVerified = BC.Verify(decrypt, apiKey.ApiKey);
@@ -136,7 +137,7 @@ namespace api_authentication_boberto.Services.ApiKeyAuthenticationService
                 {
                     ApiKey = decrypt,
                     Scopes = apiKey.Scopes.ToArray(),
-                    UserId = apiKey.UsuarioId
+                    UserId = apiKey.UserId
                 };
             }
             return null;

@@ -1,6 +1,7 @@
 ﻿using api_authentication_boberto.Models;
+using api_authentication_boberto.Models.Enums;
 
-namespace api_authentication_boberto.Services.ApiKeyAuthenticationService
+namespace api_authentication_boberto.Services.ApiKeyAuthentication
 {
     public interface IApiKeyAuthenticationService
     {

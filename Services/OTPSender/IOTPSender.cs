@@ -5,8 +5,8 @@
     /// </summary>
     public interface IOTPSender
     {
-        void EnviarCodigoSMS(string numeroCelular, string codigo);
+        void SendSMS(string numeroCelular, string codigo);
 
-        void EnviarCodigoEmail(string email, string codigo);
+        void SendEmail(string email, string codigo);
     }
 }
