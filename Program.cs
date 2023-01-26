@@ -1,4 +1,5 @@
 using api_authentication_boberto;
+using api_authentication_boberto.DependencyInjection;
 using api_authentication_boberto.Exceptions;
 using api_authentication_boberto.Interfaces;
 using api_authentication_boberto.Models;
@@ -24,11 +25,12 @@ var config = new ConfigurationBuilder()
 .Build();
 
 ///TODO: we need to delegate this to other pattern.
-builder.InjetarConfiguracoes(config);
-builder.InjetarServicosDeArmazenamento(config);
-builder.InjetarServicos(config);
-builder.InjetarIntegracoes(config);
-builder.InjetarServicosAutenticacao(config);
+builder.AddConfigurations();
+builder.AddPostgreeStorage();
+builder.AddRedisStorage();
+builder.AddAuthentications();
+builder.AddServices();
+builder.AddIntegrations();
 
 var app = builder.Build();
 

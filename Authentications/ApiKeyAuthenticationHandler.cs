@@ -7,7 +7,7 @@ using System.Security.Claims;
 using System.Text.Encodings.Web;
 
 ///https://balta.io/blog/aspnet-autenticacao-apikey
-namespace api_authentication_boberto.Models
+namespace api_authentication_boberto.Authentications
 {
 
     public class ApiKeyAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>

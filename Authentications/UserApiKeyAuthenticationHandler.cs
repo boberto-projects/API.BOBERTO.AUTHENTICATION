@@ -8,7 +8,7 @@ using Org.BouncyCastle.Asn1.Ocsp;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 
-namespace api_authentication_boberto
+namespace api_authentication_boberto.Authentications
 {
     public class UserApiKeyAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
