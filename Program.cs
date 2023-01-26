@@ -43,7 +43,7 @@ app.AdicionarUsuarioRoute();
 app.AdicionarApiConfigRoute();
 
 ///We need to put this at BobertoNuggetLibrary
-app.MapGet("/", ([FromServices] ApiCicloDeVida apiCicloDeVida) =>
+app.MapGet("/", ([FromServices] HealthCheck apiCicloDeVida) =>
 {
     var ultimoDeploy = "Last deploy " + apiCicloDeVida.StartAt.ToString("dd/MM/yyyy HH:mm:ss");
     var upTime = apiCicloDeVida.GetUpTime();

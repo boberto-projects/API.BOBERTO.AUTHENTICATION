@@ -20,7 +20,7 @@ namespace api_authentication_boberto.DependencyInjection
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddHttpContextAccessor();
 
-            builder.Services.AddSingleton<ApiCicloDeVida>();
+            builder.Services.AddSingleton<HealthCheck>();
             builder.Services.AddSingleton<IOTPService, OTPService>();
             builder.Services.AddSingleton<IOTPSender, OTPSender>();
             builder.Services.AddSingleton<ApiConfigManagerService>();
