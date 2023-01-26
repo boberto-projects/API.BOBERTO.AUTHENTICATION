@@ -33,6 +33,8 @@
 
   <ItemGroup>
     <Folder Include="Domain\CustomDbContext\Converter\" />
+    <Folder Include="Services\Implements\" />
+    <Folder Include="Services\Interfaces\" />
   </ItemGroup>
 
 </Project>

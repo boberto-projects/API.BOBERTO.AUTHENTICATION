@@ -1,4 +1,6 @@
 ﻿using api_authentication_boberto.Exceptions;
+using api_authentication_boberto.Models.Enums;
+
 namespace api_authentication_boberto.Models.Request
 {
     public class EnviarCodigoSMSRequest

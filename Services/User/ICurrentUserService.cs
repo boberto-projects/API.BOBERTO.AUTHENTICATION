@@ -1,8 +1,8 @@
 ﻿using api_authentication_boberto.Models;
 
-namespace api_authentication_boberto.Interfaces
+namespace api_authentication_boberto.Services.User
 {
-    public interface IUsuarioService
+    public interface ICurrentUserService
     {
         /// <summary>
         /// Obter o usuário logado usando o claim principal

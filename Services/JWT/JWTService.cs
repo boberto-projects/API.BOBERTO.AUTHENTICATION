@@ -1,14 +1,4 @@
-﻿using api_authentication_boberto.Domain.CustomDbContext;
-using api_authentication_boberto.Models.Config;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Principal;
-using System.Text;
-
-namespace api_authentication_boberto.Services.Implements
+﻿namespace api_authentication_boberto.Services.JWT
 {
     public class TokenJWTService
     {
@@ -49,7 +39,7 @@ namespace api_authentication_boberto.Services.Implements
             catch (Exception)
             {
                 return false;
-            }   
+            }
         }
         private byte[] JWTKey { get; set; }
         private TokenValidationParameters GetValidationParameters()

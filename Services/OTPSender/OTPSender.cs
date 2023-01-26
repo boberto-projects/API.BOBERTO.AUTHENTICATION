@@ -1,16 +1,6 @@
-﻿using api_authentication_boberto.Integrations.SMSAdbTester;
-using api_authentication_boberto.Interfaces;
-using api_authentication_boberto.Models.Config;
-using api_authentication_boberto.Services.Interfaces;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json.Linq;
-using Org.BouncyCastle.Asn1.Ocsp;
-using RestEase.Implementation;
-using System.Resources;
-
-namespace api_authentication_boberto.Services.Implements
+﻿namespace api_authentication_boberto.Services.OTPSender
 {
-    public class EnviarCodigoDuploFator : IEnviarCodigoDuploFator
+    public class OTPSender : IEnviarCodigoDuploFator
     {
         private ZenvioService _zenvioService;
         private DiscordService _discordService;
@@ -19,7 +9,7 @@ namespace api_authentication_boberto.Services.Implements
         private ISmsAdbTesterApi _smsAdbTesterApi;
 
         private ResourcesConfig _resourceConfig;
-        public EnviarCodigoDuploFator(ZenvioService zenvioService,
+        public OTPSender(ZenvioService zenvioService,
             IEmailService emailService,
             DiscordService discordService,
             IOptions<ResourcesConfig> resourceConfig,
@@ -55,15 +45,15 @@ namespace api_authentication_boberto.Services.Implements
             {
                 _smsAdbTesterApi.EnviarSMS(
                  new Integrations.SMSAdbTester.Request.SendAdbTesterMessageRequest()
-                {
-                    Message = $"ApiAuthBoberto: Seu código é {codigo}"
+                 {
+                     Message = $"ApiAuthBoberto: Seu código é {codigo}"
                  });
 
                 return;
             }
             _zenvioService.EnviarSMSCodigo(numeroCelular, codigo);
         }
-        
+
         public void EnviarCodigoEmail(string email, string codigo)
         {
             var to = email;

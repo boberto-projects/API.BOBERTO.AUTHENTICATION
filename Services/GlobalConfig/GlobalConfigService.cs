@@ -1,15 +1,8 @@
 ﻿using api_authentication_boberto.Models.Config;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using NuGet.Protocol;
-using System.Configuration;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Text;
-using ConfigurationManager = System.Configuration.ConfigurationManager;
 
-namespace api_authentication_boberto.Services.Implements
+namespace api_authentication_boberto.Services.GlobalConfig
 {
     public class AtualizarAppsettings
     {
@@ -21,6 +14,6 @@ namespace api_authentication_boberto.Services.Implements
             jsonResponse.ResourcesConfig.Resources = resourceSettings;
             var json = JsonConvert.SerializeObject(jsonResponse, Formatting.Indented);
             File.WriteAllText(arquivoAppSettings, json, encoding: Encoding.UTF8);
-        } 
+        }
     }
 }

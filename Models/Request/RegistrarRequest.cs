@@ -1,4 +1,5 @@
 ﻿using api_authentication_boberto.Exceptions;
+using api_authentication_boberto.Models.Enums;
 using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace api_authentication_boberto.Models.Request

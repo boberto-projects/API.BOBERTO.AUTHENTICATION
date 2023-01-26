@@ -3,18 +3,13 @@ using api_authentication_boberto.EncryptionDecryptionUsingSymmetricKey;
 using api_authentication_boberto.Exceptions;
 using api_authentication_boberto.Models;
 using api_authentication_boberto.Models.Config;
-using api_authentication_boberto.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
-using NuGet.Packaging;
-using System.Collections.Generic;
 using System.Security.Cryptography;
 using BC = BCrypt.Net.BCrypt;
 
-namespace api_authentication_boberto.Services.Implements
+namespace api_authentication_boberto.Services.ApiKeyAuthenticationService
 {
-    public class ApiKeyService : IApiKeyService
+    public class ApiKeyAuthenticationService : IApiKeyAuthenticationService
     {
         const string _prefix = "BOBERTOAUTH-";
         const string _genericMessage = "INVALID API KEY";
@@ -27,7 +22,7 @@ namespace api_authentication_boberto.Services.Implements
         public static string[] DefaultScopes = new string[] { "manage_modpack" };
         DatabaseContext DbContext { get; set; }
         ApiConfig ApiConfig { get; set; }
-        public ApiKeyService(DatabaseContext dbContext, IOptions<ApiConfig> apiConfig)
+        public ApiKeyAuthenticationService(DatabaseContext dbContext, IOptions<ApiConfig> apiConfig)
         {
             DbContext = dbContext;
             ApiConfig = apiConfig.Value;

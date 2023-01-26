@@ -1,10 +1,9 @@
-﻿using api_authentication_boberto.Interfaces;
-using Microsoft.Extensions.Caching.Distributed;
+﻿using Microsoft.Extensions.Caching.Distributed;
 using System.Drawing;
 using System.Text.Json;
 using System.Threading;
 
-namespace api_authentication_boberto.Implements
+namespace api_authentication_boberto.Services.Redis
 {
     public class RedisService : IRedisService
     {

@@ -1,11 +1,12 @@
 ﻿using api_authentication_boberto.Domain.CustomDbContext;
 using api_authentication_boberto.Exceptions;
-using api_authentication_boberto.Interfaces;
-using api_authentication_boberto.Models;
+using api_authentication_boberto.Models.Enums;
 using api_authentication_boberto.Models.Request;
 using api_authentication_boberto.Models.Response;
 using api_authentication_boberto.Services.Implements;
-using api_authentication_boberto.Services.Interfaces;
+using api_authentication_boberto.Services.OTPSender;
+using api_authentication_boberto.Services.Redis;
+using api_authentication_boberto.Services.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -21,11 +22,11 @@ namespace api_authentication_boberto.Routes
             app.MapPost("/autenticar", [AllowAnonymous] ([FromBody] LoginRequest request,
                 [FromServices] IRedisService redisService,
                 [FromServices] DatabaseContext dbContext,
-                IOTPCode otpCode,
-                IEnviarCodigoDuploFator enviarCodigoDuploFator,
-                [FromServices] GerenciadorAutenticacao gerenciadorAutenticacao,
+                IOTPService otpCode,
+                IOTPSender enviarCodigoDuploFator,
+                [FromServices] UserSecurity gerenciadorAutenticacao,
                 [FromServices] IConfiguration config,
-                [FromServices] TokenJWTService tokenJWTService
+                [FromServices] JWTService tokenJWTService
                 ) =>
             {
                 request.Validar();
@@ -100,7 +101,7 @@ namespace api_authentication_boberto.Routes
             }).WithTags("Autenticação");
 
             //refresh token
-            app.MapPost("/refresh_token", [Authorize] ([FromBody] RefreshTokenRequest request, IUsuarioService usuarioLogado, [FromServices] TokenJWTService tokenJWTService, [FromServices] DatabaseContext dbContext) =>
+            app.MapPost("/refresh_token", [Authorize] ([FromBody] RefreshTokenRequest request, ICurrentUserService usuarioLogado, [FromServices] JWTService tokenJWTService, [FromServices] DatabaseContext dbContext) =>
             {
                 var tokenValido = tokenJWTService.ValidarTokenJWT(request.Token);
                 if (tokenValido == false)

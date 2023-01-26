@@ -2,18 +2,19 @@
 using api_authentication_boberto.Integrations.ZenviaApiClient;
 using api_authentication_boberto.Models;
 using api_authentication_boberto.Models.Config;
+using api_authentication_boberto.Services.Implements;
 using Microsoft.Extensions.Options;
 using static api_authentication_boberto.Integrations.ZenviaApiClient.SendSMSRequest;
 
-namespace api_authentication_boberto.Services.Implements
+namespace api_authentication_boberto.Services.Zenvio
 {
     public class ZenvioService
     {
         private IOptions<ZenviaApiConfig> zenviaApiConfig;
-        private GerenciadorZenvio gerenciadorZenvio;
+        private ZenvioSecurity gerenciadorZenvio;
         private IZenviaApi zenviaApiClient;
 
-        public ZenvioService(IOptions<ZenviaApiConfig> zenviaApiConfig, GerenciadorZenvio gerenciadorZenvio, IZenviaApi zenviaApiClient)
+        public ZenvioService(IOptions<ZenviaApiConfig> zenviaApiConfig, ZenvioSecurity gerenciadorZenvio, IZenviaApi zenviaApiClient)
         {
             this.zenviaApiConfig = zenviaApiConfig;
             this.gerenciadorZenvio = gerenciadorZenvio;

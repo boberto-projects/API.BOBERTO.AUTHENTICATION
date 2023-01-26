@@ -1,13 +1,11 @@
 ﻿using api_authentication_boberto.Domain.CustomDbContext;
-using api_authentication_boberto.Interfaces;
 using api_authentication_boberto.Models;
 using Microsoft.EntityFrameworkCore;
-using RestEase.Implementation;
 using System.Security.Claims;
 
-namespace api_authentication_boberto.Implements
+namespace api_authentication_boberto.Services.User
 {
-    public class UsuarioService : IUsuarioService
+    public class UsuarioService : ICurrentUserService
     {
 
         private IHttpContextAccessor _httpContextAccessor { get; set; }

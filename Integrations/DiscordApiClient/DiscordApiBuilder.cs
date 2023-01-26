@@ -1,5 +1,4 @@
-﻿using api_authentication_boberto.Integrations.Discord;
-using api_authentication_boberto.Models.Config;
+﻿using api_authentication_boberto.Models.Config;
 using RestEase;
 
 namespace api_authentication_boberto.Integrations.DiscordApiClient

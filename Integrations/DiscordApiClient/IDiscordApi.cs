@@ -1,7 +1,7 @@
-﻿using api_authentication_boberto.Integrations.DiscordApiClient;
+﻿using api_authentication_boberto.Integrations.DiscordApiClient.Request;
 using RestEase;
 
-namespace api_authentication_boberto.Integrations.Discord
+namespace api_authentication_boberto.Integrations.DiscordApiClient
 {
     public interface IDiscordApi
     {

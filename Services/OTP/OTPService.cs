@@ -1,18 +1,16 @@
 ﻿using api_authentication_boberto.Models.Config;
 using api_authentication_boberto.Models.Response;
-using api_authentication_boberto.Services.Interfaces;
 using Microsoft.Extensions.Options;
 using OtpNet;
-using System.Text;
 
-namespace api_authentication_boberto.Services.Implements
+namespace api_authentication_boberto.Services.OTP
 {
-    public class OTPCodeService : IOTPCode
+    public class OTPService : IOTPService
     {
         private TwoFactorConfig _twoFactorConfig;
         private byte[] ChaveOTP => Base32Encoding.ToBytes(_twoFactorConfig.Key);
 
-        public OTPCodeService(IOptions<TwoFactorConfig> twoFactorConfig)
+        public OTPService(IOptions<TwoFactorConfig> twoFactorConfig)
         {
             _twoFactorConfig = twoFactorConfig.Value;
         }

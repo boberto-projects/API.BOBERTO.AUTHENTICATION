@@ -1,7 +1,11 @@
-﻿using api_authentication_boberto.Implements;
-using api_authentication_boberto.Interfaces;
+﻿using api_authentication_boberto.Services.ApiKeyAuthenticationService;
+using api_authentication_boberto.Services.GlobalConfig;
 using api_authentication_boberto.Services.Implements;
-using api_authentication_boberto.Services.Interfaces;
+using api_authentication_boberto.Services.OTP;
+using api_authentication_boberto.Services.OTPSender;
+using api_authentication_boberto.Services.RedisService;
+using api_authentication_boberto.Services.SenderService;
+using api_authentication_boberto.Services.User;
 
 namespace api_authentication_boberto.DependencyInjection
 {
@@ -20,16 +24,16 @@ namespace api_authentication_boberto.DependencyInjection
 
             builder.Services.AddSingleton<ApiCicloDeVida>();
             builder.Services.AddSingleton<IRedisService, RedisService>();
-            builder.Services.AddSingleton<IOTPCode, OTPCodeService>();
-            builder.Services.AddSingleton<IEnviarCodigoDuploFator, EnviarCodigoDuploFator>();
+            builder.Services.AddSingleton<IOTPService, OTPService>();
+            builder.Services.AddSingleton<IOTPSender, OTPSender>();
             builder.Services.AddSingleton<AtualizarAppsettings>();
-            builder.Services.AddSingleton<GerenciadorZenvio>();
-            builder.Services.AddSingleton<GerenciadorAutenticacao>();
+            builder.Services.AddSingleton<ZenvioSecurity>();
+            builder.Services.AddSingleton<UserSecurity>();
 
-            builder.Services.AddScoped<TokenJWTService>();
-            builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+            builder.Services.AddScoped<JWTService>();
+            builder.Services.AddScoped<ICurrentUserService, UsuarioService>();
 
-            builder.Services.AddScoped<IApiKeyService, ApiKeyService>();
+            builder.Services.AddScoped<IApiKeyAuthenticationService, ApiKeyAuthenticationService>();
 
             //config temporaria postgree
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);

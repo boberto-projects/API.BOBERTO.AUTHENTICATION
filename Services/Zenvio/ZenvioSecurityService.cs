@@ -1,21 +1,18 @@
-﻿using api_authentication_boberto.Implements;
-using api_authentication_boberto.Interfaces;
-using api_authentication_boberto.Models.Cache;
-using api_authentication_boberto.Models.Config;
-using api_authentication_boberto.Services.Interfaces;
+﻿using api_authentication_boberto.Models.Cache;
+using api_authentication_boberto.Services.RedisService;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 
-namespace api_authentication_boberto.Services.Implements
+namespace api_authentication_boberto.Services.Zenvio
 {
-    public class GerenciadorZenvio
+    public class ZenvioSecurityService
     {
         private IRedisService redisService { get; set; }
-        private GerenciadorZenvioConfig zenvioConfig { get; set; }
+        private ZenvioSecurityServiceConfig zenvioConfig { get; set; }
 
         private const string CACHE_ZENVIO = "COUNT_SMS_GLOBAL_SENDED";
 
-        public GerenciadorZenvio(IRedisService _redisService, IOptions<GerenciadorZenvioConfig> _zenvioConfig)
+        public ZenvioSecurityService(IRedisService _redisService, IOptions<ZenvioSecurityServiceConfig> _zenvioConfig)
         {
             redisService = _redisService;
             zenvioConfig = _zenvioConfig.Value;

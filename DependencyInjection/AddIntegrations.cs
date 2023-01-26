@@ -1,8 +1,9 @@
 ﻿using api_authentication_boberto.Integrations.DiscordApiClient;
 using api_authentication_boberto.Integrations.SMSAdbTester;
 using api_authentication_boberto.Integrations.ZenviaApiClient;
-using api_authentication_boberto.Services.Implements;
-using api_authentication_boberto.Services.Interfaces;
+using api_authentication_boberto.Services.DiscordService;
+using api_authentication_boberto.Services.Email;
+using api_authentication_boberto.Services.Zenvio;
 
 namespace api_authentication_boberto.DependencyInjection
 {

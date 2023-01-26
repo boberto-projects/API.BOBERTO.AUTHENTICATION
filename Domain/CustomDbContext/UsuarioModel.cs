@@ -1,4 +1,4 @@
-﻿using api_authentication_boberto.Models;
+﻿using api_authentication_boberto.Models.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 

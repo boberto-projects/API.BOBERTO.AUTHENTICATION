@@ -1,12 +1,12 @@
 ﻿using Newtonsoft.Json;
 
-namespace api_authentication_boberto.Integrations.ZenviaApiClient
+namespace api_authentication_boberto.Integrations.ZenviaApiClient.Response
 {
     public class SendSMSResponse
     {
 
         // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
-       
+
         [JsonProperty("from")]
         public string From { get; set; }
 

@@ -1,21 +1,18 @@
 ﻿using api_authentication_boberto.Domain.CustomDbContext;
-using api_authentication_boberto.Interfaces;
 using api_authentication_boberto.Models.Cache;
-using api_authentication_boberto.Models.Config;
-using api_authentication_boberto.Services.Interfaces;
+using api_authentication_boberto.Services.AuthenticationSecurity;
+using api_authentication_boberto.Services.RedisService;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Options;
-using System;
 
-namespace api_authentication_boberto.Services.Implements
+namespace api_authentication_boberto.Services.UserSecurity
 {
-    public class GerenciadorAutenticacao
-    {   
+    public class AuthenticationSecurity : IAuthenticationSecurity
+    {
         private IRedisService redisService { get; set; }
-        private GerenciadorAutenticacaoConfig autenticacaoConfig { get; set; }
+        private UserSecurityConfig autenticacaoConfig { get; set; }
         private string CACHE_USUARIO { get; set; }
 
-        public GerenciadorAutenticacao(IRedisService redisService, IOptions<GerenciadorAutenticacaoConfig> gerenciadorAutenticacaoConfig)
+        public AuthenticationSecurity(IRedisService redisService, IOptions<UserSecurityConfig> gerenciadorAutenticacaoConfig)
         {
             this.redisService = redisService;
             autenticacaoConfig = gerenciadorAutenticacaoConfig.Value;
@@ -51,9 +48,9 @@ namespace api_authentication_boberto.Services.Implements
             redisService.Clear(CACHE_USUARIO);
         }
 
-        public void CriarCacheUsuario(UsuarioModel usuario)
+        public void CriarCacheUsuario(UsuarioModel user)
         {
-            CACHE_USUARIO = "TRY_LOGIN_" + usuario.Email;
+            CACHE_USUARIO = "TRY_LOGIN_" + user.Email;
 
             if (redisService.Exists(CACHE_USUARIO))
             {
@@ -63,10 +60,10 @@ namespace api_authentication_boberto.Services.Implements
             var usuarioCache = new UsuarioCacheModel()
             {
                 UltimaTentativa = DateTime.MinValue,
-                UltimoLogin = usuario.UltimoLogin,
-                UsuarioId = usuario.UsuarioId,
+                UltimoLogin = user.UltimoLogin,
+                UsuarioId = user.UsuarioId,
                 AcessoBloqueado = false,
-                Email = usuario.Email,
+                Email = user.Email,
                 TentativasDeLogin = 0,
             };
             var cacheOptions = new DistributedCacheEntryOptions()
@@ -87,7 +84,7 @@ namespace api_authentication_boberto.Services.Implements
             ///tempo bloqueio = data atual - (ultimo login + tempo bloqueio) 
         }
 
-        private TimeSpan ObterTempoBloqueio()
+        public TimeSpan ObterTempoBloqueio()
         {
             return TimeSpan.FromSeconds(autenticacaoConfig.SegundosExpiracao);
         }

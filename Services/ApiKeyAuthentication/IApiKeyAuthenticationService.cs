@@ -1,9 +1,8 @@
-﻿using api_authentication_boberto.Domain.CustomDbContext;
-using api_authentication_boberto.Models;
+﻿using api_authentication_boberto.Models;
 
-namespace api_authentication_boberto.Services.Interfaces
+namespace api_authentication_boberto.Services.ApiKeyAuthenticationService
 {
-    public interface IApiKeyService
+    public interface IApiKeyAuthenticationService
     {
         public bool Validate(string key);
         public GetApiKeyModel Get(string key);

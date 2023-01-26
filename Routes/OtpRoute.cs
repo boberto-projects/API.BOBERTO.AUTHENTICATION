@@ -5,7 +5,7 @@ using api_authentication_boberto.Models.Config;
 using api_authentication_boberto.Models.Request;
 using api_authentication_boberto.Models.Response;
 using api_authentication_boberto.Services.Implements;
-using api_authentication_boberto.Services.Interfaces;
+using api_authentication_boberto.Services.OTPSender;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -21,8 +21,8 @@ namespace api_authentication_boberto.Routes
           app.MapPost("/otp/enviarCodigoSMS", [Authorize(AuthenticationSchemes = "ApiKeyAuthenticationHandler")] (
               [FromBody] EnviarCodigoSMSRequest request,
              [FromServices] DatabaseContext dbContext,
-              IOTPCode otpCode,
-              IEnviarCodigoDuploFator enviarCodigoDuploFator
+              IOTPService otpCode,
+              IOTPSender enviarCodigoDuploFator
           ) =>
             {
                 request.Validar();
@@ -39,8 +39,8 @@ namespace api_authentication_boberto.Routes
             app.MapPost("/otp/enviarCodigoEmail", [Authorize(AuthenticationSchemes = "ApiKeyAuthenticationHandler")] (
             [FromBody] EnviarCodigoEmailRequest request,
             [FromServices] DatabaseContext dbContext,
-            IOTPCode otpCode,
-            IEnviarCodigoDuploFator enviarCodigoDuploFator) =>
+            IOTPService otpCode,
+            IOTPSender enviarCodigoDuploFator) =>
             {
                 request.Validar();
                 var codigo = otpCode.GerarCodigoOTP();
@@ -51,7 +51,7 @@ namespace api_authentication_boberto.Routes
 
             app.MapPost("/otp/gerarotp", [Authorize(AuthenticationSchemes = "ApiKeyAuthenticationHandler")] (
             [FromServices] DatabaseContext dbContext,
-            IOTPCode otpCode) =>
+            IOTPService otpCode) =>
             {
                 var codigo = otpCode.GerarCodigoOTP();
                 return Results.Ok(new GenerateOtpResponse()
@@ -63,7 +63,7 @@ namespace api_authentication_boberto.Routes
 
               app.MapPost("/otp/validarotp", [Authorize(AuthenticationSchemes = "ApiKeyAuthenticationHandler")] (
                 [FromBody] TwoFactorVerifyRequest request,
-              IOTPCode otpCode
+              IOTPService otpCode
                 ) =>
             {
                 request.Validar();

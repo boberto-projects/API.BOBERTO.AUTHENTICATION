@@ -1,10 +1,10 @@
 ﻿using api_authentication_boberto.Domain.CustomDbContext;
 using api_authentication_boberto.EncryptionDecryptionUsingSymmetricKey;
 using api_authentication_boberto.Exceptions;
-using api_authentication_boberto.Interfaces;
 using api_authentication_boberto.Models;
 using api_authentication_boberto.Models.Config;
-using api_authentication_boberto.Services.Interfaces;
+using api_authentication_boberto.Services.ApiKeyAuthenticationService;
+using api_authentication_boberto.Services.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -18,9 +18,9 @@ namespace api_authentication_boberto.Routes
         public static void AddApiKeyRoute(this WebApplication app)
         {
             app.MapPost("/apikey/generate", [Authorize] (
-                [FromServices] IApiKeyService apiKeyService,
+                [FromServices] IApiKeyAuthenticationService apiKeyService,
                 [FromServices] DatabaseContext dbContext,
-                [FromServices] IUsuarioService currentUser,
+                [FromServices] ICurrentUserService currentUser,
                 IOptions<ApiConfig> apiConfig) =>
                 {
                     var user = currentUser.ObterUsuarioLogado();
@@ -47,9 +47,9 @@ namespace api_authentication_boberto.Routes
                 }).WithTags("User Api Key");
 
             app.MapPost("/apikey/revoke", [Authorize] (
-                [FromServices] IApiKeyService apiKeyService,
+                [FromServices] IApiKeyAuthenticationService apiKeyService,
                 [FromServices] DatabaseContext dbContext,
-                [FromServices] IUsuarioService currentUser,
+                [FromServices] ICurrentUserService currentUser,
                 IOptions<ApiConfig> apiConfig) =>
             {
                 var user = currentUser.ObterUsuarioLogado();

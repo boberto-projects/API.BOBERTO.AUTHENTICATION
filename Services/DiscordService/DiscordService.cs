@@ -1,12 +1,11 @@
 ﻿using api_authentication_boberto.Exceptions;
-using api_authentication_boberto.Integrations.Discord;
 using api_authentication_boberto.Integrations.DiscordApiClient;
 using api_authentication_boberto.Integrations.ZenviaApiClient;
-using api_authentication_boberto.Models;
 using api_authentication_boberto.Models.Config;
+using api_authentication_boberto.Models.Enums;
 using Microsoft.Extensions.Options;
 
-namespace api_authentication_boberto.Services.Implements
+namespace api_authentication_boberto.Services.DiscordService
 {
     public class DiscordService
     {

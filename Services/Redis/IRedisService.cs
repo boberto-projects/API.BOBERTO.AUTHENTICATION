@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Caching.Distributed;
-
-namespace api_authentication_boberto.Interfaces
+﻿namespace api_authentication_boberto.Services.RedisService
 {
     public interface IRedisService
     {

@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace api_authentication_boberto.Integrations.DiscordApiClient
+namespace api_authentication_boberto.Integrations.DiscordApiClient.Request
 {
     public class DiscordRequest
     {

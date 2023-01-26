@@ -1,12 +1,4 @@
-﻿using api_authentication_boberto.Models.Config;
-using api_authentication_boberto.Services.Interfaces;
-using MailKit.Net.Smtp;
-using MailKit.Security;
-using Microsoft.Extensions.Options;
-using MimeKit;
-using MimeKit.Text;
-
-namespace api_authentication_boberto.Services.Implements
+﻿namespace api_authentication_boberto.Services.Email
 {
 
     public class EmailService : IEmailService

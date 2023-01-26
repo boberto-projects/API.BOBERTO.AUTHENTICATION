@@ -1,4 +1,4 @@
-﻿using api_authentication_boberto.Models;
+﻿using api_authentication_boberto.Models.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;

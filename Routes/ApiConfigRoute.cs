@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using api_authentication_boberto.Models.Config;
 using Microsoft.Extensions.Options;
 using api_authentication_boberto.Models.Request;
-using api_authentication_boberto.Services.Implements;
 using System.Linq;
 using System.Resources;
+using api_authentication_boberto.Services.GlobalConfig;
 
 namespace api_authentication_boberto.Routes
 {

@@ -1,9 +1,10 @@
 ﻿using api_authentication_boberto.Domain.CustomDbContext;
 using api_authentication_boberto.Exceptions;
-using api_authentication_boberto.Interfaces;
 using api_authentication_boberto.Models;
+using api_authentication_boberto.Models.Enums;
 using api_authentication_boberto.Models.Response;
 using api_authentication_boberto.Services.Interfaces;
+using api_authentication_boberto.Services.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,7 +14,7 @@ namespace api_authentication_boberto.Routes
     {
         public static void AdicionarUsuarioRoute(this WebApplication app)
         {
-            app.MapGet("/perfil", [Authorize] ([FromServices] IUsuarioService usuarioLogado) =>
+            app.MapGet("/perfil", [Authorize] ([FromServices] ICurrentUserService usuarioLogado) =>
             {
                 return usuarioLogado.ObterUsuarioLogado();
             }).WithTags("Usuário");
@@ -21,8 +22,8 @@ namespace api_authentication_boberto.Routes
             app.MapPost("/ativarDuplaAutenticacao", [Authorize] (
             [FromBody] AtivarDuplaAutenticacaoRequest request,
             [FromServices] DatabaseContext dbContext,
-            IOTPCode otpCode,
-            IUsuarioService usuarioLogado) =>
+            IOTPService otpCode,
+            ICurrentUserService usuarioLogado) =>
             {
                 request.Validar();
 

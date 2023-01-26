@@ -1,6 +1,6 @@
 ﻿using api_authentication_boberto.Domain.CustomDbContext;
 using api_authentication_boberto.Models.Config;
-using api_authentication_boberto.Services.Interfaces;
+using api_authentication_boberto.Services.ApiKeyAuthentication;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -13,10 +13,10 @@ namespace api_authentication_boberto.Authentications
     public class UserApiKeyAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
         private ApiConfig ApiConfig { get; set; }
-        private IApiKeyService ApiKeyService { get; set; }
+        private IApiKeyAuthenticationService ApiKeyService { get; set; }
         public UserApiKeyAuthenticationHandler(IOptions<ApiConfig> _apiConfig,
             IOptionsMonitor<AuthenticationSchemeOptions> options,
-            IApiKeyService apiKeyService,
+            IApiKeyAuthenticationService apiKeyService,
             ILoggerFactory logger,
             UrlEncoder encoder,
             ISystemClock clock) : base(options, logger, encoder, clock)

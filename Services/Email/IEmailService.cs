@@ -1,4 +1,4 @@
-﻿namespace api_authentication_boberto.Services.Interfaces
+﻿namespace api_authentication_boberto.Services.Email
 {
     public interface IEmailService
     {
