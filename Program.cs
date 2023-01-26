@@ -35,26 +35,8 @@ builder.AddIntegrations();
 var app = builder.Build();
 
 ///We need to put this at BobertoNuggetLibrary
-app.UseExceptionHandler(exceptionHandlerApp =>
-{
-    exceptionHandlerApp.Run(async context =>
-    {
-        context.Response.ContentType = "application/json";
-        var exceptionHandlerPathFeature =
-            context.Features.Get<IExceptionHandlerPathFeature>();
 
-        if (exceptionHandlerPathFeature?.Error is CustomException customException)
-        {
-            context.Response.StatusCode = customException.CodigoDeStatus;
-            await context.Response.WriteAsJsonAsync(customException.ObterResponse());
-        }
-        if (exceptionHandlerPathFeature?.Error is CodigoOTPException codigoOTPException)
-        {
-            context.Response.StatusCode = codigoOTPException.CodigoDeStatus;
-            await context.Response.WriteAsJsonAsync(codigoOTPException.ObterResponse());
-        }
-    });
-});
+app.AddCustomExceptionHandler();
 
 // Configure the HTTP request pipeline.
 if (config.GetSection("ApiConfig").Get<ApiConfig>().Swagger)
