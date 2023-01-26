@@ -2,9 +2,9 @@
 using Newtonsoft.Json;
 using System.Text;
 
-namespace api_authentication_boberto.Services.GlobalConfig
+namespace api_authentication_boberto.Services.ApiConfigManager
 {
-    public class ApiConfigService
+    public class ApiConfigManagerService
     {
         private string configFile => "appsettings.json";
         public void AtualizarResource(IEnumerable<ResourceOptionConfig> resourceSettings)

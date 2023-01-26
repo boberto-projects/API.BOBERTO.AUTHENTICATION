@@ -5,7 +5,7 @@
     using System.Security.Cryptography;
     using System.Text;
 
-    namespace EncryptionDecryptionUsingSymmetricKey
+    namespace Utils
     {
         public class EncryptUtils
         {

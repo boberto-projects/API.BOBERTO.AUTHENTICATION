@@ -3,11 +3,11 @@ using api_authentication_boberto.Exceptions;
 using api_authentication_boberto.Models.Enums;
 using api_authentication_boberto.Models.Request;
 using api_authentication_boberto.Models.Response;
+using api_authentication_boberto.Services.CurrentUser;
 using api_authentication_boberto.Services.JWT;
 using api_authentication_boberto.Services.OTP;
+using api_authentication_boberto.Services.OTPSender;
 using api_authentication_boberto.Services.Redis;
-using api_authentication_boberto.Services.SenderService;
-using api_authentication_boberto.Services.User;
 using api_authentication_boberto.Services.UserSecurity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +20,7 @@ namespace api_authentication_boberto.Routes
     {
         public static void AdicionarLoginRoute(this WebApplication app)
         {
-            app.MapPost("/autenticar", [AllowAnonymous] ([FromBody] LoginRequest request,
+            app.MapPost("/autenticar", [Authorize(AuthenticationSchemes = "api_key")] ([FromBody] LoginRequest request,
                 [FromServices] IRedisService redisService,
                 [FromServices] DatabaseContext dbContext,
                 IOTPService otpCode,
@@ -128,7 +128,7 @@ namespace api_authentication_boberto.Routes
 
 
             ///separar essa rota em outro lugar depois.
-            app.MapPost("/registrar", [AllowAnonymous] ([FromBody] RegistrarRequest request, [FromServices] DatabaseContext dbContext) =>
+            app.MapPost("/registrar", [Authorize(AuthenticationSchemes = "api_key")] ([FromBody] RegistrarRequest request, [FromServices] DatabaseContext dbContext) =>
         {
             request.Validar();
 

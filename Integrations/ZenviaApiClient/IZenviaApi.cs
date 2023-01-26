@@ -1,4 +1,6 @@
-﻿using RestEase;
+﻿using api_authentication_boberto.Integrations.ZenviaApiClient.Request;
+using api_authentication_boberto.Integrations.ZenviaApiClient.Response;
+using RestEase;
 
 namespace api_authentication_boberto.Integrations.ZenviaApiClient
 {

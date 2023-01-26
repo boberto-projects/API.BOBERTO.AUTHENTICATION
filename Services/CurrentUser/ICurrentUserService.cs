@@ -1,6 +1,6 @@
 ﻿using api_authentication_boberto.Models;
 
-namespace api_authentication_boberto.Services.User
+namespace api_authentication_boberto.Services.CurrentUser
 {
     public interface ICurrentUserService
     {

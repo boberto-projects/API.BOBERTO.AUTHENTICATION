@@ -3,8 +3,8 @@ using api_authentication_boberto.Exceptions;
 using api_authentication_boberto.Models;
 using api_authentication_boberto.Models.Enums;
 using api_authentication_boberto.Models.Response;
+using api_authentication_boberto.Services.CurrentUser;
 using api_authentication_boberto.Services.OTP;
-using api_authentication_boberto.Services.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,6 +1,8 @@
 ﻿using api_authentication_boberto.Authentications;
+using api_authentication_boberto.Models.Config;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -10,7 +12,8 @@ namespace api_authentication_boberto.DependencyInjection
     {
         public static void AddAuthentications(this WebApplicationBuilder builder)
         {
-            var config = builder.Configuration;
+            var serviceProvider = builder.Services.BuildServiceProvider();
+            var jwtConfig = serviceProvider.GetRequiredService<IOptions<JwtConfig>>();
 
             builder.Services.AddAuthentication("api_key")
     .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>
@@ -25,7 +28,7 @@ namespace api_authentication_boberto.DependencyInjection
           policy => policy.RequireClaim("api_key_scope",
           "MODPACK_CREATE")));
 
-            var jwtKey = Encoding.ASCII.GetBytes(config["JwtConfig:Key"]);
+            var jwtKey = Encoding.ASCII.GetBytes(jwtConfig.Value.Key);
 
             builder.Services.AddAuthentication(x =>
             {

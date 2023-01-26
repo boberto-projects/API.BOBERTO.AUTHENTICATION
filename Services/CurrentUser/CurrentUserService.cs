@@ -3,7 +3,7 @@ using api_authentication_boberto.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
-namespace api_authentication_boberto.Services.User
+namespace api_authentication_boberto.Services.CurrentUser
 {
     public class CurrentUserService : ICurrentUserService
     {

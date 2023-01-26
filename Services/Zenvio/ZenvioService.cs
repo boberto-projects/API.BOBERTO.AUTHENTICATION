@@ -2,6 +2,8 @@
 
 using api_authentication_boberto.Exceptions;
 using api_authentication_boberto.Integrations.ZenviaApiClient;
+using api_authentication_boberto.Integrations.ZenviaApiClient.Request;
+using api_authentication_boberto.Integrations.ZenviaApiClient.Response;
 using api_authentication_boberto.Models.Config;
 using api_authentication_boberto.Models.Enums;
 using api_authentication_boberto.Services.ZenvioSecurity;

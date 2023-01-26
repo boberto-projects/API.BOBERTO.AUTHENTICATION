@@ -1,4 +1,4 @@
-﻿namespace api_authentication_boberto.Services.SenderService
+﻿namespace api_authentication_boberto.Services.OTPSender
 {
     /// <summary>
     /// Só deve ser usada pelo aplicativo.

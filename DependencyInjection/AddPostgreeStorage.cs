@@ -10,6 +10,7 @@ namespace api_authentication_boberto.DependencyInjection
         {
             var config = builder.Configuration;
             builder.Services.AddEntityFrameworkNpgsql().AddDbContext<DatabaseContext>(o => o.UseNpgsql(ObterPostGreeContext()));
+            AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             string ObterPostGreeContext()
             {
                 var postGreeContext = config.GetConnectionString("PostgreeConnectionContext");

@@ -1,9 +1,9 @@
 ﻿using api_authentication_boberto.Domain.CustomDbContext;
-using api_authentication_boberto.EncryptionDecryptionUsingSymmetricKey;
 using api_authentication_boberto.Exceptions;
 using api_authentication_boberto.Models;
 using api_authentication_boberto.Models.Config;
 using api_authentication_boberto.Models.Enums;
+using api_authentication_boberto.Utils;
 using Microsoft.Extensions.Options;
 using System.Security.Cryptography;
 using BC = BCrypt.Net.BCrypt;

@@ -1,8 +1,8 @@
 ﻿using api_authentication_boberto.Integrations.SMSAdbTester;
+using api_authentication_boberto.Integrations.SMSAdbTester.Request;
 using api_authentication_boberto.Models.Config;
 using api_authentication_boberto.Services.Discord;
 using api_authentication_boberto.Services.Email;
-using api_authentication_boberto.Services.SenderService;
 using api_authentication_boberto.Services.Zenvio;
 using Microsoft.Extensions.Options;
 

@@ -1,6 +1,6 @@
 ﻿using api_authentication_boberto.Models.Config;
 using api_authentication_boberto.Models.Request;
-using api_authentication_boberto.Services.GlobalConfig;
+using api_authentication_boberto.Services.ApiConfigManager;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -17,7 +17,7 @@ namespace api_authentication_boberto.Routes
                 return resourceConfig;
             }).WithTags("Gerenciador de appsettings"); ;
 
-            app.MapPost("/apiconfig/resource/atualizar", [Authorize(AuthenticationSchemes = "ApiKeyAuthenticationHandler")] ([FromBody] AlterarApiConfigRequest request, [FromServices] ApiConfigService atualizarAppSettings, IOptions<ResourcesConfig> resourceConfig) =>
+            app.MapPost("/apiconfig/resource/atualizar", [Authorize(AuthenticationSchemes = "ApiKeyAuthenticationHandler")] ([FromBody] AlterarApiConfigRequest request, [FromServices] ApiConfigManagerService atualizarAppSettings, IOptions<ResourcesConfig> resourceConfig) =>
             {
                 var resources = resourceConfig.Value.Resources.ToList();
 

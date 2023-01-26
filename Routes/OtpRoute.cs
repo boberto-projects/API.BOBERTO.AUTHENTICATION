@@ -2,7 +2,7 @@
 using api_authentication_boberto.Models.Request;
 using api_authentication_boberto.Models.Response;
 using api_authentication_boberto.Services.OTP;
-using api_authentication_boberto.Services.SenderService;
+using api_authentication_boberto.Services.OTPSender;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
