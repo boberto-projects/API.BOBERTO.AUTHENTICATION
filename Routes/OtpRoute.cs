@@ -10,7 +10,7 @@ namespace api_authentication_boberto.Routes
 {
     public static class OtpRoute
     {
-        public static void AdicionarOtpRoute(this WebApplication app)
+        public static void AddOtpRoute(this WebApplication app)
         {
             app.MapPost("/otp/enviarCodigoSMS", [Authorize(AuthenticationSchemes = "ApiKeyAuthenticationHandler")] (
                 [FromBody] EnviarCodigoSMSRequest request,

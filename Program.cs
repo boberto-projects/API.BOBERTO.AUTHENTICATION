@@ -37,11 +37,11 @@ app.UseCors(x => x
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.AdicionarLoginRoute();
+app.AddLoginRoute();
 app.AddApiKeyRoute();
-app.AdicionarOtpRoute();
-app.AdicionarUsuarioRoute();
-app.AdicionarApiConfigRoute();
+app.AddOtpRoute();
+app.AddUserRoute();
+app.AddResourceRoute();
 
 ///We need to put this at BobertoNuggetLibrary
 app.MapGet("/", ([FromServices] HealthCheck apiCicloDeVida) =>

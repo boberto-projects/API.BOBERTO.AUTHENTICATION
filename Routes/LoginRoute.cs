@@ -18,7 +18,7 @@ namespace api_authentication_boberto.Routes
 {
     public static class LoginRoute
     {
-        public static void AdicionarLoginRoute(this WebApplication app)
+        public static void AddLoginRoute(this WebApplication app)
         {
             app.MapPost("/autenticar", [Authorize(AuthenticationSchemes = "api_key")] ([FromBody] LoginRequest request,
                 [FromServices] IRedisService redisService,

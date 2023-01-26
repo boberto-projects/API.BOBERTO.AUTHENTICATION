@@ -12,7 +12,7 @@ namespace api_authentication_boberto.Routes
 {
     public static class UsuarioRoute
     {
-        public static void AdicionarUsuarioRoute(this WebApplication app)
+        public static void AddUserRoute(this WebApplication app)
         {
             app.MapGet("/perfil", [Authorize] ([FromServices] ICurrentUserService usuarioLogado) =>
             {

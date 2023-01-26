@@ -2,8 +2,9 @@
 {
     public class ZenvioCacheModel
     {
-        public DateTime? UltimaTentativa { get; set; }
-        public int Tentativas { get; set; }
-        public bool AcessoBloqueado { get; set; }
+        public DateTime? LastAttempt
+        { get; set; }
+        public int Attempts { get; set; }
+        public bool Blocked { get; set; }
     }
 }

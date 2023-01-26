@@ -23,7 +23,7 @@ namespace api_authentication_boberto.Services.ZenvioSecurity
         public bool ReachedMaximumLimitOfAttempts()
         {
             var obterCacheZenvio = GetCahe();
-            var tentativasDeEnvio = obterCacheZenvio.Tentativas;
+            var tentativasDeEnvio = obterCacheZenvio.Attempts;
             if (tentativasDeEnvio >= zenvioConfig.MaximumAttempts)
             {
                 return true;
@@ -38,8 +38,8 @@ namespace api_authentication_boberto.Services.ZenvioSecurity
                 return;
             }
             var oberCacheZenvio = GetCahe();
-            oberCacheZenvio.Tentativas += 1;
-            oberCacheZenvio.UltimaTentativa = DateTime.Now;
+            oberCacheZenvio.Attempts += 1;
+            oberCacheZenvio.LastAttempt = DateTime.Now;
             redisService.Set(CACHE_ZENVIO, oberCacheZenvio);
         }
 
@@ -61,7 +61,7 @@ namespace api_authentication_boberto.Services.ZenvioSecurity
         public void CreateCache()
         {
             var cacheZenvio = new ZenvioCacheModel();
-            cacheZenvio.UltimaTentativa = DateTime.MinValue;
+            cacheZenvio.LastAttempt = DateTime.MinValue;
             var cacheOptions = new DistributedCacheEntryOptions()
             {
                 AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(zenvioConfig.SecondsExpiration)
