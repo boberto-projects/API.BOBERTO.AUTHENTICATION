@@ -15,11 +15,11 @@ namespace api_authentication_boberto.Models.Response
 
             if (string.IsNullOrEmpty(Codigo))
             {
-                throw new CustomException(StatusCodeEnum.Validacao, "Código OTP não informado.");
+                throw new CustomException(StatusCodeEnum.VALIDATION, "Código OTP não informado.");
             }
-            if(emailInformado && numeroCelularInformado)
+            if (emailInformado && numeroCelularInformado)
             {
-                throw new CustomException(StatusCodeEnum.Validacao, "Necessário informar NumeroCelular ou Email.");
+                throw new CustomException(StatusCodeEnum.VALIDATION, "Necessário informar NumeroCelular ou Email.");
             }
         }
     }

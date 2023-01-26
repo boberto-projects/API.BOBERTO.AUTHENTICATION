@@ -10,7 +10,7 @@ namespace api_authentication_boberto.Models.Request
         {
             if (string.IsNullOrEmpty(Codigo))
             {
-                throw new CustomException(StatusCodeEnum.Negocio, "Código não informado.");
+                throw new CustomException(StatusCodeEnum.BUSINESS, "Código não informado.");
             }
         }
     }

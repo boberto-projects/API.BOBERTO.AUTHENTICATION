@@ -31,6 +31,7 @@ namespace api_authentication_boberto.Implements
                 UsarNumeroCelular = usuario.UsuarioConfig.UsarNumeroCelular,
                 Email = usuario.Email,
                 Nome = usuario.Nome,
+                Role = usuario.Role,
                 NumeroCelular = usuario.NumeroCelular
             };
         }

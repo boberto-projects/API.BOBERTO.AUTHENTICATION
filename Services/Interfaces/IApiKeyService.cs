@@ -9,6 +9,8 @@ namespace api_authentication_boberto.Services.Interfaces
         public GetApiKeyModel Get(string key);
         public string DecryptApiKey(string key);
         public string EncryptApiKey(string key);
-        public GetApiKeyModel Generate();
+        public GetApiKeyModel Generate(int userId);
+        public GetApiKeyModel Generate(int userId, RolesEnum role);
+
     }
 }

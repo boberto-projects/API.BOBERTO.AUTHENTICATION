@@ -11,13 +11,10 @@ namespace api_authentication_boberto.Models
         public string[] Scopes { get; set; }
         public int UserId { get; set; }
 
-        public AuthenticationTicket GetAuthenticationTicket()
+        public IEnumerable<Claim> GetClaims()
         {
             var claims = Scopes.Select(scope => new Claim("api_key_scope", scope));
-            var identity = new ClaimsIdentity(claims);
-            var principal = new ClaimsPrincipal(identity);
-            var ticket = new AuthenticationTicket(principal, "default");
-            return ticket;
+            return claims;
         }
     }
 }

@@ -28,20 +28,9 @@ namespace api_authentication_boberto
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
             ///TODO: this is a base to use before identity class.
-            ///
-
-            var claims = new[] { new Claim("api_key_scope", "can_call_routes") };
-            var identity = new ClaimsIdentity(claims, Scheme.Name);
-            var principal = new ClaimsPrincipal(identity);
-            var ticket = new AuthenticationTicket(principal, Scheme.Name);
-
-            if (ApiConfig.Authorization.Activate == false)
-            {
-                return Task.FromResult(AuthenticateResult.Success(ticket));
-            }
 
             if (Request.Headers.TryGetValue(ApiConfig.Authorization.ApiHeader, out
-                   var extractedApiKey) == false)
+               var extractedApiKey) == false)
             {
                 return Task.FromResult(AuthenticateResult.Fail("Api key not found."));
             }
@@ -51,7 +40,10 @@ namespace api_authentication_boberto
             {
                 return Task.FromResult(AuthenticateResult.Fail("Api key wrong or not exists."));
             }
-            ticket = apiKey.GetAuthenticationTicket();
+            var claims = apiKey.GetClaims();
+            var identity = new ClaimsIdentity(claims, Scheme.Name);
+            var principal = new ClaimsPrincipal(identity);
+            var ticket = new AuthenticationTicket(principal, Scheme.Name);
             return Task.FromResult(AuthenticateResult.Success(ticket));
         }
     }

@@ -11,8 +11,7 @@ namespace api_authentication_boberto.Models
 
         public bool UsarEmail { get; set; }
         public bool UsarNumeroCelular { get; set; }
-
-        public IEnumerable<GetApiKeyModel> ApiKeys { get; set; }
+        public RolesEnum Role { get; set; }
     }
 
 

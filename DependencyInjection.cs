@@ -119,14 +119,22 @@ namespace api_authentication_boberto
         public static void InjetarServicosAutenticacao(this WebApplicationBuilder builder, IConfigurationRoot config)
         {
             ///now we need to creat require scopes for each api key type.
+
+            builder.Services.AddAuthentication("api_key")
+       .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>
+       ("api_key", null);
+
+            builder.Services.AddAuthentication("user_api_key")
+.AddScheme<AuthenticationSchemeOptions, UserApiKeyAuthenticationHandler>
+("user_api_key", null);
+
             builder.Services.AddAuthorization(options =>
           options.AddPolicy("modpack_manage",
-          policy => policy.RequireClaim("api_key_scope")));
+          policy => policy.RequireClaim("api_key_scope",
+          "MODPACK_CREATE")));
 
             var jwtKey = Encoding.ASCII.GetBytes(config["JwtConfig:Key"]);
-            builder.Services.AddAuthentication("ApiKeyAuthenticationHandler")
-            .AddScheme<AuthenticationSchemeOptions, ApiKeyAuthenticationHandler>
-            ("ApiKeyAuthenticationHandler", null);
+
             builder.Services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

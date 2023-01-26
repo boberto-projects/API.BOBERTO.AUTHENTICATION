@@ -14,7 +14,7 @@ using Microsoft.VisualBasic;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
+/// We need to put this at BobertoNuggetLibrary
 var config = new ConfigurationBuilder()
 .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
 .AddJsonFile($"appsettings.json", optional: true, reloadOnChange: true)
@@ -23,6 +23,7 @@ var config = new ConfigurationBuilder()
 .EnableSubstitutions("%", "%")
 .Build();
 
+///TODO: we need to delegate this to other pattern.
 builder.InjetarConfiguracoes(config);
 builder.InjetarServicosDeArmazenamento(config);
 builder.InjetarServicos(config);
@@ -31,6 +32,7 @@ builder.InjetarServicosAutenticacao(config);
 
 var app = builder.Build();
 
+///We need to put this at BobertoNuggetLibrary
 app.UseExceptionHandler(exceptionHandlerApp =>
 {
     exceptionHandlerApp.Run(async context =>
@@ -74,10 +76,10 @@ app.AdicionarOtpRoute();
 app.AdicionarUsuarioRoute();
 app.AdicionarApiConfigRoute();
 
-
+///We need to put this at BobertoNuggetLibrary
 app.MapGet("/", ([FromServices] ApiCicloDeVida apiCicloDeVida) =>
 {
-    var ultimoDeploy = "Último deploy " + apiCicloDeVida.iniciouEm.ToString("dd/MM/yyyy HH:mm:ss");
+    var ultimoDeploy = "Last deploy " + apiCicloDeVida.iniciouEm.ToString("dd/MM/yyyy HH:mm:ss");
     var upTime = DateTime.Now.Subtract(apiCicloDeVida.iniciouEm);
     var ambiente = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
 
@@ -85,11 +87,12 @@ app.MapGet("/", ([FromServices] ApiCicloDeVida apiCicloDeVida) =>
 }).WithTags("Health Check");
 
 
-app.MapGet("/teste", (HttpContext httpContext) =>
+app.MapGet("/teste", [AuthorizeAttribute(AuthenticationSchemes = "user_api_key")] () =>
 {
-    var teste = httpContext.User;
     return Results.Ok();
-}).WithTags("Health Check");
+}).WithTags("Health Check")
+.RequireAuthorization("modpack_manage");
+
 
 
 

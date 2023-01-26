@@ -30,7 +30,7 @@ namespace api_authentication_boberto.Routes
 
                 if (codigoOtpValido == false)
                 {
-                    throw new CustomException(StatusCodeEnum.Negocio, "Código inválido.");
+                    throw new CustomException(StatusCodeEnum.BUSINESS, "Código inválido.");
                 }
 
                 var emailValido = string.IsNullOrEmpty(request.Email) == false;

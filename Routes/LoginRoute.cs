@@ -36,7 +36,7 @@ namespace api_authentication_boberto.Routes
 
                 if (contaExiste == false)
                 {
-                    throw new CustomException(StatusCodeEnum.NaoAutorizado, "Conta não existe.");
+                    throw new CustomException(StatusCodeEnum.NOTAUTHORIZED, "Conta não existe.");
                 }
                 ///crio um cache para essa tentativa de login.
 
@@ -56,7 +56,7 @@ namespace api_authentication_boberto.Routes
                 if (atingiuLimiteMaximoDeTentativas && codigoOtpExiste == false)
                 {
 
-                    throw new CustomException(StatusCodeEnum.NaoAutorizado, "Você errou a senha muitas vezes. Espere um pouco antes de tentar novamente.");
+                    throw new CustomException(StatusCodeEnum.NOTAUTHORIZED, "Você errou a senha muitas vezes. Espere um pouco antes de tentar novamente.");
                 }
 
                 ///Comparo a senha.
@@ -65,28 +65,15 @@ namespace api_authentication_boberto.Routes
                 if (senhaCorreta == false)
                 {
                     gerenciadorAutenticacao.IncrementarTentativa();
-                    throw new CustomException(StatusCodeEnum.NaoAutorizado, "Dados inválidos.");
+                    throw new CustomException(StatusCodeEnum.NOTAUTHORIZED, "Dados inválidos.");
                 }
 
                 ///Se a dupla autenticação estiver ativa e o código não for informado ou inválido.. Eu vou retornar um token do tipo token_temporario
                 ///um token de 35 segundos que o aplicativo usuará apenas para obter informações
                 if (duplaAutenticacaoAtiva && codigoOtpExiste == false)
                 {
-                    //var codigo = otpCode.GerarCodigoOTP();
-                    //var enviarSMS = contaCadastrada.UsuarioConfig.UsarNumeroCelular;
-                    //var enviarEmail = contaCadastrada.UsuarioConfig.UsarEmail;
-
-                    //if (enviarSMS)
-                    //{
-                    //    enviarCodigoDuploFator.EnviarCodigoSMS(contaCadastrada.NumeroCelular, codigo);
-                    //}
-                    //if (enviarEmail)
-                    //{
-                    //    enviarCodigoDuploFator.EnviarCodigoEmail(contaCadastrada.Email, codigo);
-                    //}
                     var expiraEm = DateTime.UtcNow.AddSeconds(35);
                     var token_refresh = tokenJWTService.GerarTokenJWT(contaCadastrada, expiraEm);
-                    ///criar objeto depois
                     return Results.Ok(new LoginResponse()
                     {
                         Tipo = "token_temporario",
@@ -94,16 +81,12 @@ namespace api_authentication_boberto.Routes
                         DuplaAutenticacaoObrigatoria = duplaAutenticacaoAtiva,
                         ExpiraEm = expiraEm
                     });
-
-                    //  throw new CodigoOTPException(CodigoOTPEnum.CodigoOTPNaoInformado, "É necessário informar um código OTP para efetuar login.");
                 }
-
                 ///Código informado mas não é válido
                 if (codigoOtpExiste && codigoOtp == false)
                 {
-                    throw new CodigoOTPException(CodigoOTPEnum.CodigoOTPInvalido, "Código informado inválido.");
+                    throw new CodigoOTPException(OTPEnum.OTPInvalid, "Código informado inválido.");
                 }
-
                 /// Atualizo que o UltimoLogin do usuário e retorno um sucesso com o JWT.
                 contaCadastrada.UltimoLogin = DateTime.Now;
                 var token = tokenJWTService.GerarTokenJWT(contaCadastrada);
@@ -122,7 +105,7 @@ namespace api_authentication_boberto.Routes
                 var tokenValido = tokenJWTService.ValidarTokenJWT(request.Token);
                 if (tokenValido == false)
                 {
-                    throw new CustomException(StatusCodeEnum.NaoAutorizado, "Token inválido");
+                    throw new CustomException(StatusCodeEnum.NOTAUTHORIZED, "Token inválido");
                 }
                 var usuario = usuarioLogado.ObterUsuarioLogado();
                 var expiracao = DateTime.UtcNow.AddHours(1);
@@ -151,7 +134,7 @@ namespace api_authentication_boberto.Routes
 
             if (emailEmUso)
             {
-                throw new CustomException(StatusCodeEnum.Negocio, "Email já em uso.");
+                throw new CustomException(StatusCodeEnum.BUSINESS, "Email já em uso.");
             }
 
             string hashed = BC.HashPassword(request.Senha);
@@ -167,7 +150,8 @@ namespace api_authentication_boberto.Routes
                 Nome = request.Nome,
                 Senha = hashed,
                 NumeroCelular = request.NumeroCelular,
-                UsuarioConfigId = usuarioConfig.UsuarioConfigId
+                UsuarioConfigId = usuarioConfig.UsuarioConfigId,
+                Role = RolesEnum.USER
             });
 
             dbContext.SaveChanges();

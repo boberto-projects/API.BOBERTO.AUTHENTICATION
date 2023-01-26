@@ -7,7 +7,7 @@ using static api_authentication_boberto.Integrations.ZenviaApiClient.SendSMSRequ
 
 namespace api_authentication_boberto.Services.Implements
 {
-    public class ZenvioService 
+    public class ZenvioService
     {
         private IOptions<ZenviaApiConfig> zenviaApiConfig;
         private GerenciadorZenvio gerenciadorZenvio;
@@ -24,14 +24,14 @@ namespace api_authentication_boberto.Services.Implements
         {
             if (zenviaApiConfig.Value.Enabled == false)
             {
-                throw new CustomException(StatusCodeEnum.Interno, "Recurso envio de SMS desativado");
+                throw new CustomException(StatusCodeEnum.INTERN, "Recurso envio de SMS desativado");
             }
 
             gerenciadorZenvio.IncrementarTentativa();
 
             if (gerenciadorZenvio.AtingiuLimiteMaximoDeTentativas())
             {
-                throw new CustomException(StatusCodeEnum.Interno, "Limite máximo de SMS diário atingido.");
+                throw new CustomException(StatusCodeEnum.INTERN, "Limite máximo de SMS diário atingido.");
             }
 
             var conteudoMensagem = new List<Content>();

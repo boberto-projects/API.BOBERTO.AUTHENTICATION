@@ -9,7 +9,7 @@ namespace api_authentication_boberto.Models.Request
         {
             if (string.IsNullOrEmpty(NumeroCelular))
             {
-                throw new CustomException(StatusCodeEnum.Negocio, "NumeroCelular não informado.");
+                throw new CustomException(StatusCodeEnum.BUSINESS, "NumeroCelular não informado.");
             }
         }
     }

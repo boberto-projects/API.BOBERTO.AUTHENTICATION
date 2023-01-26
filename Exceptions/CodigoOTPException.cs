@@ -6,10 +6,10 @@ namespace api_authentication_boberto.Exceptions
     [Serializable]
     public class CodigoOTPException : Exception
     {
-        public CodigoOTPEnum Tipo { get; }
+        public OTPEnum Tipo { get; }
         public int CodigoDeStatus { get; }
 
-        public CodigoOTPException(CodigoOTPEnum codigoStatus, string message)
+        public CodigoOTPException(OTPEnum codigoStatus, string message)
        : base(message)
         {
             Tipo = codigoStatus;
@@ -27,13 +27,13 @@ namespace api_authentication_boberto.Exceptions
             return response;
         }
 
-        private string ObterTipo(CodigoOTPEnum codigoStatus)
+        private string ObterTipo(OTPEnum codigoStatus)
         {
             switch (codigoStatus)
             {
-                case CodigoOTPEnum.CodigoOTPInvalido:
+                case OTPEnum.OTPInvalid:
                     return "codigo_otp_invalido";
-                case CodigoOTPEnum.CodigoOTPNaoInformado:
+                case OTPEnum.OTPNOTINFORMED:
                     return "codigo_otp_nao_informado";
             }
 

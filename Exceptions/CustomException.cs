@@ -31,11 +31,11 @@ namespace api_authentication_boberto.Exceptions
         {
             switch (codigoStatus)
             {
-                case StatusCodeEnum.Negocio:
+                case StatusCodeEnum.BUSINESS:
                     return "negocio";
-                case StatusCodeEnum.NaoAutorizado:
+                case StatusCodeEnum.NOTAUTHORIZED:
                     return "nao_autorizado";
-                case StatusCodeEnum.Validacao:
+                case StatusCodeEnum.VALIDATION:
                     return "validacao";
 
             }

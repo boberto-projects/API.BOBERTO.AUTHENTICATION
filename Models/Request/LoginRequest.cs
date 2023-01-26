@@ -13,9 +13,9 @@ namespace api_authentication_boberto.Models.Request
         {
             if (string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(Senha))
             {
-                throw new CustomException(StatusCodeEnum.Negocio, "Email e senha são obrigatórios");
+                throw new CustomException(StatusCodeEnum.BUSINESS, "Email e senha são obrigatórios");
             }
         }
- 
+
     }
 }

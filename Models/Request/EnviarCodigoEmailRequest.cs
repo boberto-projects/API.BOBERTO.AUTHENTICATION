@@ -8,9 +8,9 @@ namespace api_authentication_boberto.Models.Request
 
         public void Validar()
         {
-            if(string.IsNullOrEmpty(Email))
+            if (string.IsNullOrEmpty(Email))
             {
-                throw new CustomException(StatusCodeEnum.Negocio, "Email não informado");
+                throw new CustomException(StatusCodeEnum.BUSINESS, "Email não informado");
             }
         }
     }

@@ -2,15 +2,33 @@
 {
     public enum StatusCodeEnum
     {
-        Validacao = 405,
-        Negocio = 400,
-        NaoEncontrado = 404,
-        NaoAutorizado = 401,
-        Interno = 500,
+        VALIDATION = 405,
+        BUSINESS = 400,
+        NOTFOUND = 404,
+        NOTAUTHORIZED = 401,
+        INTERN = 500,
     }
-    public enum CodigoOTPEnum
+    public enum OTPEnum
     {
-        CodigoOTPInvalido = 1,
-        CodigoOTPNaoInformado = 2,
+        OTPInvalid = 1,
+        OTPNOTINFORMED = 2,
+    }
+    public enum ScopesEnum
+    {
+        SERVER_CREATE,
+        SERVER_DELETE,
+        SERVER_UPDATE,
+        SERVER_EDIT,
+        MODPACK_UPDATE,
+        MODPACK_CREATE,
+        MODPACK_EDIT,
+        MODPACK_DELETE
+    }
+    public enum RolesEnum
+    {
+        USER,
+        MODPACK_CREATOR,
+        SERVER_MANAGER,
+        ADMINISTRATOR
     }
 }

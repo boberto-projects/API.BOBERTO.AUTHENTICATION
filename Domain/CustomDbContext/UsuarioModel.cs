@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using api_authentication_boberto.Models;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace api_authentication_boberto.Domain.CustomDbContext
@@ -16,6 +17,11 @@ namespace api_authentication_boberto.Domain.CustomDbContext
         public int UsuarioConfigId { get; set; }
         public virtual UsuarioConfigModel UsuarioConfig { get; set; }
         public ICollection<ApiKeyModel> ApiKeys { get; set; }
+        public RolesEnum Role { get; set; }
+        public UsuarioModel()
+        {
+            ApiKeys = new List<ApiKeyModel>();
+        }
 
     }
 }

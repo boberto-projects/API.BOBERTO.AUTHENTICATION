@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using api_authentication_boberto.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.Options;
@@ -43,6 +44,11 @@ namespace api_authentication_boberto.Domain.CustomDbContext
                 entity.Property(e => e.UsuarioConfigId).HasColumnName("usuario_config_id");
 
                 entity.Property(e => e.UltimoLogin).HasColumnName("ultimo_login");
+
+                entity.Property(e => e.Role)
+                .HasColumnName("role")
+                .HasDefaultValue(RolesEnum.USER)
+                .HasConversion(new EnumToNumberConverter<RolesEnum, int>());
 
 
                 entity.HasOne(e => e.UsuarioConfig)

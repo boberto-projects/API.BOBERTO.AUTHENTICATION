@@ -23,7 +23,7 @@ namespace api_authentication_boberto.Services.Implements
         {
             if (discordApiConfig.Value.Enabled == false)
             {
-                throw new CustomException(StatusCodeEnum.Interno, "Recurso web hook discord desativado");
+                throw new CustomException(StatusCodeEnum.INTERN, "Recurso web hook discord desativado");
             }
 
             var discordWebHookID = discordApiConfig.Value.WebHookId;
@@ -32,7 +32,7 @@ namespace api_authentication_boberto.Services.Implements
             {
                 Content = texto
             };
-           await discordApi.EnviarMensagem(discordWebHookID, discordWebHookToken, discordRequest);
+            await discordApi.EnviarMensagem(discordWebHookID, discordWebHookToken, discordRequest);
         }
 
         public async Task EnviarCodigo(string codigo)
