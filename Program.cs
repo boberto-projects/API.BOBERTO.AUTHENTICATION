@@ -36,6 +36,7 @@ app.UseCors(x => x
 
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.AdicionarLoginRoute();
 app.AddApiKeyRoute();
 app.AdicionarOtpRoute();

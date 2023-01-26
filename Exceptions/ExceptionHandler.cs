@@ -4,8 +4,9 @@ namespace api_authentication_boberto.Exceptions
 {
     public static class ExceptionHandler
     {
-        public static void AddCustomExceptionHandler(this IApplicationBuilder exception)
+        public static void AddCustomExceptionHandler(this WebApplication app)
         {
+            app.UseExceptionHandler(exception =>
             exception.Run(async context =>
             {
                 context.Response.ContentType = "application/json";
@@ -22,7 +23,7 @@ namespace api_authentication_boberto.Exceptions
                     context.Response.StatusCode = codigoOTPException.CodigoDeStatus;
                     await context.Response.WriteAsJsonAsync(codigoOTPException.ObterResponse());
                 }
-            });
+            }));
         }
     }
 }

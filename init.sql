@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS users (
 	name text NULL,
 	last_login timestamp NULL,
     phone_number text NULL,
-	user_config_id INT NOT NULL,
+	users_config_id INT NOT NULL,
 	role int default 0
 
 );
