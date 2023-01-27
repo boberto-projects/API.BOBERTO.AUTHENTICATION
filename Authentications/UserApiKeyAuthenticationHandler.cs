@@ -34,9 +34,9 @@ namespace api_authentication_boberto.Authentications
             {
                 return Task.FromResult(AuthenticateResult.Fail("Api key not found."));
             }
-
+            var apiKeyInvalid = ApiKeyService.IsValid() == false;
             var apiKey = ApiKeyService.Get(extractedApiKey);
-            if (apiKey == null)
+            if (apiKeyInvalid || apiKey == null)
             {
                 return Task.FromResult(AuthenticateResult.Fail("Api key wrong or not exists."));
             }

@@ -26,7 +26,6 @@ namespace api_authentication_boberto.DependencyInjection
             builder.Services.AddSingleton<ApiConfigManagerService>();
             builder.Services.AddSingleton<IZenvioSecurityService, ZenvioSecurityService>();
             builder.Services.AddSingleton<IUserSecurity, UserSecurity>();
-
             builder.Services.AddScoped<IJWTService, JWTService>();
             builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
             builder.Services.AddScoped<IApiKeyAuthenticationService, ApiKeyAuthenticationService>();

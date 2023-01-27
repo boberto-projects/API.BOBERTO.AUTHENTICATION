@@ -5,12 +5,13 @@ namespace api_authentication_boberto.Services.ApiKeyAuthentication
 {
     public interface IApiKeyAuthenticationService
     {
-        public bool Validate(string key);
-        public GetApiKeyModel Get(string key);
-        public string DecryptApiKey(string key);
-        public string EncryptApiKey(string key);
-        public GetApiKeyModel Generate(int userId);
-        public GetApiKeyModel Generate(int userId, RolesEnum role);
+         bool Validate(string key);
+        bool IsValid();
+         GetApiKeyModel Get(string key);
+         string DecryptApiKey(string key);
+         string EncryptApiKey(string key);
+         GetApiKeyModel Generate(int userId);
+         GetApiKeyModel Generate(int userId, RolesEnum role);
 
     }
 }

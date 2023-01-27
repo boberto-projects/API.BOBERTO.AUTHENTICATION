@@ -98,8 +98,9 @@ namespace api_authentication_boberto.Services.ApiKeyAuthentication
         /// <exception cref="CustomException"></exception>
         public bool Validate(string key)
         {
+            var isBase64 = EncryptUtils.IsBase64(key);
             var decrypt = DecryptWithPrefix(key);
-            return decrypt != null;
+            return isBase64 && decrypt != null;
         }
         /// <summary>
         /// Get a API by ApiKey
@@ -133,7 +134,6 @@ namespace api_authentication_boberto.Services.ApiKeyAuthentication
                 Scopes = apiKey.Scopes.ToArray(),
                 UserId = apiKey.UserId
             };
-
         }
 
         /// <summary>
