@@ -4,12 +4,12 @@ using api_authentication_boberto.Models.Response;
 namespace api_authentication_boberto.Exceptions
 {
     [Serializable]
-    public class CodigoOTPException : Exception
+    public class CodeOTPException : Exception
     {
         public OTPEnum Tipo { get; }
         public int CodigoDeStatus { get; }
 
-        public CodigoOTPException(OTPEnum codigoStatus, string message)
+        public CodeOTPException(OTPEnum codigoStatus, string message)
        : base(message)
         {
             Tipo = codigoStatus;

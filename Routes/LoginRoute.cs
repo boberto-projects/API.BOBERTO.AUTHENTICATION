@@ -87,7 +87,7 @@ namespace api_authentication_boberto.Routes
                 ///Código informado mas não é válido
                 if (codigoOtpExiste && codigoOtp == false)
                 {
-                    throw new CodigoOTPException(OTPEnum.OTPInvalid, "Código informado inválido.");
+                    throw new CodeOTPException(OTPEnum.OTPInvalid, "Código informado inválido.");
                 }
                 /// Atualizo que o UltimoLogin do usuário e retorno um sucesso com o JWT.
                 contaCadastrada.LastLogin = DateTime.Now;
