@@ -38,14 +38,10 @@ namespace api_authentication_boberto.Routes
 
                 if (contaExiste == false)
                 {
-                    throw new CustomException(StatusCodeEnum.NOTAUTHORIZED, "Conta não existe.");
+                    throw new CustomException(StatusCodeEnum.NOTAUTHORIZED, "Not authorized");
                 }
-                ///crio um cache para essa tentativa de login.
-
                 gerenciadorAutenticacao.CreateUserCache(contaCadastrada);
-
                 var atingiuLimiteMaximoDeTentativas = gerenciadorAutenticacao.ReachedMaximumLimitOfAttempts();
-
                 ///Pra um usuário com dupla autenticação ativa, ele sempre terá UsarNumeroCelular true e UsarEmail true.
                 ///Então eu posso verificar se esse usuário informou um código de OTP pra saber se ele pode logar ou não.
                 var duplaAutenticacaoAtiva = contaCadastrada.UserConfig.EnabledPhoneNumber || contaCadastrada.UserConfig.EnabledEmail;

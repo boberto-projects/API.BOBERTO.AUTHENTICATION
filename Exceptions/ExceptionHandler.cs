@@ -30,6 +30,10 @@ namespace api_authentication_boberto.Exceptions
                     context.Response.StatusCode = codigoOTPException.CodigoDeStatus;
                     await context.Response.WriteAsJsonAsync(codigoOTPException.ObterResponse());
                 }
+                if(exceptionHandlerPathFeature?.Error is Exception exception)
+                {
+                    await context.Response.WriteAsJsonAsync(exception);
+                }
             }));
         }
     }

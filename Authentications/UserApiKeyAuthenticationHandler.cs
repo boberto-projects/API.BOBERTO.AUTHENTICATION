@@ -1,6 +1,9 @@
 ﻿using api_authentication_boberto.Domain.CustomDbContext;
+using api_authentication_boberto.Exceptions;
 using api_authentication_boberto.Models.Config;
+using api_authentication_boberto.Models.Enums;
 using api_authentication_boberto.Services.ApiKeyAuthentication;
+using api_authentication_boberto.Utils;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -34,11 +37,15 @@ namespace api_authentication_boberto.Authentications
             {
                 return Task.FromResult(AuthenticateResult.Fail("Api key not found."));
             }
-            var apiKeyInvalid = ApiKeyService.IsValid() == false;
-            var apiKey = ApiKeyService.Get(extractedApiKey);
-            if (apiKeyInvalid || apiKey == null)
+            var apiKeyInvalid = EncryptUtils.IsBase64(extractedApiKey) == false;
+            if (apiKeyInvalid)
             {
-                return Task.FromResult(AuthenticateResult.Fail("Api key wrong or not exists."));
+                throw new ApiKeyAuthenticationException(ExceptionTypeEnum.AUTHORIZATION);
+            }
+            var apiKey = ApiKeyService.Get(extractedApiKey);
+            if (apiKey == null)
+            {
+                throw new ApiKeyAuthenticationException(ExceptionTypeEnum.AUTHORIZATION);
             }
             var claims = apiKey.GetClaims();
             var identity = new ClaimsIdentity(claims, Scheme.Name);
@@ -47,6 +54,4 @@ namespace api_authentication_boberto.Authentications
             return Task.FromResult(AuthenticateResult.Success(ticket));
         }
     }
-
-
 }
