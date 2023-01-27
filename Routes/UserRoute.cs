@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace api_authentication_boberto.Routes
 {
-    public static class UsuarioRoute
+    public static class UserRoute
     {
         public static void AddUserRoute(this WebApplication app)
         {

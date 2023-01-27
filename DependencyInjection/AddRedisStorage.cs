@@ -6,7 +6,9 @@ namespace api_authentication_boberto.DependencyInjection
     {
         public static void AddRedisStorage(this WebApplicationBuilder builder)
         {
-            var redisContext = builder.Configuration.GetConnectionString("RedisConnectionContext");
+            var serviceProvider = builder.Services.BuildServiceProvider();
+            var config = serviceProvider.GetRequiredService<IConfigurationRoot>();
+            var redisContext = config.GetConnectionString("RedisConnectionContext");
             builder.Services.AddStackExchangeRedisCache(options => options.Configuration = ObterRedisContext(redisContext));
             builder.Services.AddSingleton<IRedisService, RedisService>();
         }

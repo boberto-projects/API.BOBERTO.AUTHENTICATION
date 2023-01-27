@@ -8,6 +8,13 @@
         NOTAUTHORIZED = 401,
         INTERN = 500,
     }
+
+    public enum ExceptionTypeEnum
+    {
+        UNKNOWN = 0,
+        AUTHORIZATION,
+        INTERNAL
+    }
     public enum OTPEnum
     {
         OTPInvalid = 1,

@@ -21,13 +21,13 @@ namespace api_authentication_boberto.Routes
         public static void AddLoginRoute(this WebApplication app)
         {
             app.MapPost("/autenticar", [Authorize(AuthenticationSchemes = "api_key")] ([FromBody] LoginRequest request,
-                [FromServices] IRedisService redisService,
                 [FromServices] DatabaseContext dbContext,
                 IOTPService otpCode,
+                IRedisService redisService,
                 IOTPSender enviarCodigoDuploFator,
-                [FromServices] UserSecurity gerenciadorAutenticacao,
-                [FromServices] IConfiguration config,
-                [FromServices] JWTService tokenJWTService
+                IUserSecurity gerenciadorAutenticacao,
+                IConfiguration config,
+                IJWTService tokenJWTService
                 ) =>
             {
                 request.Validar();
@@ -102,7 +102,11 @@ namespace api_authentication_boberto.Routes
             }).WithTags("Autenticação");
 
             //refresh token
-            app.MapPost("/refresh_token", [Authorize] ([FromBody] RefreshTokenRequest request, ICurrentUserService usuarioLogado, [FromServices] JWTService tokenJWTService, [FromServices] DatabaseContext dbContext) =>
+            app.MapPost("/refresh_token", [Authorize] (
+                [FromServices] DatabaseContext dbContext,
+                [FromBody] RefreshTokenRequest request,
+                ICurrentUserService usuarioLogado,
+                IJWTService tokenJWTService) =>
             {
                 var tokenValido = tokenJWTService.Validate(request.Token);
                 if (tokenValido == false)
@@ -128,7 +132,9 @@ namespace api_authentication_boberto.Routes
 
 
             ///separar essa rota em outro lugar depois.
-            app.MapPost("/registrar", [Authorize(AuthenticationSchemes = "api_key")] ([FromBody] RegistrarRequest request, [FromServices] DatabaseContext dbContext) =>
+            app.MapPost("/registrar", [Authorize(AuthenticationSchemes = "api_key")] (
+                [FromBody] RegistrarRequest request,
+                [FromServices] DatabaseContext dbContext) =>
         {
             request.Validar();
 

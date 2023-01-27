@@ -14,6 +14,8 @@ namespace api_authentication_boberto.DependencyInjection
                 .AddEnvironmentVariables()
                 .EnableSubstitutions("%", "%")
                 .Build();
+            ///need to read more to do this with envs applieds.
+            builder.Services.AddSingleton(config);
             builder.Services.Configure<UserSecurityConfig>(options => config.GetSection("UserSecurityConfig").Bind(options));
             builder.Services.Configure<ZenvioSecurityConfig>(options => config.GetSection("ZenvioSecurityConfig").Bind(options));
             builder.Services.Configure<DiscordAPIConfig>(options => config.GetSection("DiscordApiConfig").Bind(options));

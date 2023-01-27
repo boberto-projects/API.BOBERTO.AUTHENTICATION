@@ -8,7 +8,8 @@ namespace api_authentication_boberto.DependencyInjection
     {
         public static void AddPostgreeStorage(this WebApplicationBuilder builder)
         {
-            var config = builder.Configuration;
+            var serviceProvider = builder.Services.BuildServiceProvider();
+            var config = serviceProvider.GetRequiredService<IConfiguration>();
             builder.Services.AddEntityFrameworkNpgsql().AddDbContext<DatabaseContext>(o => o.UseNpgsql(ObterPostGreeContext()));
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             string ObterPostGreeContext()

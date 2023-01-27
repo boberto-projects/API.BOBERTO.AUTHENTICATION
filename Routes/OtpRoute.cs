@@ -12,7 +12,7 @@ namespace api_authentication_boberto.Routes
     {
         public static void AddOtpRoute(this WebApplication app)
         {
-            app.MapPost("/otp/enviarCodigoSMS", [Authorize(AuthenticationSchemes = "ApiKeyAuthenticationHandler")] (
+            app.MapPost("/otp/enviarCodigoSMS", [Authorize(AuthenticationSchemes = "api_key")] (
                 [FromBody] EnviarCodigoSMSRequest request,
                [FromServices] DatabaseContext dbContext,
                 IOTPService otpCode,
@@ -30,7 +30,7 @@ namespace api_authentication_boberto.Routes
 
               }).WithTags("Dupla autenticação");
 
-            app.MapPost("/otp/enviarCodigoEmail", [Authorize(AuthenticationSchemes = "ApiKeyAuthenticationHandler")] (
+            app.MapPost("/otp/enviarCodigoEmail", [Authorize(AuthenticationSchemes = "api_key")] (
             [FromBody] EnviarCodigoEmailRequest request,
             [FromServices] DatabaseContext dbContext,
             IOTPService otpCode,
@@ -43,7 +43,7 @@ namespace api_authentication_boberto.Routes
 
             }).WithTags("Dupla autenticação");
 
-            app.MapPost("/otp/gerarotp", [Authorize(AuthenticationSchemes = "ApiKeyAuthenticationHandler")] (
+            app.MapPost("/otp/gerarotp", [Authorize(AuthenticationSchemes = "api_key")] (
             [FromServices] DatabaseContext dbContext,
             IOTPService otpCode) =>
             {
@@ -55,7 +55,7 @@ namespace api_authentication_boberto.Routes
 
             }).WithTags("Dupla autenticação");
 
-            app.MapPost("/otp/validarotp", [Authorize(AuthenticationSchemes = "ApiKeyAuthenticationHandler")] (
+            app.MapPost("/otp/validarotp", [Authorize(AuthenticationSchemes = "api_key")] (
               [FromBody] TwoFactorVerifyRequest request,
             IOTPService otpCode
               ) =>

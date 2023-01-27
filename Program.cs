@@ -12,9 +12,9 @@ var builder = WebApplication.CreateBuilder(args);
 /// We need to put this at BobertoNuggetLibrary
 ///TODO: we need to delegate this to other pattern.
 builder.AddConfigurations();
+builder.AddServices();
 builder.AddPostgreeStorage();
 builder.AddRedisStorage();
-builder.AddServices();
 builder.AddIntegrations();
 builder.AddAuthentications();
 
@@ -44,12 +44,10 @@ app.AddUserRoute();
 app.AddResourceRoute();
 
 ///We need to put this at BobertoNuggetLibrary
-app.MapGet("/", ([FromServices] HealthCheck apiCicloDeVida) =>
+app.MapGet("/", ([FromServices] HealthCheck healthCheck) =>
 {
-    var ultimoDeploy = "Last deploy " + apiCicloDeVida.StartAt.ToString("dd/MM/yyyy HH:mm:ss");
-    var upTime = apiCicloDeVida.GetUpTime();
-    var environment = apiCicloDeVida.Environment;
-    return "OK";
+    var upTime = healthCheck.GetUpTime();
+    return healthCheck;
 }).WithTags("Health Check");
 
 app.MapGet("/teste", [AuthorizeAttribute(AuthenticationSchemes = "user_api_key")] () =>

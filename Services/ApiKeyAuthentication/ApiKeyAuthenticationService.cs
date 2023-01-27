@@ -13,7 +13,6 @@ namespace api_authentication_boberto.Services.ApiKeyAuthentication
     public class ApiKeyAuthenticationService : IApiKeyAuthenticationService
     {
         const string _prefix = "BOBERTOAUTH-";
-        const string _genericMessage = "INVALID API KEY";
         const int _numberOfSecureBytesToGenerate = 32;
         const int _lengthOfKey = 36;
 
@@ -84,7 +83,7 @@ namespace api_authentication_boberto.Services.ApiKeyAuthentication
             var userId = key.Split("-")[1];
             if (userId == null)
             {
-                throw new CustomException(StatusCodeEnum.VALIDATION, _genericMessage);
+                throw new ApiKeyAuthenticationException(ExceptionTypeEnum.AUTHORIZATION);
             }
             int result;
             int.TryParse(userId, out result);
@@ -101,7 +100,7 @@ namespace api_authentication_boberto.Services.ApiKeyAuthentication
             var keyFrags = key.Split("-");
             if (keyFrags.Count() != 3)
             {
-                throw new CustomException(StatusCodeEnum.VALIDATION, _genericMessage);
+                throw new ApiKeyAuthenticationException(ExceptionTypeEnum.AUTHORIZATION);
             }
             var keyWithoutPrefix = keyFrags.ElementAt(2);
             var decrypt = DecryptApiKey(keyWithoutPrefix);
@@ -120,27 +119,28 @@ namespace api_authentication_boberto.Services.ApiKeyAuthentication
             var isValid = Validate(key);
             if (isValid == false)
             {
-                throw new CustomException(StatusCodeEnum.NOTAUTHORIZED, "Api Key invalid or expired.");
+                throw new ApiKeyAuthenticationException(ExceptionTypeEnum.AUTHORIZATION);
             }
             var keyWithoutPrefix = RemoveKeyPrefix(key);
             var decrypt = DecryptApiKey(keyWithoutPrefix);
             var userId = GetUserId(key);
             var apiKey = DbContext.ApiKey.FirstOrDefault(token => token.UserId.Equals(userId));
-            if (apiKey != null)
+            if (apiKey == null)
             {
-                var apiKeyVerified = BC.Verify(decrypt, apiKey.ApiKey);
-                if (apiKeyVerified == false)
-                {
-                    throw new CustomException(StatusCodeEnum.NOTAUTHORIZED, "Api Key invalid or expired.");
-                }
-                return new GetApiKeyModel()
-                {
-                    ApiKey = decrypt,
-                    Scopes = apiKey.Scopes.ToArray(),
-                    UserId = apiKey.UserId
-                };
+                throw new ApiKeyAuthenticationException(ExceptionTypeEnum.AUTHORIZATION);
             }
-            return null;
+            var apiKeyVerified = BC.Verify(decrypt, apiKey.ApiKey);
+            if (apiKeyVerified == false)
+            {
+                throw new ApiKeyAuthenticationException(ExceptionTypeEnum.AUTHORIZATION);
+            }
+            return new GetApiKeyModel()
+            {
+                ApiKey = decrypt,
+                Scopes = apiKey.Scopes.ToArray(),
+                UserId = apiKey.UserId
+            };
+
         }
 
         /// <summary>
