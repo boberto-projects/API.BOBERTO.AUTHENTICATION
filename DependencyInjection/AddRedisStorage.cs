@@ -9,10 +9,10 @@ namespace api_authentication_boberto.DependencyInjection
             var serviceProvider = builder.Services.BuildServiceProvider();
             var config = serviceProvider.GetRequiredService<IConfigurationRoot>();
             var redisContext = config.GetConnectionString("RedisConnectionContext");
-            builder.Services.AddStackExchangeRedisCache(options => options.Configuration = ObterRedisContext(redisContext));
+            builder.Services.AddStackExchangeRedisCache(options => options.Configuration = GetRedisContext(redisContext));
             builder.Services.AddSingleton<IRedisService, RedisService>();
         }
-        private static string ObterRedisContext(string redisContextUrl)
+        private static string GetRedisContext(string redisContextUrl)
         {
             Uri redisUrl;
             bool isRedisUrl = Uri.TryCreate(redisContextUrl, UriKind.Absolute, out redisUrl);

@@ -10,9 +10,9 @@ namespace api_authentication_boberto.DependencyInjection
         {
             var serviceProvider = builder.Services.BuildServiceProvider();
             var config = serviceProvider.GetRequiredService<IConfiguration>();
-            builder.Services.AddEntityFrameworkNpgsql().AddDbContext<DatabaseContext>(o => o.UseNpgsql(ObterPostGreeContext()));
+            builder.Services.AddEntityFrameworkNpgsql().AddDbContext<DatabaseContext>(o => o.UseNpgsql(GetPostgreeContext()));
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
-            string ObterPostGreeContext()
+            string GetPostgreeContext()
             {
                 var postGreeContext = config.GetConnectionString("PostgreeConnectionContext");
                 var postGreeConnectionBuilder = new NpgsqlConnectionStringBuilder();
