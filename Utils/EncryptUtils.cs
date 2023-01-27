@@ -37,7 +37,7 @@
 
                 return Convert.ToBase64String(array);
             }
-            public static bool IsBase64(this string cipherText)
+            public static bool IsBase64(string cipherText)
             {
                 byte[] iv = new byte[16];
                 var isBase64 = Convert.TryFromBase64String(cipherText, iv, out int buffer);
