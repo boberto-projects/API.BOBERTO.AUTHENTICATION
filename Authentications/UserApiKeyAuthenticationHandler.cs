@@ -31,11 +31,10 @@ namespace api_authentication_boberto.Authentications
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
             ///TODO: this is a base to use before identity class.
-
             if (Request.Headers.TryGetValue(ApiConfig.Authorization.ApiHeader, out
                var extractedApiKey) == false)
             {
-                return Task.FromResult(AuthenticateResult.Fail("Api key not found."));
+                throw new ApiKeyAuthenticationException(ExceptionTypeEnum.AUTHORIZATION);
             }
             var apiKeyInvalid = EncryptUtils.IsBase64(extractedApiKey) == false;
             if (apiKeyInvalid)
@@ -54,4 +53,6 @@ namespace api_authentication_boberto.Authentications
             return Task.FromResult(AuthenticateResult.Success(ticket));
         }
     }
+
+
 }
