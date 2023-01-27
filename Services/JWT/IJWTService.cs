@@ -5,7 +5,6 @@ namespace api_authentication_boberto.Services.JWT
     public interface IJWTService
     {
         bool Validate(string token);
-        string Generate(UserModel usuario, DateTime? expiracao = null);
-
+        string Generate(UserModel user, DateTime? expiration = null);
     }
 }

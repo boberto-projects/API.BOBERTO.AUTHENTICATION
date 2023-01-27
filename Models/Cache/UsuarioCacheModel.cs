@@ -1,15 +1,15 @@
 ﻿namespace api_authentication_boberto.Models.Cache
 {
-    public class UsuarioCacheModel
+    public class UserCacheModel
     {
-        public DateTime? UltimaTentativa { get; set; }
-        public DateTime UltimoLogin { get; set; }
-        public int TentativasDeLogin { get; set; }
+        public DateTime? LastAttempt { get; set; }
+        public DateTime LastLogin { get; set; }
+        public int LoginAttempts { get; set; }
         public string? Email { get; set; }
-        public int? UsuarioId { get; set; }
-        public bool AcessoBloqueado { get; set; }
+        public int? UserId { get; set; }
+        public bool Blocked { get; set; }
 
-        public UsuarioCacheModel()
+        public UserCacheModel()
         {
 
         }

@@ -17,7 +17,7 @@ namespace api_authentication_boberto.Services.JWT
             JWTKey = Encoding.UTF8.GetBytes(jwtConfig.Value.Key);
         }
 
-        public string Generate(UserModel usuario, DateTime? expiracao = null)
+        public string Generate(UserModel user, DateTime? expiration = null)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenDescriptor = new SecurityTokenDescriptor
@@ -26,9 +26,9 @@ namespace api_authentication_boberto.Services.JWT
                 Audience = _jwtConfig.Audience,
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim("UserId", usuario.UserId.ToString()),
+                    new Claim("UserId", user.UserId.ToString()),
                 }),
-                Expires = expiracao.GetValueOrDefault(DateTime.UtcNow.AddHours(1)),
+                Expires = expiration.GetValueOrDefault(DateTime.UtcNow.AddHours(1)),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(JWTKey), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
@@ -54,12 +54,12 @@ namespace api_authentication_boberto.Services.JWT
         {
             return new TokenValidationParameters()
             {
-                ValidateLifetime = true, // Because there is no expiration in the generated token
-                ValidateAudience = true, // Because there is no audiance in the generated token
-                ValidateIssuer = true,   // Because there is no issuer in the generated token
+                ValidateLifetime = true,
+                ValidateAudience = true,
+                ValidateIssuer = true,
                 ValidIssuer = _jwtConfig.Issuer,
                 ValidAudience = _jwtConfig.Audience,
-                IssuerSigningKey = new SymmetricSecurityKey(JWTKey) // The same key as the one that generate the token
+                IssuerSigningKey = new SymmetricSecurityKey(JWTKey)
             };
         }
     }

@@ -6,6 +6,6 @@ namespace api_authentication_boberto.Integrations.SMSAdbTester
     public interface ISmsAdbTesterApi
     {
         [Post("sendsms")]
-        Task EnviarSMS([Body] SendAdbTesterMessageRequest request);
+        Task SendSMS([Body] SendAdbTesterMessageRequest request);
     }
 }

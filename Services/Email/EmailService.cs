@@ -7,16 +7,13 @@ using MimeKit.Text;
 
 namespace api_authentication_boberto.Services.Email
 {
-
     public class EmailService : IEmailService
     {
         private SmtpConfig smptConfig;
-
         public EmailService(IOptions<SmtpConfig> smptConfig)
         {
             this.smptConfig = smptConfig.Value;
         }
-
         public void Send(string to, string subject, string html)
         {
             var email = new MimeMessage();
@@ -24,7 +21,6 @@ namespace api_authentication_boberto.Services.Email
             email.To.Add(MailboxAddress.Parse(to));
             email.Subject = subject;
             email.Body = new TextPart(TextFormat.Html) { Text = html };
-
             using var smtp = new SmtpClient();
             smtp.Connect(smptConfig.Host, int.Parse(smptConfig.Port), SecureSocketOptions.StartTls);
             smtp.Authenticate(smptConfig.Username, smptConfig.Password);

@@ -37,10 +37,10 @@ namespace api_authentication_boberto.Services.ZenvioSecurity
             {
                 return;
             }
-            var oberCacheZenvio = GetCahe();
-            oberCacheZenvio.Attempts += 1;
-            oberCacheZenvio.LastAttempt = DateTime.Now;
-            redisService.Set(CACHE_ZENVIO, oberCacheZenvio);
+            var getCacheZenvio = GetCahe();
+            getCacheZenvio.Attempts += 1;
+            getCacheZenvio.LastAttempt = DateTime.Now;
+            redisService.Set(CACHE_ZENVIO, getCacheZenvio);
         }
 
         public TimeSpan GetBlockTime()
@@ -50,9 +50,9 @@ namespace api_authentication_boberto.Services.ZenvioSecurity
 
         public TimeSpan GetBlockTimeRemaining()
         {
-            var dataAtual = DateTime.Now;
-            var dataFinal = dataAtual.AddSeconds(zenvioConfig.SecondsExpiration);
-            return dataFinal.Subtract(dataAtual);
+            var currentDate = DateTime.Now;
+            var finalDate = currentDate.AddSeconds(zenvioConfig.SecondsExpiration);
+            return finalDate.Subtract(currentDate);
         }
         public ZenvioCacheModel GetCahe()
         {

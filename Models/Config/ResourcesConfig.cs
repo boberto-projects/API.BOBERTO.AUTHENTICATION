@@ -2,7 +2,7 @@
 {
     public class ResourcesConfig
     {
-        public IEnumerable<ResourceOptionConfig> Resources { get; set; } 
+        public IEnumerable<ResourceOptionConfig> Resources { get; set; }
     }
     public class ResourceOptionConfig
     {

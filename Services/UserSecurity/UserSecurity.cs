@@ -20,10 +20,9 @@ namespace api_authentication_boberto.Services.UserSecurity
         }
         public bool ReachedMaximumLimitOfAttempts()
         {
-            var obterCacheUsuario = GetUserCache();
-            var tentativasDeLogin = obterCacheUsuario.TentativasDeLogin;
-
-            if (tentativasDeLogin >= autenticationConfig.MaximumAttempts)
+            var getUserCache = GetUserCache();
+            var loginAttempts = getUserCache.LoginAttempts;
+            if (loginAttempts >= autenticationConfig.MaximumAttempts)
             {
                 return true;
             }
@@ -36,12 +35,10 @@ namespace api_authentication_boberto.Services.UserSecurity
             {
                 return;
             }
-            var obterCacheUsuario = GetUserCache();
-
-            obterCacheUsuario.TentativasDeLogin += 1;
-            obterCacheUsuario.UltimaTentativa = DateTime.Now;
-
-            redisService.Set(USER_CACHE, obterCacheUsuario);
+            var getUserCache = GetUserCache();
+            getUserCache.LoginAttempts += 1;
+            getUserCache.LastAttempt = DateTime.Now;
+            redisService.Set(USER_CACHE, getUserCache);
         }
 
         public void ClearUserCache()
@@ -58,14 +55,14 @@ namespace api_authentication_boberto.Services.UserSecurity
                 return;
             }
 
-            var usuarioCache = new UsuarioCacheModel()
+            var usuarioCache = new UserCacheModel()
             {
-                UltimaTentativa = DateTime.MinValue,
-                UltimoLogin = user.LastLogin,
-                UsuarioId = user.UserId,
-                AcessoBloqueado = false,
+                LastAttempt = DateTime.MinValue,
+                LastLogin = user.LastLogin,
+                UserId = user.UserId,
+                Blocked = false,
                 Email = user.Email,
-                TentativasDeLogin = 0,
+                LoginAttempts = 0,
             };
             var cacheOptions = new DistributedCacheEntryOptions()
             {
@@ -77,12 +74,11 @@ namespace api_authentication_boberto.Services.UserSecurity
 
         public TimeSpan GetBlockTimeRemaining()
         {
-            var dataAtual = DateTime.Now;
-            var ultimoLogin = GetUserCache().UltimoLogin;
-            var tempoRestante = ultimoLogin.Add(GetBlockTime());
-            var tempoBloqueio = dataAtual.Subtract(tempoRestante);
-            return tempoBloqueio;
-            ///tempo bloqueio = data atual - (ultimo login + tempo bloqueio) 
+            var currentDate = DateTime.Now;
+            var lastLogin = GetUserCache().LastLogin;
+            var timeLeft = lastLogin.Add(GetBlockTime());
+            var timeBlock = currentDate.Subtract(timeLeft);
+            return timeBlock;
         }
 
         public TimeSpan GetBlockTime()
@@ -90,9 +86,9 @@ namespace api_authentication_boberto.Services.UserSecurity
             return TimeSpan.FromSeconds(autenticationConfig.SecondsExpiration);
         }
 
-        private UsuarioCacheModel GetUserCache()
+        private UserCacheModel GetUserCache()
         {
-            return redisService.Get<UsuarioCacheModel>(USER_CACHE);
+            return redisService.Get<UserCacheModel>(USER_CACHE);
         }
     }
 }

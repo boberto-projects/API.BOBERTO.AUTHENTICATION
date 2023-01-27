@@ -11,32 +11,33 @@ namespace api_authentication_boberto.Services.Discord
     {
         private IOptions<DiscordAPIConfig> discordApiConfig;
         private IDiscordApi discordApi;
-
         public DiscordService(IOptions<DiscordAPIConfig> discordApiConfig, IDiscordApi discordApi)
         {
             this.discordApiConfig = discordApiConfig;
             this.discordApi = discordApi;
         }
-
-        public async Task SendMessage(string texto)
+        /// <summary>
+        /// TODO: Wrong way to do this. Api boberto services already has discord integration. We need to remove discord service.
+        /// </summary>
+        public async Task SendMessage(string text)
         {
             if (discordApiConfig.Value.Enabled == false)
             {
-                throw new CustomException(StatusCodeEnum.INTERN, "Recurso web hook discord desativado");
+                throw new CustomException(StatusCodeEnum.INTERN, "Discord web hook disabled.");
             }
 
             var discordWebHookID = discordApiConfig.Value.WebHookId;
             var discordWebHookToken = discordApiConfig.Value.WebHookToken;
             var discordRequest = new DiscordRequest()
             {
-                Content = texto
+                Content = text
             };
             await discordApi.EnviarMensagem(discordWebHookID, discordWebHookToken, discordRequest);
         }
 
-        public async Task SendCode(string codigo)
+        public async Task SendCode(string code)
         {
-            var conteudoMensagem = $"ApiAuthBoberto: Seu codigo e {codigo}";
+            var conteudoMensagem = $"ApiAuthBoberto: Your code is {code}";
             await SendMessage(conteudoMensagem);
         }
     }

@@ -29,7 +29,6 @@ namespace api_authentication_boberto.DependencyInjection
           "MODPACK_CREATE")));
 
             var jwtKey = Encoding.ASCII.GetBytes(jwtConfig.Value.Key);
-
             builder.Services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

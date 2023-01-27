@@ -15,7 +15,6 @@ namespace api_authentication_boberto.Services.OTPSender
         private IEmailService _emailService;
         private ApiConfig _apiConfig;
         private ISmsAdbTesterApi _smsAdbTesterApi;
-
         private ResourcesConfig _resourceConfig;
         public OTPSender(ZenvioService zenvioService,
             IEmailService emailService,
@@ -33,40 +32,29 @@ namespace api_authentication_boberto.Services.OTPSender
             _smsAdbTesterApi = smsAdbTesterApi;
         }
 
-        public void SendSMS(string numeroCelular, string codigo)
+        public void SendSMS(string phoneNumber, string code)
         {
             ///Como não podemos ultrapassar a cota de sms mensal e não temos opção de setar isso no zenvio, 
             ///vamos substituir o sms pela a api do discord.
-            var resources = _resourceConfig.Resources;
-            bool alternativaAoSMS = false;
-            foreach (var resource in resources)
-            {
-                if (resource.Key.Equals("PreferirAlternativaAoSMS"))
-                {
-                    alternativaAoSMS = resource.Enabled;
-                    // _discordService.EnviarCodigo(codigo);
-                    break;
-                }
-            }
-
+            var resources = _resourceConfig.Resources.ToDictionary(x => x.Key);
+            bool alternativaAoSMS = resources["PreferirAlternativaAoSMS"].Enabled;
             if (alternativaAoSMS)
             {
-                _smsAdbTesterApi.EnviarSMS(
+                _smsAdbTesterApi.SendSMS(
                  new SendAdbTesterMessageRequest()
                  {
-                     Message = $"ApiAuthBoberto: Seu código é {codigo}"
+                     Message = $"ApiAuthBoberto: Your code is {code}"
                  });
-
                 return;
             }
-            _zenvioService.SendSMSCode(numeroCelular, codigo);
+            _zenvioService.SendSMSCode(phoneNumber, code);
         }
 
-        public void SendEmail(string email, string codigo)
+        public void SendEmail(string email, string code)
         {
             var to = email;
             var subject = "[TESTE] ApiAuthBoberto";
-            var html = $"<h1> ApiAuthBoberto: Seu código é {codigo}</h1>";
+            var html = $"<h1> ApiAuthBoberto: Your code is {code}</h1>";
             _emailService.Send(to, subject, html);
         }
     }
