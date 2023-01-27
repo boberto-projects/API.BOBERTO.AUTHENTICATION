@@ -36,6 +36,11 @@ namespace api_authentication_boberto.Services.ApiKeyAuthentication
         {
             return EncryptUtils.DecryptString(ApiConfig.ApiKeyAuthentication.Key, key);
         }
+        private string DecryptWithPrefix(string key)
+        {
+            key = RemoveKeyPrefix(key);
+            return DecryptApiKey(key);
+        }
         /// <summary>
         /// Encrypt a key with a Aes secretKey
         /// </summary>
@@ -46,18 +51,19 @@ namespace api_authentication_boberto.Services.ApiKeyAuthentication
             return EncryptUtils.EncryptString(ApiConfig.ApiKeyAuthentication.Key, key);
         }
         /// <summary>
-        /// Create a prefix. This is needed to user identifies what api key is it
+        /// Create a user prefix. This is needed because we insert a user id in key.
         /// </summary>
+        /// <param name="key"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        private string CreatePrefix(int userId) => string.Concat(_prefix, userId, "-");
+        private string CreateUserPrefix(string key, int userId) => string.Concat(userId, "-", key);
         /// <summary>
         /// Create a Key prefix. This is needed to user identifies what api key is it
         /// </summary>
         /// <param name="key"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        private string CreateKeyPrefix(string key, int userId) => string.Concat(CreatePrefix(userId), key);
+        private string CreateKeyPrefix(string key) => string.Concat(_prefix, key);
         /// <summary>
         /// Remove a prefix from key
         /// </summary>
@@ -65,22 +71,17 @@ namespace api_authentication_boberto.Services.ApiKeyAuthentication
         /// <returns></returns>
         private string RemoveKeyPrefix(string key)
         {
-            var keyFrags = key.Split("-");
-            if (keyFrags.Count() != 3)
-            {
-                return key;
-            }
-            return keyFrags[2];
+            return key.Replace(_prefix, "");
         }
         /// <summary>
-        /// Read a key without decrypt and get user id.
+        /// Get a user id from key
         /// </summary>
         /// <param name="key"></param>
-        /// <returns></returns>
+        /// <returns>int userId</returns>
         /// <exception cref="CustomException"></exception>
         int GetUserId(string key)
         {
-            var userId = key.Split("-")[1];
+            var userId = key.Split("-")[0];
             if (userId == null)
             {
                 throw new ApiKeyAuthenticationException(ExceptionTypeEnum.AUTHORIZATION);
@@ -90,20 +91,14 @@ namespace api_authentication_boberto.Services.ApiKeyAuthentication
             return result;
         }
         /// <summary>
-        /// Validate Api Key and verify if the pattern match. We need to get user id splitting api key
+        /// Validate api key with hash
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
         /// <exception cref="CustomException"></exception>
         public bool Validate(string key)
         {
-            var keyFrags = key.Split("-");
-            if (keyFrags.Count() != 3)
-            {
-                throw new ApiKeyAuthenticationException(ExceptionTypeEnum.AUTHORIZATION);
-            }
-            var keyWithoutPrefix = keyFrags.ElementAt(2);
-            var decrypt = DecryptApiKey(keyWithoutPrefix);
+            var decrypt = DecryptWithPrefix(key);
             return decrypt != null;
         }
         /// <summary>
@@ -116,14 +111,12 @@ namespace api_authentication_boberto.Services.ApiKeyAuthentication
         /// <exception cref="CustomException"></exception>
         public GetApiKeyModel? Get(string key)
         {
-            var isValid = Validate(key);
-            if (isValid == false)
+            var decrypt = DecryptWithPrefix(key);
+            if (decrypt == null)
             {
                 throw new ApiKeyAuthenticationException(ExceptionTypeEnum.AUTHORIZATION);
             }
-            var keyWithoutPrefix = RemoveKeyPrefix(key);
-            var decrypt = DecryptApiKey(keyWithoutPrefix);
-            var userId = GetUserId(key);
+            var userId = GetUserId(decrypt);
             var apiKey = DbContext.ApiKey.FirstOrDefault(token => token.UserId.Equals(userId));
             if (apiKey == null)
             {
@@ -151,12 +144,13 @@ namespace api_authentication_boberto.Services.ApiKeyAuthentication
         public GetApiKeyModel Generate(int userId)
         {
             var key = GenerateApiKey();
-            var hashKey = EncryptApiKey(key);
-            var cryptKey = BC.HashPassword(key);
+            var keyWithUserId = CreateUserPrefix(key, userId);
+            var hashKey = EncryptApiKey(keyWithUserId);
+            var cryptKey = BC.HashPassword(keyWithUserId);
             return new GetApiKeyModel()
             {
                 ApiKey = key,
-                ApiKeyHashed = CreateKeyPrefix(hashKey, userId),
+                ApiKeyHashed = CreateKeyPrefix(hashKey),
                 ApiKeyCrypt = cryptKey,
                 Scopes = DefaultScopes
             };
@@ -169,13 +163,14 @@ namespace api_authentication_boberto.Services.ApiKeyAuthentication
         public GetApiKeyModel Generate(int userId, RolesEnum role)
         {
             var key = GenerateApiKey();
-            var hashKey = EncryptApiKey(key);
-            var cryptKey = BC.HashPassword(key);
+            var keyWithUserId = CreateUserPrefix(key, userId);
+            var hashKey = EncryptApiKey(keyWithUserId);
+            var cryptKey = BC.HashPassword(keyWithUserId);
             var scopes = GetScopes(role);
             return new GetApiKeyModel()
             {
                 ApiKey = key,
-                ApiKeyHashed = CreateKeyPrefix(hashKey, userId),
+                ApiKeyHashed = CreateKeyPrefix(hashKey),
                 ApiKeyCrypt = cryptKey,
                 Scopes = scopes.Select(x => x.ToString()).ToArray()
             };
