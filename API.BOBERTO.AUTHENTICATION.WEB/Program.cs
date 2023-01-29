@@ -41,7 +41,6 @@ app.AddLoginRoute();
 app.AddApiKeyRoute();
 app.AddOtpRoute();
 app.AddUserRoute();
-app.AddResourceRoute();
 
 ///We need to put this at BobertoNuggetLibrary
 app.MapGet("/", ([FromServices] HealthCheck healthCheck) =>

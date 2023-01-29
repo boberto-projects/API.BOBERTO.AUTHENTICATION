@@ -1,9 +1,8 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 
 namespace API.BOBERTO.AUTHENTICATION.APPLICATION.Services.ApiKeyAuthentication.Models
 {
-    public class ApiKeyModel
+    public class GetApiKeyModel
     {
         public string ApiKey { get; set; }
         public string ApiKeyCrypt { get; set; }

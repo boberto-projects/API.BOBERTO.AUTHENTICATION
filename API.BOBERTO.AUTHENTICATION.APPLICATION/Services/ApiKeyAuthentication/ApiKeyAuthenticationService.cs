@@ -73,7 +73,7 @@ namespace API.BOBERTO.AUTHENTICATION.APPLICATION.Services.ApiKeyAuthentication
         Após:
                 public ApiKeyModel Get(string key)
         */
-        public ApiKeyModel Get(string key)
+        public GetApiKeyModel Get(string key)
         {
             var decrypt = DecryptWithPrefix(key);
             if (decrypt == null)
@@ -98,7 +98,7 @@ namespace API.BOBERTO.AUTHENTICATION.APPLICATION.Services.ApiKeyAuthentication
             Após:
                         return new ApiKeyModel()
             */
-            return new ApiKeyModel()
+            return new GetApiKeyModel()
             {
                 ApiKey = decrypt,
                 Scopes = apiKey.Scopes.ToArray(),
@@ -118,7 +118,7 @@ namespace API.BOBERTO.AUTHENTICATION.APPLICATION.Services.ApiKeyAuthentication
         Após:
                 public ApiKeyModel Generate(int userId, RolesEnum role)
         */
-        public ApiKeyModel Generate(int userId, RolesEnum role)
+        public GetApiKeyModel Generate(int userId, RolesEnum role)
         {
             var key = GenerateApiKey();
             var keyWithUserId = CreateUserPrefix(key, userId);
@@ -132,7 +132,7 @@ namespace API.BOBERTO.AUTHENTICATION.APPLICATION.Services.ApiKeyAuthentication
             Após:
                         return new ApiKeyModel()
             */
-            return new ApiKeyModel()
+            return new GetApiKeyModel()
             {
                 ApiKey = key,
                 ApiKeyHashed = CreateKeyPrefix(hashKey),

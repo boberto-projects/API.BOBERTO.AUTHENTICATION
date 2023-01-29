@@ -1,8 +1,8 @@
-﻿using api_authentication_boberto.Domain.CustomDbContext;
-using api_authentication_boberto.Models.Request;
-using api_authentication_boberto.Models.Response;
-using api_authentication_boberto.Services.OTP;
-using api_authentication_boberto.Services.OTPSender;
+﻿using API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Request;
+using API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Response;
+using API.BOBERTO.AUTHENTICATION.APPLICATION.Services.OTP;
+using API.BOBERTO.AUTHENTICATION.APPLICATION.Services.OTPSender;
+using API.BOBERTO.AUTHENTICATION.DOMAIN;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,8 +12,9 @@ namespace API.BOBERTO.AUTHENTICATION.WEB.Routes
     {
         public static void AddOtpRoute(this WebApplication app)
         {
-            app.MapPost("/otp/enviarCodigoSMS", [Authorize(AuthenticationSchemes = "api_key")] (
-                [FromBody] EnviarCodigoSMSRequest request,
+            app.MapPost("/otp/enviarCodigoSMS",
+                [Authorize(AuthenticationSchemes = "api_key")] (
+                [FromBody] SendOTPSMSRequest request,
                [FromServices] DatabaseContext dbContext,
                 IOTPService otpCode,
                 IOTPSender enviarCodigoDuploFator
@@ -22,10 +23,6 @@ namespace API.BOBERTO.AUTHENTICATION.WEB.Routes
                   request.Validar();
                   var codigo = otpCode.Generate();
                   enviarCodigoDuploFator.SendSMS(request.NumeroCelular, codigo);
-
-                  ///TODO: essas tentativas de sincronizar timezone tá bem chatinha :c
-                  ///Próximo plano é configurar um DateTime global para toda a api. Possivelmente usando timezone America/Sao_Paulo
-
                   return Results.Ok();
 
               }).WithTags("Dupla autenticação");
@@ -36,7 +33,7 @@ namespace API.BOBERTO.AUTHENTICATION.WEB.Routes
             IOTPService otpCode,
             IOTPSender enviarCodigoDuploFator) =>
             {
-                request.Validar();
+                request.Validate();
                 var codigo = otpCode.Generate();
                 enviarCodigoDuploFator.SendEmail(request.Email, codigo);
                 return Results.Ok();
@@ -60,8 +57,8 @@ namespace API.BOBERTO.AUTHENTICATION.WEB.Routes
             IOTPService otpCode
               ) =>
           {
-              request.Validar();
-              var valid = otpCode.Validate(request.Codigo);
+              request.Validate();
+              var valid = otpCode.Validate(request.Code);
 
               return Results.Ok(valid);
 

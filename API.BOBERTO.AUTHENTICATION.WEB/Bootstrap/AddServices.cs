@@ -1,12 +1,11 @@
-﻿using API.BOBERTO.AUTHENTICATION.WEB;
-using api_authentication_boberto.Services.ApiConfigManager;
-using api_authentication_boberto.Services.ApiKeyAuthentication;
-using api_authentication_boberto.Services.CurrentUser;
-using api_authentication_boberto.Services.JWT;
-using api_authentication_boberto.Services.OTP;
-using api_authentication_boberto.Services.OTPSender;
-using api_authentication_boberto.Services.UserSecurity;
-using api_authentication_boberto.Services.ZenvioSecurity;
+﻿using API.BOBERTO.AUTHENTICATION.APPLICATION.Services.ApiConfigManager;
+using API.BOBERTO.AUTHENTICATION.APPLICATION.Services.ApiKeyAuthentication;
+using API.BOBERTO.AUTHENTICATION.APPLICATION.Services.CurrentUser;
+using API.BOBERTO.AUTHENTICATION.APPLICATION.Services.JWT;
+using API.BOBERTO.AUTHENTICATION.APPLICATION.Services.OTP;
+using API.BOBERTO.AUTHENTICATION.APPLICATION.Services.OTPSender;
+using API.BOBERTO.AUTHENTICATION.APPLICATION.Services.UserSecurity;
+using API.BOBERTO.AUTHENTICATION.WEB;
 
 namespace API.AUTHENTICATION.BOBERTO.WEB.Bootstrap
 {
@@ -25,7 +24,6 @@ namespace API.AUTHENTICATION.BOBERTO.WEB.Bootstrap
             builder.Services.AddSingleton<IOTPService, OTPService>();
             builder.Services.AddSingleton<IOTPSender, OTPSender>();
             builder.Services.AddSingleton<ApiConfigManagerService>();
-            builder.Services.AddSingleton<IZenvioSecurityService, ZenvioSecurityService>();
             builder.Services.AddSingleton<IUserSecurity, UserSecurity>();
             builder.Services.AddScoped<IJWTService, JWTService>();
             builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();

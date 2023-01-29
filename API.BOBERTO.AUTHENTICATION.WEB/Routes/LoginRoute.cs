@@ -110,8 +110,8 @@ namespace API.BOBERTO.AUTHENTICATION.WEB.Routes
                 {
                     UserId = usuario.Id,
                     Email = usuario.Email,
-                    Name = usuario.Nome,
-                    PhoneNumber = usuario.NumeroCelular
+                    Name = usuario.Name,
+                    PhoneNumber = usuario.PhoneNumber
                 }, expiracao);
 
                 return Results.Ok(new RefreshTokenResponse()

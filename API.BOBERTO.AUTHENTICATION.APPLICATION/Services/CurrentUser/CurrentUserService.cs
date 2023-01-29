@@ -32,12 +32,12 @@ namespace API.BOBERTO.AUTHENTICATION.APPLICATION.Services.CurrentUser
             return new Profile
             {
                 Id = userId,
-                UsarEmail = user.UserConfig.EnabledEmail,
-                UsarNumeroCelular = user.UserConfig.EnabledPhoneNumber,
+                EmailEnabled = user.UserConfig.EnabledEmail,
+                PhoneNumberEnabled = user.UserConfig.EnabledPhoneNumber,
                 Email = user.Email,
-                Nome = user.Name,
+                Name = user.Name,
                 Role = user.Role,
-                NumeroCelular = user.PhoneNumber
+                PhoneNumber = user.PhoneNumber
             };
         }
 
@@ -67,10 +67,10 @@ namespace API.BOBERTO.AUTHENTICATION.APPLICATION.Services.CurrentUser
             var usuarioLogado = GetCurrentProfile();
             return new PairAuthentication()
             {
-                UsarEmail = usuarioLogado.UsarEmail,
-                UsarNumeroCelular = usuarioLogado.UsarNumeroCelular,
+                UsarEmail = usuarioLogado.EmailEnabled,
+                UsarNumeroCelular = usuarioLogado.PhoneNumberEnabled,
                 Email = usuarioLogado.Email,
-                NumeroCelular = usuarioLogado.NumeroCelular
+                NumeroCelular = usuarioLogado.PhoneNumber
             };
         }
     }

@@ -2,7 +2,7 @@
 using API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Exceptions.Models;
 namespace API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Response
 {
-    public class AtivarDuplaAutenticacaoRequest
+    public class EnablePairAuthenticationRequest
     {
         public string Email { get; set; }
         public string PhoneNumber { get; set; }

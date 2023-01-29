@@ -1,9 +1,12 @@
-﻿using api_authentication_boberto.Domain.CustomDbContext;
-using api_authentication_boberto.Exceptions;
-using api_authentication_boberto.Models.Config;
-using api_authentication_boberto.Models.Enums;
-using api_authentication_boberto.Services.ApiKeyAuthentication;
-using api_authentication_boberto.Services.CurrentUser;
+﻿using API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Config;
+using API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Enums.Authentication;
+using API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Exceptions;
+using API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Exceptions.Models;
+using API.BOBERTO.AUTHENTICATION.APPLICATION.Services.ApiKeyAuthentication;
+using API.BOBERTO.AUTHENTICATION.APPLICATION.Services.ApiKeyAuthentication.Models;
+using API.BOBERTO.AUTHENTICATION.APPLICATION.Services.CurrentUser;
+using API.BOBERTO.AUTHENTICATION.DOMAIN;
+using API.BOBERTO.AUTHENTICATION.DOMAIN.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -17,12 +20,12 @@ namespace API.BOBERTO.AUTHENTICATION.WEB.Routes
         public static void AddApiKeyRoute(this WebApplication app)
         {
             app.MapPost("/apikey/generate", [Authorize] (
-                [FromServices] IApiKeyAuthenticationService apiKeyService,
+                IApiKeyAuthenticationService apiKeyService,
+                ICurrentUserService currentUser,
                 [FromServices] DatabaseContext dbContext,
-                [FromServices] ICurrentUserService currentUser,
                 IOptions<ApiConfig> apiConfig) =>
                 {
-                    var user = currentUser.ObterUsuarioLogado();
+                    var user = currentUser.GetCurrentProfile();
                     if (user.Role == RolesEnum.USER)
                     {
                         throw new CustomException(StatusCodeEnum.BUSINESS, "YOU CANT USE THIS");
@@ -51,7 +54,7 @@ namespace API.BOBERTO.AUTHENTICATION.WEB.Routes
                 [FromServices] ICurrentUserService currentUser,
                 IOptions<ApiConfig> apiConfig) =>
             {
-                var user = currentUser.ObterUsuarioLogado();
+                var user = currentUser.GetCurrentProfile();
                 if (user.Role == RolesEnum.USER)
                 {
                     throw new CustomException(StatusCodeEnum.BUSINESS, "YOU CANT USE THIS");

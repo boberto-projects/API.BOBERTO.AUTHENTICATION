@@ -1,4 +1,5 @@
-﻿using api_authentication_boberto.Services.Redis;
+﻿
+using API.BOBERTO.AUTHENTICATION.APPLICATION.Services.Redis;
 
 namespace API.AUTHENTICATION.BOBERTO.WEB.Bootstrap
 {

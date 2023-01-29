@@ -5,7 +5,7 @@ using API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Exceptions.Models;
 
 namespace API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Request
 {
-    public class EnviarCodigoSMSRequest
+    public class SendOTPSMSRequest
     {
         public string NumeroCelular { get; set; }
 
