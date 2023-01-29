@@ -1,4 +1,5 @@
-﻿using api_authentication_boberto.Models.Enums;
+﻿using API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Enums.Authentication;
+using api_authentication_boberto.Models.Enums;
 
 namespace API.BOBERTO.AUTHENTICATION.APPLICATION.Services.CurrentUser.Models
 {

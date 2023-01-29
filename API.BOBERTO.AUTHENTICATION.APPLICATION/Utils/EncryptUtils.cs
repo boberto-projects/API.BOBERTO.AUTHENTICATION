@@ -5,7 +5,7 @@
     using System.Security.Cryptography;
     using System.Text;
 
-    namespace Utils
+    namespace API.BOBERTO.AUTHENTICATION.APPLICATION.Utils
     {
         public class EncryptUtils
         {

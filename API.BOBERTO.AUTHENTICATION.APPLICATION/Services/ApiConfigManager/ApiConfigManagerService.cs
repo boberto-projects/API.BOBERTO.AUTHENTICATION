@@ -1,4 +1,4 @@
-﻿using api_authentication_boberto.Models.Config;
+﻿using API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Config;
 using Newtonsoft.Json;
 using System.Text;
 

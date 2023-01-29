@@ -1,4 +1,4 @@
-﻿using api_authentication_boberto.Domain.CustomDbContext;
+﻿using API.BOBERTO.AUTHENTICATION.DOMAIN.Models;
 
 namespace API.BOBERTO.AUTHENTICATION.APPLICATION.Services.JWT
 {

@@ -1,4 +1,5 @@
-﻿using API.BOBERTO.AUTHENTICATION.WEB.Handlers;
+﻿using API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Config;
+using API.BOBERTO.AUTHENTICATION.WEB.Handlers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;

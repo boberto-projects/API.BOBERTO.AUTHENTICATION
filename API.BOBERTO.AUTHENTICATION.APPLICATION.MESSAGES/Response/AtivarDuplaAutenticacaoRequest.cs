@@ -1,20 +1,19 @@
-﻿using api_authentication_boberto.Exceptions;
-using api_authentication_boberto.Models.Enums;
-
+﻿using API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Exceptions;
+using API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Exceptions.Models;
 namespace API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Response
 {
     public class AtivarDuplaAutenticacaoRequest
     {
         public string Email { get; set; }
-        public string NumeroCelular { get; set; }
-        public string Codigo { get; set; }
+        public string PhoneNumber { get; set; }
+        public string Code { get; set; }
 
-        public void Validar()
+        public void Validate()
         {
             var emailInformado = string.IsNullOrEmpty(Email) == false;
-            var numeroCelularInformado = string.IsNullOrEmpty(NumeroCelular) == false;
+            var numeroCelularInformado = string.IsNullOrEmpty(PhoneNumber) == false;
 
-            if (string.IsNullOrEmpty(Codigo))
+            if (string.IsNullOrEmpty(Code))
             {
                 throw new CustomException(StatusCodeEnum.VALIDATION, "Código OTP não informado.");
             }

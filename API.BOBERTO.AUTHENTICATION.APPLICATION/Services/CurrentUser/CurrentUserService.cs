@@ -1,5 +1,9 @@
-﻿using API.BOBERTO.AUTHENTICATION.APPLICATION.Services.CurrentUser.Models;
-using api_authentication_boberto.Domain.CustomDbContext;
+﻿using API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Exceptions;
+using API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Exceptions.Models;
+using API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Models;
+using API.BOBERTO.AUTHENTICATION.APPLICATION.Services.CurrentUser.Models;
+using API.BOBERTO.AUTHENTICATION.DOMAIN;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
@@ -16,27 +20,30 @@ namespace API.BOBERTO.AUTHENTICATION.APPLICATION.Services.CurrentUser
             _httpContextAccessor = httpContextAccessor;
             _dbContext = dbContext;
         }
-        public Profile ObterUsuarioLogado()
+        public Profile GetCurrentProfile()
         {
-            int.TryParse(_httpContextAccessor.HttpContext.User.FindFirstValue("UserId"), out int usuarioId);
-
-            var usuario = _dbContext.Usuarios.Include(c => c.UserConfig).FirstOrDefault(e => e.UserId.Equals(usuarioId));
-
+            var currentUserClaim = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier);
+            if(currentUserClaim == null)
+            {
+                 throw new CustomException(StatusCodeEnum.NOTAUTHORIZED, "You are not authenticaded.");
+            }
+            int.TryParse(currentUserClaim.Value, out int userId);
+            var user = _dbContext.Usuarios.Include(c => c.UserConfig).FirstOrDefault(e => e.UserId.Equals(userId));
             return new Profile
             {
-                Id = usuarioId,
-                UsarEmail = usuario.UserConfig.EnabledEmail,
-                UsarNumeroCelular = usuario.UserConfig.EnabledPhoneNumber,
-                Email = usuario.Email,
-                Nome = usuario.Name,
-                Role = usuario.Role,
-                NumeroCelular = usuario.PhoneNumber
+                Id = userId,
+                UsarEmail = user.UserConfig.EnabledEmail,
+                UsarNumeroCelular = user.UserConfig.EnabledPhoneNumber,
+                Email = user.Email,
+                Nome = user.Name,
+                Role = user.Role,
+                NumeroCelular = user.PhoneNumber
             };
         }
 
-        public void AtivarAutenticacaoDupla(AutenticacaoDupla autenticacoes)
+        public void EnablePairAuthentication(PairAuthentication autenticacoes)
         {
-            var idUsuario = ObterUsuarioLogado().Id;
+            var idUsuario = GetCurrentProfile().Id;
             var usuario = _dbContext.Usuarios.FirstOrDefault(x => x.UserId.Equals(idUsuario));
 
             var usarEmail = autenticacoes.UsarEmail;
@@ -55,10 +62,10 @@ namespace API.BOBERTO.AUTHENTICATION.APPLICATION.Services.CurrentUser
             _dbContext.SaveChanges();
         }
 
-        public AutenticacaoDupla ObterAutenticacaoDuplaAtiva()
+        public PairAuthentication GetPairAuthenticationEnabled()
         {
-            var usuarioLogado = ObterUsuarioLogado();
-            return new AutenticacaoDupla()
+            var usuarioLogado = GetCurrentProfile();
+            return new PairAuthentication()
             {
                 UsarEmail = usuarioLogado.UsarEmail,
                 UsarNumeroCelular = usuarioLogado.UsarNumeroCelular,

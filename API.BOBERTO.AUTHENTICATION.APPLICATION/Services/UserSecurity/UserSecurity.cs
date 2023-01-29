@@ -1,7 +1,7 @@
-﻿using API.BOBERTO.AUTHENTICATION.APPLICATION.Services.Redis;
-using api_authentication_boberto.Domain.CustomDbContext;
-using api_authentication_boberto.Models.Cache;
-using api_authentication_boberto.Models.Config;
+﻿using API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Cache;
+using API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Config;
+using API.BOBERTO.AUTHENTICATION.APPLICATION.Services.Redis;
+using API.BOBERTO.AUTHENTICATION.DOMAIN.Models;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Options;
 

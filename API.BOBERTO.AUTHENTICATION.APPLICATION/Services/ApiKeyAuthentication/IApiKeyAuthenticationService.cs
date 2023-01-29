@@ -1,4 +1,5 @@
-﻿using API.BOBERTO.AUTHENTICATION.APPLICATION.Services.ApiKeyAuthentication.Models;
+﻿using API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Enums.Authentication;
+using API.BOBERTO.AUTHENTICATION.APPLICATION.Services.ApiKeyAuthentication.Models;
 using api_authentication_boberto.Models.Enums;
 
 namespace API.BOBERTO.AUTHENTICATION.APPLICATION.Services.ApiKeyAuthentication

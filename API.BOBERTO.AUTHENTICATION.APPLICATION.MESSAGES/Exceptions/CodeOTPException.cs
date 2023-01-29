@@ -1,9 +1,7 @@
 using API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Enums.OTP;
 using API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Exceptions.Models.Serialize;
-using api_authentication_boberto.Models.Enums;
-using api_authentication_boberto.Models.Response;
 
-namespace api_authentication_boberto.Exceptions
+namespace API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Exceptions
 {
     [Serializable]
     public class CodeOTPException : Exception

@@ -5,6 +5,7 @@ using API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Config;
 using API.BOBERTO.AUTHENTICATION.WEB.Routes;
 using API.BOBERTO.AUTHENTICATION.WEB.Handlers;
 using API.BOBERTO.AUTHENTICATION.WEB;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 

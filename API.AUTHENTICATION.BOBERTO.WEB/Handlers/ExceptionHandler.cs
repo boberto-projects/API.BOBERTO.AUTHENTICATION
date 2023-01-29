@@ -30,7 +30,7 @@ namespace API.BOBERTO.AUTHENTICATION.WEB.Handlers
                 if (exceptionHandlerPathFeature?.Error is CodeOTPException codigoOTPException)
                 {
                     context.Response.StatusCode = codigoOTPException.CodigoDeStatus;
-                    await context.Response.WriteAsJsonAsync(codigoOTPException.ObterResponse());
+                    await context.Response.WriteAsJsonAsync(codigoOTPException.GetResponse());
                 }
             }));
         }

@@ -1,5 +1,5 @@
-﻿using api_authentication_boberto.Models.Config;
-using api_authentication_boberto.Models.Response;
+﻿using API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Config;
+using API.BOBERTO.AUTHENTICATION.APPLICATION.Services.OTP.Models;
 using Microsoft.Extensions.Options;
 using OtpNet;
 
@@ -30,8 +30,8 @@ namespace API.BOBERTO.AUTHENTICATION.APPLICATION.Services.OTP
             var valid = totp.VerifyTotp(code, out long timeStepMatched);
             return new OTPResult()
             {
-                PassoDeTempo = timeStepMatched,
-                Valido = valid
+                TimeStep = timeStepMatched,
+                Valid = valid
             };
         }
     }

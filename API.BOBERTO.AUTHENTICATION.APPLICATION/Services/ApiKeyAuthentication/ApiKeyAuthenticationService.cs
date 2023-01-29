@@ -1,11 +1,11 @@
-﻿using API.BOBERTO.AUTHENTICATION.APPLICATION.Services.ApiKeyAuthentication.Models;
-using api_authentication_boberto.Domain.CustomDbContext;
-using api_authentication_boberto.Exceptions;
-using api_authentication_boberto.Models.Config;
-using api_authentication_boberto.Models.Enums;
-using api_authentication_boberto.Utils;
+﻿using API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Config;
+using API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Enums.Authentication;
+using API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Exceptions;
+using API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Exceptions.Models;
+using API.BOBERTO.AUTHENTICATION.APPLICATION.Services.ApiKeyAuthentication.Models;
+using API.BOBERTO.AUTHENTICATION.DOMAIN;
+using api_authentication_boberto.API.BOBERTO.AUTHENTICATION.APPLICATION.Utils;
 using Microsoft.Extensions.Options;
-using StackExchange.Redis;
 using System.Security.Cryptography;
 using BC = BCrypt.Net.BCrypt;
 

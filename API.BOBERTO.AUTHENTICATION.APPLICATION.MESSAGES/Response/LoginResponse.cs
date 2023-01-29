@@ -2,9 +2,9 @@
 {
     public class LoginResponse
     {
-        public string Tipo { get; set; }
+        public string Type { get; set; }
         public string Token { get; set; }
-        public bool DuplaAutenticacaoObrigatoria { get; set; }
-        public DateTime ExpiraEm { get; set; }
+        public bool PairAuthenticationEnabled { get; set; }
+        public DateTime ExpireIn { get; set; }
     }
 }

@@ -1,5 +1,7 @@
-﻿using api_authentication_boberto.Exceptions;
-using api_authentication_boberto.Models.Enums;
+﻿
+
+using API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Exceptions;
+using API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Exceptions.Models;
 
 namespace API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Request
 {

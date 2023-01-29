@@ -2,13 +2,8 @@
 using API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Exceptions;
 using API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Exceptions.Models;
 using API.BOBERTO.AUTHENTICATION.APPLICATION.Services.ApiKeyAuthentication;
-using api_authentication_boberto.Domain.CustomDbContext;
-using api_authentication_boberto.Exceptions;
-using api_authentication_boberto.Models.Config;
-
-using api_authentication_boberto.Utils;
+using api_authentication_boberto.API.BOBERTO.AUTHENTICATION.APPLICATION.Utils;
 using Microsoft.AspNetCore.Authentication;
-
 using Microsoft.Extensions.Options;
 using System.Security.Claims;
 using System.Text.Encodings.Web;

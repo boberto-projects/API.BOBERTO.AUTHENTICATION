@@ -1,23 +1,24 @@
-﻿using API.BOBERTO.AUTHENTICATION.APPLICATION.Services.CurrentUser.Models;
+﻿using API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Models;
+using API.BOBERTO.AUTHENTICATION.APPLICATION.Services.CurrentUser.Models;
 
 namespace API.BOBERTO.AUTHENTICATION.APPLICATION.Services.CurrentUser
 {
     public interface ICurrentUserService
     {
         /// <summary>
-        /// Obter o usuário logado usando o claim principal
+        /// Get current user profile
         /// </summary>
-        public Profile ObterUsuarioLogado();
+        public Profile GetCurrentProfile();
 
         /// <summary>
-        /// Obtém se usuário logado tem autenticação dupla ativa
+        /// get current user pair authentication
         /// </summary>
-        public AutenticacaoDupla ObterAutenticacaoDuplaAtiva();
+        public PairAuthentication GetPairAuthenticationEnabled();
 
         /// <summary>
-        /// Ativa autenticação dupla do usuário
+        /// Enable user authentication
         /// </summary>
-        public void AtivarAutenticacaoDupla(AutenticacaoDupla autenticacoes);
+        public void EnablePairAuthentication(PairAuthentication pairAuthentication);
 
     }
 }

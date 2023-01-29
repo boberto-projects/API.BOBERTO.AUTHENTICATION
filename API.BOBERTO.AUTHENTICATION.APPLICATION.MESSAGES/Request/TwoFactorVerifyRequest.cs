@@ -1,15 +1,17 @@
-﻿using api_authentication_boberto.Exceptions;
-using api_authentication_boberto.Models.Enums;
+﻿
+
+using API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Exceptions;
+using API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Exceptions.Models;
 
 namespace API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Request
 {
     public class TwoFactorVerifyRequest
     {
-        public string Codigo { get; set; }
+        public string Code { get; set; }
 
-        public void Validar()
+        public void Validate()
         {
-            if (string.IsNullOrEmpty(Codigo))
+            if (string.IsNullOrEmpty(Code))
             {
                 throw new CustomException(StatusCodeEnum.BUSINESS, "Código não informado.");
             }

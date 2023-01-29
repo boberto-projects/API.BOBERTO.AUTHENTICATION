@@ -1,5 +1,5 @@
-﻿using api_authentication_boberto.Domain.CustomDbContext;
-using api_authentication_boberto.Models.Config;
+﻿using API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.Config;
+using API.BOBERTO.AUTHENTICATION.DOMAIN.Models;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -26,7 +26,7 @@ namespace API.BOBERTO.AUTHENTICATION.APPLICATION.Services.JWT
                 Audience = _jwtConfig.Audience,
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim("UserId", user.UserId.ToString()),
+                    new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
                 }),
                 Expires = expiration.GetValueOrDefault(DateTime.UtcNow.AddHours(1)),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(JWTKey), SecurityAlgorithms.HmacSha256Signature)

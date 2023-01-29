@@ -1,4 +1,4 @@
-﻿using api_authentication_boberto.Models.Response;
+﻿using API.BOBERTO.AUTHENTICATION.APPLICATION.Services.OTP.Models;
 
 namespace API.BOBERTO.AUTHENTICATION.APPLICATION.Services.OTP
 {
