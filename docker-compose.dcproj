@@ -3,10 +3,10 @@
   <PropertyGroup Label="Globals">
     <ProjectVersion>2.1</ProjectVersion>
     <DockerTargetOS>Linux</DockerTargetOS>
-    <ProjectGuid>f8eeb7ef-6302-42d4-ab30-9e1092e4482e</ProjectGuid>
+    <ProjectGuid>4c46598f-da02-42b9-b650-aa207000b0af</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
     <DockerServiceUrl>{Scheme}://localhost:{ServicePort}/swagger</DockerServiceUrl>
-    <DockerServiceName>api.authentication.boberto.web</DockerServiceName>
+    <DockerServiceName>api.boberto.authentication.web</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.override.yml">
@@ -14,6 +14,5 @@
     </None>
     <None Include="docker-compose.yml" />
     <None Include=".dockerignore" />
-    <None Include="init.sql" />
   </ItemGroup>
 </Project>

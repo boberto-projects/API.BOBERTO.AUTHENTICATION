@@ -30,7 +30,7 @@ namespace API.BOBERTO.AUTHENTICATION.APPLICATION.Services.ApiKeyAuthentication
         /// <returns></returns>
         public string DecryptApiKey(string key)
         {
-            return EncryptUtils.DecryptString(ApiConfig.ApiKeyAuthentication.Key, key);
+            return EncryptUtils.DecryptString(ApiConfig.ApiKeyAuthenticationConfig.CryptKey, key);
         }
         /// <summary>
         /// Encrypt a key with a Aes secretKey
@@ -39,7 +39,7 @@ namespace API.BOBERTO.AUTHENTICATION.APPLICATION.Services.ApiKeyAuthentication
         /// <returns></returns>
         public string EncryptApiKey(string key)
         {
-            return EncryptUtils.EncryptString(ApiConfig.ApiKeyAuthentication.Key, key);
+            return EncryptUtils.EncryptString(ApiConfig.ApiKeyAuthenticationConfig.CryptKey, key);
         }
 
         /// <summary>

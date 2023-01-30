@@ -1,5 +1,4 @@
-﻿using API.BOBERTO.AUTHENTICATION.APPLICATION.Services.ApiConfigManager;
-using API.BOBERTO.AUTHENTICATION.APPLICATION.Services.ApiKeyAuthentication;
+﻿using API.BOBERTO.AUTHENTICATION.APPLICATION.Services.ApiKeyAuthentication;
 using API.BOBERTO.AUTHENTICATION.APPLICATION.Services.CurrentUser;
 using API.BOBERTO.AUTHENTICATION.APPLICATION.Services.JWT;
 using API.BOBERTO.AUTHENTICATION.APPLICATION.Services.OTP;
@@ -23,7 +22,6 @@ namespace API.AUTHENTICATION.BOBERTO.WEB.Bootstrap
             builder.Services.AddSingleton<HealthCheck>();
             builder.Services.AddSingleton<IOTPService, OTPService>();
             builder.Services.AddSingleton<IOTPSender, OTPSender>();
-            builder.Services.AddSingleton<ApiConfigManagerService>();
             builder.Services.AddSingleton<IUserSecurity, UserSecurity>();
             builder.Services.AddScoped<IJWTService, JWTService>();
             builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();

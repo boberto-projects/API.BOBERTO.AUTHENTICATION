@@ -28,7 +28,7 @@ namespace API.BOBERTO.AUTHENTICATION.WEB.Handlers
         protected override Task<AuthenticateResult> HandleAuthenticateAsync()
         {
             ///TODO: this is a base to use before identity class.
-            if (Request.Headers.TryGetValue(ApiConfig.Authorization.ApiHeader, out
+            if (Request.Headers.TryGetValue(ApiConfig.AuthorizationConfig.ApiHeader, out
                var extractedApiKey) == false)
             {
                 throw new ApiKeyAuthenticationException(ExceptionTypeEnum.AUTHORIZATION);

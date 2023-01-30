@@ -24,18 +24,18 @@ namespace API.BOBERTO.AUTHENTICATION.WEB.Handlers
             var principal = new ClaimsPrincipal(identity);
             var ticket = new AuthenticationTicket(principal, Scheme.Name);
 
-            if (_apiConfig.Value.Authorization.Activate == false)
+            if (_apiConfig.Value.AuthorizationConfig.Enabled == false)
             {
                 return Task.FromResult(AuthenticateResult.Success(ticket));
             }
 
-            if (Request.Headers.TryGetValue(_apiConfig.Value.Authorization.ApiHeader, out
+            if (Request.Headers.TryGetValue(_apiConfig.Value.ApiKeyAuthenticationConfig.ApiHeader, out
                    var extractedApiKey) == false)
             {
                 return Task.FromResult(AuthenticateResult.Fail("Api key não informada"));
             }
 
-            if (_apiConfig.Value.Authorization.ApiKey.Equals(extractedApiKey) == false)
+            if (_apiConfig.Value.AuthorizationConfig.ApiKey.Equals(extractedApiKey) == false)
             {
                 return Task.FromResult(AuthenticateResult.Fail("Não autorizado"));
             }
