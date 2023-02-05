@@ -11,7 +11,6 @@
     public class ApiKeyAuthentication
     {
         public string ApiHeader { get; set; }
-        public bool Enabled { get; set; }
         public string CryptKey { get; set; }
     }
     public class Authorization
