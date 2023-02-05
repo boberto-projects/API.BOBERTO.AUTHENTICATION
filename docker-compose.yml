@@ -1,29 +1,29 @@
 version: '3.4'
 
 services:
-  api.boberto.authentication.web:
-    image: ${DOCKER_REGISTRY-}apibobertoauthenticationweb
-    build:
-      context: .
-      dockerfile: API.BOBERTO.AUTHENTICATION.WEB/Dockerfile
-    env_file:
-      - .env
-    ports:
-      - "5000:80"
-  database_service:
-    image: postgres
-    restart: always
-    hostname: postgree_hostname
-    environment:
-        - POSTGRES_USER=postgres
-        - POSTGRES_PASSWORD=postgres
-        - POSTGRES_DB=teste
-    ports:
-        - "5432:5432"
-    volumes:
-        - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-  redis_service:
-    image: redis:6.2-alpine
-    hostname: redis_hostname
-    ports:
-    - "6379:6379"
+    api.boberto.authentication.web:
+        image: ${DOCKER_REGISTRY-}apibobertoauthenticationweb
+        build:
+          context: .
+          dockerfile: API.BOBERTO.AUTHENTICATION.WEB/Dockerfile
+        env_file:
+          - .env
+        ports:
+          - "5000:80"
+    database_service:
+        image: postgres
+        restart: always
+        hostname: postgree_hostname
+        environment:
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
+            - POSTGRES_DB=teste
+        ports:
+            - "5432:5432"
+        volumes:
+            - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    redis_service:
+        image: redis:6.2-alpine
+        hostname: redis_hostname
+        ports:
+        - "6379:6379"
