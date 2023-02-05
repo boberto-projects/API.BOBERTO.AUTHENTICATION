@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\rober\\OneDrive\\Área de Trabalho\\API.AUTHENTICATION.BOBERTO\\API.BOBERTO.AUTHENTICATION.INTEGRATIONS\\API.BOBERTO.AUTHENTICATION.INTEGRATIONS.csproj": {}
+    "C:\\Users\\rober\\OneDrive\\Documentos\\projetos\\API.BOBERTO.AUTHENTICATION\\API.BOBERTO.AUTHENTICATION.INTEGRATIONS\\API.BOBERTO.AUTHENTICATION.INTEGRATIONS.csproj": {}
   },
   "projects": {
-    "C:\\Users\\rober\\OneDrive\\Área de Trabalho\\API.AUTHENTICATION.BOBERTO\\API.BOBERTO.AUTHENTICATION.INTEGRATIONS\\API.BOBERTO.AUTHENTICATION.INTEGRATIONS.csproj": {
+    "C:\\Users\\rober\\OneDrive\\Documentos\\projetos\\API.BOBERTO.AUTHENTICATION\\API.BOBERTO.AUTHENTICATION.INTEGRATIONS\\API.BOBERTO.AUTHENTICATION.INTEGRATIONS.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\rober\\OneDrive\\Área de Trabalho\\API.AUTHENTICATION.BOBERTO\\API.BOBERTO.AUTHENTICATION.INTEGRATIONS\\API.BOBERTO.AUTHENTICATION.INTEGRATIONS.csproj",
+        "projectUniqueName": "C:\\Users\\rober\\OneDrive\\Documentos\\projetos\\API.BOBERTO.AUTHENTICATION\\API.BOBERTO.AUTHENTICATION.INTEGRATIONS\\API.BOBERTO.AUTHENTICATION.INTEGRATIONS.csproj",
         "projectName": "API.BOBERTO.AUTHENTICATION.INTEGRATIONS",
-        "projectPath": "C:\\Users\\rober\\OneDrive\\Área de Trabalho\\API.AUTHENTICATION.BOBERTO\\API.BOBERTO.AUTHENTICATION.INTEGRATIONS\\API.BOBERTO.AUTHENTICATION.INTEGRATIONS.csproj",
+        "projectPath": "C:\\Users\\rober\\OneDrive\\Documentos\\projetos\\API.BOBERTO.AUTHENTICATION\\API.BOBERTO.AUTHENTICATION.INTEGRATIONS\\API.BOBERTO.AUTHENTICATION.INTEGRATIONS.csproj",
         "packagesPath": "C:\\Users\\rober\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\rober\\OneDrive\\Área de Trabalho\\API.AUTHENTICATION.BOBERTO\\API.BOBERTO.AUTHENTICATION.INTEGRATIONS\\obj\\",
+        "outputPath": "C:\\Users\\rober\\OneDrive\\Documentos\\projetos\\API.BOBERTO.AUTHENTICATION\\API.BOBERTO.AUTHENTICATION.INTEGRATIONS\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

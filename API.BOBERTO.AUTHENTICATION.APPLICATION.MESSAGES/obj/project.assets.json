@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\rober\\OneDrive\\Área de Trabalho\\API.AUTHENTICATION.BOBERTO\\API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES\\API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.csproj",
+      "projectUniqueName": "C:\\Users\\rober\\OneDrive\\Documentos\\projetos\\API.BOBERTO.AUTHENTICATION\\API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES\\API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.csproj",
       "projectName": "API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES",
-      "projectPath": "C:\\Users\\rober\\OneDrive\\Área de Trabalho\\API.AUTHENTICATION.BOBERTO\\API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES\\API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.csproj",
+      "projectPath": "C:\\Users\\rober\\OneDrive\\Documentos\\projetos\\API.BOBERTO.AUTHENTICATION\\API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES\\API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES.csproj",
       "packagesPath": "C:\\Users\\rober\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\rober\\OneDrive\\Área de Trabalho\\API.AUTHENTICATION.BOBERTO\\API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES\\obj\\",
+      "outputPath": "C:\\Users\\rober\\OneDrive\\Documentos\\projetos\\API.BOBERTO.AUTHENTICATION\\API.BOBERTO.AUTHENTICATION.APPLICATION.MESSAGES\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

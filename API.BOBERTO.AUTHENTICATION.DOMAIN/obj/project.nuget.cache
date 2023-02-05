@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "HVbwaRBoSazrgUEKNoFxKg2jO4IpWP069vknrBHHQ3aLy9OgP3SzB8BptFfboM+iQa/2FmyaWdXxsWaiCFvffw==",
+  "dgSpecHash": "RY4QRuD4haAcbuDxY5jqDhNKdE4+b5yxc8OwCohAZwHue2ruR/6uKgBg5wNu30m/TX3aBNv2/TjGfOgcegtmaw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\rober\\OneDrive\\Área de Trabalho\\API.AUTHENTICATION.BOBERTO\\API.BOBERTO.AUTHENTICATION.DOMAIN\\API.BOBERTO.AUTHENTICATION.DOMAIN.csproj",
+  "projectFilePath": "C:\\Users\\rober\\OneDrive\\Documentos\\projetos\\API.BOBERTO.AUTHENTICATION\\API.BOBERTO.AUTHENTICATION.DOMAIN\\API.BOBERTO.AUTHENTICATION.DOMAIN.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\rober\\.nuget\\packages\\entityframework\\6.4.4\\entityframework.6.4.4.nupkg.sha512",
     "C:\\Users\\rober\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",

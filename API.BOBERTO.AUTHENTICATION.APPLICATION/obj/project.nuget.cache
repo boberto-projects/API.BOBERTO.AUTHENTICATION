@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "z4tHOy5CBlOCe+6IfeVr6pw9fiDDUQ2SdmUutY+CbTBXEHwxV4Mx84hAdWRibk1dVT5doaGUXCj0roIvZEz+pA==",
+  "dgSpecHash": "J08onqPtjXaShsF+IoORGNHyNoxrImXwEdfSz1JdDtY98FN4vo7QKBJe6QvxRbQB9041CtOcTvd4g0GcJ3NUfw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\rober\\OneDrive\\Área de Trabalho\\API.AUTHENTICATION.BOBERTO\\API.BOBERTO.AUTHENTICATION.APPLICATION\\API.BOBERTO.AUTHENTICATION.APPLICATION.csproj",
+  "projectFilePath": "C:\\Users\\rober\\OneDrive\\Documentos\\projetos\\API.BOBERTO.AUTHENTICATION\\API.BOBERTO.AUTHENTICATION.APPLICATION\\API.BOBERTO.AUTHENTICATION.APPLICATION.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\rober\\.nuget\\packages\\bcrypt.net-next\\4.0.3\\bcrypt.net-next.4.0.3.nupkg.sha512",
     "C:\\Users\\rober\\.nuget\\packages\\entityframework\\6.4.4\\entityframework.6.4.4.nupkg.sha512",
